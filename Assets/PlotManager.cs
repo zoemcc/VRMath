@@ -27,6 +27,10 @@ public class PlotManager : MonoBehaviour {
 	public Matrix ellipseTransformer2dim;
 	public Matrix eigenValuesMatInvSquareRoot;
 
+	float diagComponent0;
+	float diagComponent2;
+	float offDiagComponent;
+
 
 	Matrix solveFingerMatrix;
 	Matrix solveFingerVector;
@@ -106,6 +110,10 @@ public class PlotManager : MonoBehaviour {
 		
 		controlCube = GameObject.Find ("ControlCube");
 		so = controlCube.GetComponent<ScaleObject> (); 
+
+		diagComponent0 = (float) 1.0f;
+		diagComponent2 = (float) 2.0f;
+		offDiagComponent = 0.0f;
 	}
 	
 	// Update is called once per frame
@@ -132,27 +140,29 @@ public class PlotManager : MonoBehaviour {
 		//finger_poses [0] = new Vector3{1.0f, 1.0f, 1.0f};
 		//finger_poses [1] = new Vector3{0.5f, 1.0f, 1.0f};
 			
-		if (finger_poses.Length != 2) {
-			return;
+		if (finger_poses.Length == 2) {
+			// set up linsolve
+			solveFingerMatrix [0, 0] = (double) ((finger_poses [0].x) * (finger_poses [0].x));
+			solveFingerMatrix [0, 1] = (double) ((finger_poses [0].z) * (finger_poses [0].z));
+			solveFingerMatrix [1, 0] = (double) ((finger_poses [1].x) * (finger_poses [1].x));
+			solveFingerMatrix [1, 0] = (double) ((finger_poses [1].z) * (finger_poses [1].z));
+			
+			solveFingerVector [0, 0] = (double) Mathf.Abs(2 * finger_poses [0].y);
+			solveFingerVector [1, 0] = (double) Mathf.Abs(2 * finger_poses [1].y);
+			
+			Matrix solved = solveFingerMatrix.Solve (solveFingerVector);
+
+			/*   Grabby interaction */
+			diagComponent0 = (float) solved[0, 0];
+			diagComponent2 = (float) solved[1, 0];
+			offDiagComponent = 0.0f;
 		}
 
-		// set up linsolve
-		solveFingerMatrix [0, 0] = (double) ((finger_poses [0].x) * (finger_poses [0].x));
-		solveFingerMatrix [0, 1] = (double) ((finger_poses [0].z) * (finger_poses [0].z));
-		solveFingerMatrix [1, 0] = (double) ((finger_poses [1].x) * (finger_poses [1].x));
-		solveFingerMatrix [1, 0] = (double) ((finger_poses [1].z) * (finger_poses [1].z));
 
-		solveFingerVector [0, 0] = (double) Mathf.Abs(2 * finger_poses [0].y);
-		solveFingerVector [1, 0] = (double) Mathf.Abs(2 * finger_poses [1].y);
-
-		Matrix solved = solveFingerMatrix.Solve (solveFingerVector);
 
 
 		
-		/*   Grabby interaction */
-		float diagComponent0 = (float) solved[0, 0];
-		float diagComponent2 = (float) solved[1, 0];
-		float offDiagComponent = 0.0f;
+
 
 		/* grabby interaction old 
 		float diagComponent0 = 2.0f / Mathf.Abs(scale[0]);

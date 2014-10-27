@@ -48,7 +48,7 @@ public class Slides : MonoBehaviour {
 		PlotManger = GameObject.Find ("PlotManager"); 
 		plotManger = PlotManger.GetComponent<PlotManager> (); 
 
-		TextManger = GameObject.Find ("TextManger"); 
+		TextManger = GameObject.Find ("TextManager"); 
 		textManger = TextManger.GetComponent<TextManager> ();
 
 		mesh = gameObject.GetComponent<MeshRenderer> (); 

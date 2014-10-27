@@ -38,7 +38,7 @@ public class ScaleObject : MonoBehaviour {
 	void Update () {
 	
 		if (grabbed.scale) {
-
+			print ("GRABBED CUBE"); 
 			Dictionary<int, HandModel> hands = h.hand_physics_; 
 			bool pinch = true;  
 			Vector3[] poses = new Vector3[2];
@@ -47,7 +47,7 @@ public class ScaleObject : MonoBehaviour {
 			int k = 0;
 			Quaternion rotation = new Quaternion();
 			Vector3 temp_pos = new Vector3();
-
+			print ("PINCH"); 
 			foreach (HandModel hand in h.hand_physics_.Values){
 
 				GrabHand grab_hand;
@@ -56,6 +56,10 @@ public class ScaleObject : MonoBehaviour {
 
 				pinches[k] = grab_hand.pinching_;
 				pinch = grab_hand.pinching_ && pinch; 
+
+
+				print (grab_hand.pinching_); 
+
 				poses [k] = hand.GetPalmPosition (); 
 
 				if(grab_hand.pinching_){
