@@ -19,9 +19,13 @@ public class Slides : MonoBehaviour {
 	static Texture slide3;
 	static Texture slide4;
 	GameObject Butn; 
-	GameObject PlotManager;
+	GameObject PlotManger;
+	GameObject TextManger;
+
+	TextManager textManger; 
 	PlotManager plotManger; 
 	MeshRenderer mesh;
+
 	Button button; 
 	static int i = 0; 
 	
@@ -41,8 +45,11 @@ public class Slides : MonoBehaviour {
 		Butn = GameObject.Find ("Button1"); 
 		button = Butn.GetComponent<Button> (); 
 
-		PlotManager = GameObject.Find ("PlotManager"); 
-		plotManger = PlotManager.GetComponent<PlotManager> (); 
+		PlotManger = GameObject.Find ("PlotManager"); 
+		plotManger = PlotManger.GetComponent<PlotManager> (); 
+
+		TextManger = GameObject.Find ("TextManger"); 
+		textManger = TextManger.GetComponent<TextManager> ();
 
 		mesh = gameObject.GetComponent<MeshRenderer> (); 
 
@@ -99,6 +106,7 @@ public class Slides : MonoBehaviour {
 					gameObject.renderer.material.SetTexture("_MainTex",slide4);
 					print ("setting slide3");	
 					plotManger.displayRadial = true; 
+					textManger.displayMatrix = true; 
 					mesh.enabled = false; 
 					break;
 				case 4: 
@@ -106,8 +114,17 @@ public class Slides : MonoBehaviour {
 				    gameObject.renderer.material.SetTexture("_MainTex",slide4);
 					print ("setting slide4");
 					plotManger.displayRadial = false;
+					textManger.displayMatrix = false; 
 					mesh.enabled = true; 
 				break;
+				case 5: 
+					plotManger.displayRadial = true; 
+					mesh.enabled = false; 
+					textManger.displayFunction = true; 
+					textManger.displayVector = true; 
+				break; 
+
+
 			}
 		
 		}

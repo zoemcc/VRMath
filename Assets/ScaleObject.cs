@@ -7,6 +7,7 @@ public class ScaleObject : MonoBehaviour {
 	// Use this for initialization
 
 	public Vector3 pos; 
+	public Vector3[] finger_poses;
 	public Vector3 graph_scale; 
 	public float step_size; 
 	public GameObject Hands; 
@@ -51,6 +52,7 @@ public class ScaleObject : MonoBehaviour {
 
 				GrabHand grab_hand;
 				grab_hand = hand.GetComponent<GrabHand> ();
+				FingerModel[] fingers = hand.fingers;
 
 				pinches[k] = grab_hand.pinching_;
 				pinch = grab_hand.pinching_ && pinch; 
@@ -79,7 +81,7 @@ public class ScaleObject : MonoBehaviour {
 					print ("BOTH PINCHED!!!!"); 
 					graph_scale = scale; 
 					print (graph_scale);
-
+					finger_poses = poses;
 				}
 				else if(one_pinch){
 						t.localRotation = rotation; 
