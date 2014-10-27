@@ -26,6 +26,11 @@ public class PlotManager : MonoBehaviour {
 	public Matrix quadForm2dim;
 	public Matrix ellipseTransformer2dim;
 	public Matrix eigenValuesMatInvSquareRoot;
+
+
+	Matrix solveFingerMatrix;
+	Matrix solveFingerVector;
+
 	GameObject controlCube;
 	ScaleObject so; 
 
@@ -90,6 +95,14 @@ public class PlotManager : MonoBehaviour {
 		eigenValuesMatInvSquareRoot = new Matrix(new double[][] {
 			new double[] {0.0, 0.0},
 			new double[] {0.0, 0.0}});
+
+		solveFingerMatrix = new Matrix(new double[][] {
+			new double[] {0.0, 0.0},
+			new double[] {0.0, 0.0}});
+
+		solveFingerVector = new Matrix(new double[][] {
+			new double[] {0.0},
+			new double[] {0.0}});
 		
 		controlCube = GameObject.Find ("ControlCube");
 		so = controlCube.GetComponent<ScaleObject> (); 
@@ -113,12 +126,39 @@ public class PlotManager : MonoBehaviour {
 		float t = Time.timeSinceLevelLoad;
 
 		Vector3 scale = so.graph_scale;
+
+		Vector3[] finger_poses = so.finger_poses;
+		//Vector3[] finger_poses = new Vector3[2];
+		//finger_poses [0] = new Vector3{1.0f, 1.0f, 1.0f};
+		//finger_poses [1] = new Vector3{0.5f, 1.0f, 1.0f};
+			
+		if (finger_poses.Length != 2) {
+			return;
+		}
+
+		// set up linsolve
+		solveFingerMatrix [0, 0] = (double) ((finger_poses [0].x) * (finger_poses [0].x));
+		solveFingerMatrix [0, 1] = (double) ((finger_poses [0].z) * (finger_poses [0].z));
+		solveFingerMatrix [1, 0] = (double) ((finger_poses [1].x) * (finger_poses [1].x));
+		solveFingerMatrix [1, 0] = (double) ((finger_poses [1].z) * (finger_poses [1].z));
+
+		solveFingerVector [0, 0] = (double) Mathf.Abs(2 * finger_poses [0].y);
+		solveFingerVector [1, 0] = (double) Mathf.Abs(2 * finger_poses [1].y);
+
+		Matrix solved = solveFingerMatrix.Solve (solveFingerVector);
+
+
 		
 		/*   Grabby interaction */
+		float diagComponent0 = (float) solved[0, 0];
+		float diagComponent2 = (float) solved[1, 0];
+		float offDiagComponent = 0.0f;
+
+		/* grabby interaction old 
 		float diagComponent0 = 2.0f / Mathf.Abs(scale[0]);
 		float diagComponent2 = 2.0f / Mathf.Abs(scale[2]);
 		float offDiagComponent = 0.0f;
-		
+		*/
 		
 		/*   Sinusoidal watching 
 		float diagComponent0 = Mathf.Sin (t) + 1.5f;
