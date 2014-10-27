@@ -3,7 +3,7 @@ using System.Collections;
 using MathNet.Numerics.LinearAlgebra;
 using System;
 
-public class MatrixText : MonoBehaviour {
+public class TextManager : MonoBehaviour {
 	//Symbols
 	static string gradient = '\u2207'.ToString ();
 	static string sum = '\u03A3'.ToString();
@@ -15,38 +15,89 @@ public class MatrixText : MonoBehaviour {
 	static string x_i = "x" + _i; 
 	static string y_i = "x" + _i; 
 	static string alpha = '\u0391'.ToString();
-	public string[,] matStrings;
+	string[,] matStrings;
+	string[,] vectorStrings;
 	TextMesh t;
+
 	Matrix curMat;
+	Matrix curVector;
+	float curFuncValue;
 	
 	PlotManager plotManagerScript;
+	OptimizationPlot optimizationPlotScript;
 	TextMesh matrixTextMesh;
+	TextMesh functionTextMesh;
+	TextMesh vectorTextMesh;
 	
-	int numTexts = 5;
+	int numMatrixTexts = 5;
 	int idxMatrixText = 2;
+	
+	int numFunctionTexts = 2;
+	int idxFunctionText = 1;
+
+	int numVectorTexts = 4;
+	int idxVectorText = 2;
+
 	int matrixStringLength = 5;
 	
+	public bool displayMatrix = true;
+	public bool displayFunction = false;
+	public bool displayVector = false;
+	
+	bool currentDisplayMatrix = false;
+	bool currentDisplayFunction = false;
+	bool currentDisplayVector = false;
+	
+	GameObject matrixTextTopLevel;
+	GameObject functionTextTopLevel;
+	GameObject vectorTextTopLevel;
 	
 	
-	// 4 gameobjects as children, ["height = v'", 
+	
+	// 5 gameobjects as children, ["height = v'", 
 	//					          "[", 
 	//							  "matrix", 
-	//							  "]" ]
+	//							  "]",
+	//							  "v" ]
 	GameObject[] matrixTexts;
+
+	// 4 gameobjects as children, ["v = ", 
+	//					          "[", 
+	//							  "x, y", 
+	//							  "]" ]
+	GameObject[] vectorTexts;
+
+	// 2 gameobjects as children, ["f(v) = ", 
+	//					          "v" ]
+	GameObject[] functionTexts;
+	
 	
 	// Use this for initialization
 	void Start () {
 		GameObject plotManagerObj = GameObject.Find ("PlotManager");
 		plotManagerScript = plotManagerObj.GetComponent("PlotManager") as PlotManager;
+
+		optimizationPlotScript = plotManagerObj.GetComponent ("OptimizationPlot") as OptimizationPlot;
 		//curMat = plotManagerScript.quadForm2dim;
 		
-		matrixTexts = new GameObject[numTexts];
+		matrixTexts = new GameObject[numMatrixTexts];
+		
+		matrixTextTopLevel = new GameObject ("MatrixText");
+		matrixTextTopLevel.transform.parent = gameObject.transform;
+		
+		matrixTextTopLevel.SetActive (displayMatrix);
+		currentDisplayMatrix = displayMatrix;
+
+		matrixTextTopLevel.transform.position = new Vector3 (0.0f, 0.0f, 0.0f);
+
+		
 		float xOffset = 0.0f;
 		
-		for (int i = 0; i < numTexts; i++) {
+		
+		for (int i = 0; i < numMatrixTexts; i++) {
 			
 			
-			GameObject texti = AddMeshComponentChild("text: " + i.ToString(), gameObject);
+			GameObject texti = AddMeshComponentChild("text: " + i.ToString(), matrixTextTopLevel);
 			TextMesh t = texti.GetComponent("TextMesh") as TextMesh;
 			
 			
@@ -87,9 +138,116 @@ public class MatrixText : MonoBehaviour {
 			}
 			
 			matrixTexts[i] = texti;
+			
 		}
 		
 		matrixTextMesh = matrixTexts [idxMatrixText].GetComponent("TextMesh") as TextMesh;
+
+
+		// function text rendering
+		
+		functionTexts = new GameObject[numFunctionTexts];
+		xOffset = 0.0f;
+		
+		functionTextTopLevel = new GameObject ("FunctionText");
+		functionTextTopLevel.transform.parent = gameObject.transform;
+		
+		functionTextTopLevel.SetActive (displayFunction);
+		currentDisplayFunction = displayFunction;
+
+		functionTextTopLevel.transform.position = new Vector3 (0.0f, 0.0f, 0.0f);
+		
+
+		
+		
+		for (int i = 0; i < numFunctionTexts; i++) {
+			
+			
+			GameObject texti = AddMeshComponentChild("text: " + i.ToString(), functionTextTopLevel);
+			TextMesh t = texti.GetComponent("TextMesh") as TextMesh;
+			
+			
+			
+			switch (i)
+			{
+			case 0:
+				t.transform.position = new Vector3 ((float)xOffset, (float)0.0f, (float)0.0f);
+				t.text = "f(x) = ";
+				t.fontSize = 10;
+				xOffset += 2.5f;
+				break;
+			case 1:
+				t.transform.position = new Vector3 ((float)xOffset, (float)0.0f, (float)0.0f);
+				//t.text = "[";
+				t.fontSize = 10;
+				xOffset += 1.0f;
+				break;
+			}
+			functionTexts[i] = texti;
+		}
+		
+		functionTextMesh = functionTexts [idxFunctionText].GetComponent("TextMesh") as TextMesh;
+
+		// vector text rendering
+
+		vectorTexts = new GameObject[numVectorTexts];
+		xOffset = 0.0f;
+		
+		vectorTextTopLevel = new GameObject ("VectorText");
+		vectorTextTopLevel.transform.parent = gameObject.transform;
+
+		//Transform vectorTransform = vectorTextTopLevel.transform;
+		//vectorTextTopLevel.transform.position = new Vector3 (transform.position.x + 0.0f, transform.position.y -5.0f, transform.position.z + 0.0f);
+		
+		vectorTextTopLevel.SetActive (displayVector);
+		currentDisplayVector = displayVector;
+		
+		
+		
+		
+		for (int i = 0; i < numVectorTexts; i++) {
+			
+			
+			GameObject texti = AddMeshComponentChild("text: " + i.ToString(), vectorTextTopLevel);
+			TextMesh t = texti.GetComponent("TextMesh") as TextMesh;
+			
+			
+			
+			switch (i)
+			{
+			case 0:
+				t.transform.position = new Vector3 ((float)xOffset, (float)0.0f, (float)0.0f);
+				t.text = "v = ";
+				t.fontSize = 10;
+				xOffset += 1.5f;
+				break;
+			case 1:
+				t.transform.position = new Vector3 ((float)xOffset, (float)0.5f, (float)0.0f);
+				t.text = "[";
+				t.fontSize = 20;
+				xOffset += 1.0f;
+				break;
+			case 2:
+				t.transform.position = new Vector3 ((float)xOffset, (float)0.3f, (float)0.0f);
+				//matStrings = textListsMatrix(2,2, curMat, matrixStringLength);
+				//t.text = Mat2String(matStrings);
+				t.fontSize = 10;
+				xOffset += 3.0f;
+				break;
+			case 3: 
+				t.transform.position = new Vector3 ((float)xOffset, (float)0.5f, (float)0.0f);
+				t.text = "]";
+				t.fontSize = 20;
+				xOffset += 1.0f;
+				break;
+			}
+
+			vectorTexts[i] = texti;
+		}
+
+		vectorTextMesh = vectorTexts [idxVectorText].GetComponent("TextMesh") as TextMesh;
+		
+		
 		//t = gameObject.GetComponent("TextMesh") as TextMesh;
 		
 		
@@ -101,6 +259,13 @@ public class MatrixText : MonoBehaviour {
 		//updatePos (3,3,3);
 		//print (transform.position);
 		//createNewTextMesh("testNewMesh");
+		
+		
+		
+		
+		
+		
+		
 		
 	}
 	
@@ -223,10 +388,10 @@ public class MatrixText : MonoBehaviour {
 		else return s;
 		
 	}
-
+	
 	string clipNumToStringLength (double num, int length){
 		int numberOfFirstDigits = Math.Round (num, 0).ToString ().Length;
-
+		
 		string roundedString = Math.Round(num, length - 1 - numberOfFirstDigits).ToString();
 		if (roundedString.IndexOf (".") == -1) {
 			roundedString += " ";
@@ -240,9 +405,33 @@ public class MatrixText : MonoBehaviour {
 	
 	// Update is called once per frame 
 	void Update () {
+		
+		if (displayFunction != currentDisplayFunction) {
+			functionTextTopLevel.SetActive (displayFunction);
+			currentDisplayFunction = displayFunction;
+		}
+		if (displayMatrix != currentDisplayMatrix) {
+			matrixTextTopLevel.SetActive (displayMatrix);
+			currentDisplayMatrix = displayMatrix;
+		}
+		if (displayVector != currentDisplayVector) {
+			vectorTextTopLevel.SetActive (displayVector);
+			currentDisplayVector = displayVector;
+		}
+		
+		
 		curMat = plotManagerScript.quadForm2dim;
 		matStrings = textListsMatrix(2,2, curMat, matrixStringLength);
 		matrixTextMesh.text = Mat2String(matStrings);
+
+		curVector = optimizationPlotScript.currentPoint.Clone();
+		vectorStrings = textListsMatrix(2,1, curVector, matrixStringLength);
+		vectorTextMesh.text = Mat2String(vectorStrings);
+
+		curFuncValue = optimizationPlotScript.currentFuncValue;
+		functionTextMesh.text = clipNumToStringLength((double) curFuncValue, matrixStringLength + 3).ToString ();
+
+
 	}
 }
 
