@@ -62,7 +62,7 @@ public class Slides : MonoBehaviour {
 	// Update is called once per frame
 	void Update (){
 		//bool clicked = true;
-		print (i);
+	
 		/*if (Input.GetKeyDown("space") && i==0){
 			print("space key was pressed");
 			gameObject.guiTexture.texture = slide1;
@@ -80,7 +80,7 @@ public class Slides : MonoBehaviour {
 		if (Input.GetKeyDown ("space")) {
 			print ("key down");		
 		}*/
-//		print (button.scene); 
+		print (button.scene); 
 		if (button.update) {
 
 			switch (button.scene)

@@ -21,7 +21,7 @@ public class ScaleObject : MonoBehaviour {
 	void Start () {
 	    //var t = gameObject.transform; 
 		t = gameObject.transform;
-		graph_scale = t.localScale;
+		graph_scale = t.localScale/2.0f;
 		pos = t.localPosition; 
 		step_size = 0.01f; 
 		Hands = GameObject.Find ("/OVRCameraController/CameraLeft/HandController"); 
