@@ -108,17 +108,7 @@ public class MatrixText : MonoBehaviour {
 		string[,] mat = zeros (rows,col);
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < col; j++) {
-<<<<<<< HEAD
-				string roundedString = matrix.GetArray() [i] [j].ToString();
-				//string roundedString = Math.Round(matrix.GetArray() [i] [j], stringLength - 3).ToString();
-				int numCurrently = roundedString.Length;
-				//for (int k = 0; k + numCurrently < stringLength; k++){
-				//	roundedString += " ";
-				//}
-				mat [i, j] = roundedString;
-=======
 				mat [i, j] = clipNumToStringLength(matrix.GetArray() [i] [j], stringLength);
->>>>>>> a5b9fcd37a51dde831c6e9aa4024de1062a1c83c
 			}
 		}
 		return  mat;
