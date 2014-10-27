@@ -17,6 +17,7 @@
          // Uniforms set by a script
          uniform float4x4 _QuadForm; // matrix for quadratic form that determines shape of function
          uniform float4x4 _EllipseTransformer;
+         uniform float _RadiusScale;
  
          struct vertexInput {
             float4 vertex : POSITION;
@@ -30,7 +31,7 @@
          {
             vertexOutput output;
             
-            float4 blendedVertex = mul(_EllipseTransformer, input.vertex);      
+            float4 blendedVertex = _RadiusScale * mul(_EllipseTransformer, input.vertex);      
             
             float height = 0.5 * mul(blendedVertex, mul(_QuadForm, blendedVertex));
             

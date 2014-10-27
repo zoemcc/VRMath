@@ -26,6 +26,7 @@ public class PlotManager : MonoBehaviour {
 	public Matrix quadForm2dim;
 	public Matrix ellipseTransformer2dim;
 	public Matrix eigenValuesMatInvSquareRoot;
+	public float RadiusScale;
 
 	float diagComponent0;
 	float diagComponent2;
@@ -34,6 +35,7 @@ public class PlotManager : MonoBehaviour {
 
 	Matrix solveFingerMatrix;
 	Matrix solveFingerVector;
+
 
 	GameObject controlCube;
 	ScaleObject so; 
@@ -156,6 +158,7 @@ public class PlotManager : MonoBehaviour {
 			diagComponent0 = (float) solved[0, 0];
 			diagComponent2 = (float) solved[1, 0];
 			offDiagComponent = 0.0f;
+			RadiusScale = Mathf.Max(finger_poses[0].y, finger_poses[1].y);
 		}
 
 

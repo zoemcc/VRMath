@@ -18,9 +18,14 @@ public class GraphSetter : MonoBehaviour {
 
 	Matrix4x4 QuadForm;
 	Matrix4x4 EllipseTransformer;
+	float RadiusScale;
 
 	// Update is called once per frame
 	void Update () {
+		// Get radius scale
+		RadiusScale = plotManagerScript.RadiusScale;
+		renderer.material.SetFloat ("_RadiusScale", RadiusScale);
+
 		// Get Render graph
 		QuadForm = plotManagerScript.QuadForm;
 		renderer.material.SetMatrix ("_QuadForm", QuadForm);
