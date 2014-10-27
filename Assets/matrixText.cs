@@ -3,7 +3,7 @@ using System.Collections;
 using MathNet.Numerics.LinearAlgebra;
 using System;
 
-public class matrixText : MonoBehaviour {
+public class MatrixText : MonoBehaviour {
 	//Symbols
 	static string gradient = '\u2207'.ToString ();
 	static string sum = '\u03A3'.ToString();
