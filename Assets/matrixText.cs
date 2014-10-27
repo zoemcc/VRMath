@@ -70,7 +70,7 @@ public class MatrixText : MonoBehaviour {
 				//matStrings = textListsMatrix(2,2, curMat, matrixStringLength);
 				//t.text = Mat2String(matStrings);
 				t.fontSize = 10;
-				xOffset += 3.4f;
+				xOffset += 6.0f;
 				break;
 			case 3: 
 				t.transform.position = new Vector3 ((float)xOffset, (float)0.5f, (float)0.0f);
@@ -108,6 +108,7 @@ public class MatrixText : MonoBehaviour {
 		string[,] mat = zeros (rows,col);
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < col; j++) {
+<<<<<<< HEAD
 				string roundedString = matrix.GetArray() [i] [j].ToString();
 				//string roundedString = Math.Round(matrix.GetArray() [i] [j], stringLength - 3).ToString();
 				int numCurrently = roundedString.Length;
@@ -115,6 +116,9 @@ public class MatrixText : MonoBehaviour {
 				//	roundedString += " ";
 				//}
 				mat [i, j] = roundedString;
+=======
+				mat [i, j] = clipNumToStringLength(matrix.GetArray() [i] [j], stringLength);
+>>>>>>> a5b9fcd37a51dde831c6e9aa4024de1062a1c83c
 			}
 		}
 		return  mat;
@@ -158,6 +162,9 @@ public class MatrixText : MonoBehaviour {
 	/* Printing samples */
 	string[,] sampleMatrix(int rows, int col){
 		string[,] mat = zeros (rows,col);
+		mat [0, 0] = "7.01";
+		mat [1, 0] = "0.1  ";
+		mat [0, 1] = "7";
 		mat [1, 1] = "7";
 		return  mat;
 	}
@@ -225,6 +232,20 @@ public class MatrixText : MonoBehaviour {
 			return "(" + s + ")";
 		else return s;
 		
+	}
+
+	string clipNumToStringLength (double num, int length){
+		int numberOfFirstDigits = Math.Round (num, 0).ToString ().Length;
+
+		string roundedString = Math.Round(num, length - 1 - numberOfFirstDigits).ToString();
+		if (roundedString.IndexOf (".") == -1) {
+			roundedString += " ";
+		}
+		int numCurrently = roundedString.Length;
+		for (int k = 0; k + numCurrently < length; k++){
+			roundedString += "  ";
+		}
+		return roundedString;
 	}
 	
 	// Update is called once per frame 
