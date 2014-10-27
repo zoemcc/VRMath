@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+	<ProductVersion>10.0.20506</ProductVersion>
+	<SchemaVersion>2.0</SchemaVersion>
+	<ProjectGuid>{0826633D-13E5-B232-75DC-16D995B9577E}</ProjectGuid>
+	<OutputType>Library</OutputType>
+	<AppDesignerFolder>Properties</AppDesignerFolder>
+	<RootNamespace></RootNamespace>
+	<AssemblyName>Assembly-UnityScript</AssemblyName>
+	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+	<FileAlignment>512</FileAlignment>
+	<BaseDirectory>Assets</BaseDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	<DebugSymbols>true</DebugSymbols>
+	<DebugType>full</DebugType>
+	<Optimize>false</Optimize>
+	<OutputPath>Temp\bin\Debug\</OutputPath>
+	<DefineConstants>DEBUG;TRACE;UNITY_4_5_4;UNITY_4_5;UNITY_STANDALONE_OSX;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_UNITYEVENTS;ENABLE_NEW_HIERARCHY ;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_TERRAIN;ENABLE_SUBSTANCE;ENABLE_GENERICS;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;INCLUDE_WP_BLUE_SUPPORT;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_GAMECENTER;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_OSX</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+	<DebugType>pdbonly</DebugType>
+	<Optimize>true</Optimize>
+	<OutputPath>Temp\bin\Release\</OutputPath>
+	<DefineConstants>TRACE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
+	<NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+	<Reference Include="System" />
+    <Reference Include="System.XML" />
+	<Reference Include="System.Core" />
+	<Reference Include="System.Xml.Linq" />
+	<Reference Include="UnityEngine">
+	  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEngine.dll</HintPath>
+	</Reference>
+	<Reference Include="UnityEditor">
+	  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll</HintPath>
+	</Reference>
+  </ItemGroup>
+  <ItemGroup>
+     <Compile Include="Assets\MathVRFuncs\numerics\tools\docu\templates\js\example.js" />
+     <Compile Include="Assets\MathVRFuncs\numerics\tools\docu\templates\js\jquery-1.3.2.min.js" />
+     <Compile Include="Assets\MathVRFuncs\numerics\tools\docu\templates\js\jquery.scrollTo-min.js" />
+     <Compile Include="Assets\MathVRFuncs\numerics\tools\docu\templates\js\navigation.js" />
+     <None Include="Assets\Plugins\donotdelete.txt" />
+     <None Include="Assets\LeapMotion\Materials\Sources\Shaders\Toony-Basic.shader" />
+     <None Include="Assets\MathVRFuncs\numerics\obj\lib-debug\Net40\Numerics.csproj.FilesWrittenAbsolute.txt" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\FSharp.Core.Microsoft.Signed\lib\net40\FSharp.Core.xml" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\FSharp.Core.Microsoft.Signed\lib\portable-net45+netcore45+wp8+MonoAndroid1+MonoTouch1\FSharp.Core.xml" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\TaskParallelLibrary\lib\Net35\redist.txt" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\FSharp.Core.Microsoft.Signed\lib\net45\FSharp.Core.xml" />
+     <None Include="Assets\LeapMotion\InteractionUtils (alpha)\readme.txt" />
+     <None Include="Assets\MathVRFuncs\numerics\tools\NBenchmark_1.0.0\ReadMe.txt" />
+     <None Include="Assets\LeapMotion\readme.txt" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\FsUnit\[Content_Types].xml" />
+     <None Include="Assets\OVR\Shaders\TextShader3D.shader" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\FSharp.Core.Microsoft.Signed\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\FSharp.Core.xml" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\FSharp.Core.4.3.0.0.Microsoft.Signed\lib\net40\FSharp.Core.xml" />
+     <None Include="Assets\MathVRFuncs\numerics\data\Matlab\matrices.txt" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\NUnit\lib\nunit.framework.xml" />
+     <None Include="Assets\LeapMotion\Shaders\RimShading.shader" />
+     <None Include="Assets\LeapMotion\Materials\Sources\Shaders\Toony-BasicOutline.shader" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\TaskParallelLibrary\[Content_Types].xml" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\FSharp.Core.Microsoft.Signed\lib\portable-net45+netcore45+MonoAndroid1+MonoTouch1\FSharp.Core.xml" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\TaskParallelLibrary\lib\Net35\System.Threading.xml" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\NUnit\license.txt" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\FSharp.Core.Microsoft.Signed\lib\portable-net45+sl5+netcore45+MonoAndroid1+MonoTouch1\FSharp.Core.xml" />
+     <None Include="Assets\LeapMotion\Materials\Sources\Shaders\Toony-LightedOutline.shader" />
+     <None Include="Assets\LeapMotion\Materials\Sources\Shaders\Toony-Lighted.shader" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\FSharp.Core.4.3.0.0.Microsoft.Signed\lib\net45\FSharp.Core.xml" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\NUnit\[Content_Types].xml" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\FSharp.Core.4.3.0.0.Microsoft.Signed\lib\net35\FSharp.Core.xml" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\FSharp.Core.4.3.0.0.Microsoft.Signed\[Content_Types].xml" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\FSharp.Core.4.3.0.0.Microsoft.Signed\lib\portable-net45+sl5+netcore45+MonoAndroid1+MonoTouch1\FSharp.Core.xml" />
+     <None Include="Assets\OVR\Shaders\OVRGUIShader.shader" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\FSharp.Core.Microsoft.Signed\[Content_Types].xml" />
+     <None Include="Assets\LeapMotion\Shaders\LeapDistorted.shader" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\NUnit.Runners\[Content_Types].xml" />
+     <None Include="Assets\MathVRFuncs\numerics\NativeProviders.txt" />
+     <None Include="Assets\MathVRFuncs\numerics\packages\NUnit.Runners\license.txt" />
+     <None Include="Assets\LeapMotion\Shaders\LeapUndistorted.shader" />
+ <Reference Include="FSharp.Core">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/out/test-debug/Net40/FSharp.Core.dll</HintPath>
+ </Reference>
+ <Reference Include="FsUnit.NUnit">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/out/test-debug/Net40/FsUnit.NUnit.dll</HintPath>
+ </Reference>
+ <Reference Include="nunit.framework">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/out/test-debug/Net40/nunit.framework.dll</HintPath>
+ </Reference>
+ <Reference Include="pnunit.framework">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/packages/NUnit.Runners/tools/pnunit.framework.dll</HintPath>
+ </Reference>
+ <Reference Include="pnunit.tests">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/packages/NUnit.Runners/tools/pnunit.tests.dll</HintPath>
+ </Reference>
+ <Reference Include="log4net">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/packages/NUnit.Runners/tools/lib/log4net.dll</HintPath>
+ </Reference>
+ <Reference Include="nunit-console-runner">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/packages/NUnit.Runners/tools/lib/nunit-console-runner.dll</HintPath>
+ </Reference>
+ <Reference Include="nunit-gui-runner">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/packages/NUnit.Runners/tools/lib/nunit-gui-runner.dll</HintPath>
+ </Reference>
+ <Reference Include="nunit.core">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/packages/NUnit.Runners/tools/lib/nunit.core.dll</HintPath>
+ </Reference>
+ <Reference Include="nunit.core.interfaces">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/packages/NUnit.Runners/tools/lib/nunit.core.interfaces.dll</HintPath>
+ </Reference>
+ <Reference Include="nunit.uiexception">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/packages/NUnit.Runners/tools/lib/nunit.uiexception.dll</HintPath>
+ </Reference>
+ <Reference Include="nunit.uikit">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/packages/NUnit.Runners/tools/lib/nunit.uikit.dll</HintPath>
+ </Reference>
+ <Reference Include="nunit.util">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/packages/NUnit.Runners/tools/lib/nunit.util.dll</HintPath>
+ </Reference>
+ <Reference Include="System.Threading">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/packages/TaskParallelLibrary/lib/Net35/System.Threading.dll</HintPath>
+ </Reference>
+ <Reference Include="Spark">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/tools/docu/Spark.dll</HintPath>
+ </Reference>
+ <Reference Include="DigitalLiving.NBenchmark">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/tools/NBenchmark_1.0.0/DigitalLiving.NBenchmark.dll</HintPath>
+ </Reference>
+ <Reference Include="DigitalLiving.NBenchmark.Implementation">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/tools/NBenchmark_1.0.0/DigitalLiving.NBenchmark.Implementation.dll</HintPath>
+ </Reference>
+ <Reference Include="DigitalLiving.NBenchmark.StandardBenchmarks.Database">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/tools/NBenchmark_1.0.0/DigitalLiving.NBenchmark.StandardBenchmarks.Database.dll</HintPath>
+ </Reference>
+ <Reference Include="DigitalLiving.NBenchmark.StandardBenchmarks.Generic">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/tools/NBenchmark_1.0.0/DigitalLiving.NBenchmark.StandardBenchmarks.Generic.dll</HintPath>
+ </Reference>
+ <Reference Include="DigitalLiving.NBenchmark.StandardBenchmarks.Graphics">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/tools/NBenchmark_1.0.0/DigitalLiving.NBenchmark.StandardBenchmarks.Graphics.dll</HintPath>
+ </Reference>
+ <Reference Include="DigitalLiving.NBenchmark.StandardBenchmarks.Hardware">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/tools/NBenchmark_1.0.0/DigitalLiving.NBenchmark.StandardBenchmarks.Hardware.dll</HintPath>
+ </Reference>
+ <Reference Include="System.Data.SqlServerCe">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/tools/NBenchmark_1.0.0/System.Data.SqlServerCe.dll</HintPath>
+ </Reference>
+ <Reference Include="LeapCSharp.NET3.5">
+ <HintPath>/Users/zoe/VRMath/Assets/Plugins/LeapCSharp.NET3.5.dll</HintPath>
+ </Reference>
+ <Reference Include="MathNet.Numerics.FSharp">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/out/test-debug/Net40/MathNet.Numerics.FSharp.dll</HintPath>
+ </Reference>
+ <Reference Include="MathNet.Numerics">
+ <HintPath>/Users/zoe/VRMath/Assets/MathVRFuncs/numerics/out/test-debug/Net40/MathNet.Numerics.dll</HintPath>
+ </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Assembly-UnityScript-firstpass.unityproj">
+      <Project>{29C50945-71A1-EBB3-DF84-31E57E3FC6F3}</Project>      <Name>Assembly-UnityScript-firstpass</Name>    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+	   Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  
+</Project>
