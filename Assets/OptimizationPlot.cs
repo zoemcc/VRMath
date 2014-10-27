@@ -63,6 +63,7 @@ public class OptimizationPlot : MonoBehaviour {
 
 	Matrix quadForm2dim;
 	GameObject controlCube;
+	ScaleObject so;
 	
 	private void CreateOptimizationPoints () {
 		currentResolution = resolution;
@@ -94,7 +95,7 @@ public class OptimizationPlot : MonoBehaviour {
 		//Material material = Material(Shader.Find ("Particles/Alpha Blended"));
 		//print (material);
 		controlCube = GameObject.Find ("ControlCube");
-		
+		so = controlCube.GetComponent<ScaleObject> (); 
 	}
 
 	
@@ -107,7 +108,7 @@ public class OptimizationPlot : MonoBehaviour {
 
 		//optimization steps
 
-		Vector3 scale = controlCube.transform.localScale;
+		Vector3 scale = so.graph_scale;
 
 		xStart = -0.5f * Mathf.Sin (t);
 		zStart = -0.5f * Mathf.Cos (0.7f * t);

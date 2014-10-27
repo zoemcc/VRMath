@@ -19,6 +19,9 @@ public class Slides : MonoBehaviour {
 	static Texture slide3;
 	static Texture slide4;
 	GameObject Butn; 
+	GameObject PlotManager;
+	PlotManager plotManger; 
+	MeshRenderer mesh;
 	Button button; 
 	static int i = 0; 
 	
@@ -34,8 +37,16 @@ public class Slides : MonoBehaviour {
 		
 		loadedS4 = new WWW (s4);
 		yield return loadedS4;
+
 		Butn = GameObject.Find ("Button 1"); 
 		button = Butn.GetComponent<Button> (); 
+
+		PlotManager = GameObject.Find ("PlotManager"); 
+		plotManger = PlotManager.GetComponent<PlotManager> (); 
+
+		mesh = gameObject.GetComponent<MeshRenderer> (); 
+
+
 		if (loadedS1.isDone && loadedS2.isDone && loadedS3.isDone && loadedS4.isDone) {
 			print ("loaded all");
 			slide1 = loadedS1.texture;
@@ -69,7 +80,7 @@ public class Slides : MonoBehaviour {
 		if (Input.GetKeyDown ("space")) {
 			print ("key down");		
 		}*/
-		print (button.scene); 
+//		print (button.scene); 
 		if (button.update) {
 
 			switch (button.scene)
@@ -81,21 +92,22 @@ public class Slides : MonoBehaviour {
 					break;
 				case 2:
 					//gameObject.guiTexture.texture = slide2;
-				gameObject.renderer.material.SetTexture("_MainTex",slide3);
+					gameObject.renderer.material.SetTexture("_MainTex",slide3);
 					print ("setting slide2");	
 					break;
 				case 3:
-				gameObject.renderer.material.SetTexture("_MainTex",slide4);
+					gameObject.renderer.material.SetTexture("_MainTex",slide4);
 					print ("setting slide3");	
-					//gameObject.SetActive(false);
+					plotManger.displayRadial = true; 
+					mesh.enabled = false; 
 					break;
 				case 4: 
-				    gameObject.SetActive(true);
-				gameObject.renderer.material.SetTexture("_MainTex",slide4);
-					print ("setting slide4");	
-					gameObject.SetActive(false);
-
-					break;
+				    
+				    gameObject.renderer.material.SetTexture("_MainTex",slide4);
+					print ("setting slide4");
+					plotManger.displayRadial = false;
+					mesh.enabled = true; 
+				break;
 			}
 		
 		}
