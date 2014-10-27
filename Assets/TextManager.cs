@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿	using UnityEngine;
 using System.Collections;
 using MathNet.Numerics.LinearAlgebra;
 using System;
@@ -88,7 +88,7 @@ public class TextManager : MonoBehaviour {
 		matrixTextTopLevel.SetActive (displayMatrix);
 		currentDisplayMatrix = displayMatrix;
 
-		matrixTextTopLevel.transform.position = new Vector3 (0.0f, 0.0f, 0.0f);
+		matrixTextTopLevel.transform.localPosition = new Vector3 (0.0f, 0.0f, 0.0f);
 
 		
 		float xOffset = 0.0f;
@@ -105,32 +105,32 @@ public class TextManager : MonoBehaviour {
 			switch (i)
 			{
 			case 0:
-				t.transform.position = new Vector3 ((float)xOffset, (float)0.0f, (float)0.0f);
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.0f, (float)0.0f);
 				t.text = "height = v'";
 				t.fontSize = 10;
 				xOffset += 5.0f;
 				break;
 			case 1:
-				t.transform.position = new Vector3 ((float)xOffset, (float)0.5f, (float)0.0f);
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.5f, (float)0.0f);
 				t.text = "[";
 				t.fontSize = 20;
 				xOffset += 1.0f;
 				break;
 			case 2:
-				t.transform.position = new Vector3 ((float)xOffset, (float)0.3f, (float)0.0f);
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.3f, (float)0.0f);
 				//matStrings = textListsMatrix(2,2, curMat, matrixStringLength);
 				//t.text = Mat2String(matStrings);
 				t.fontSize = 10;
 				xOffset += 6.0f;
 				break;
 			case 3: 
-				t.transform.position = new Vector3 ((float)xOffset, (float)0.5f, (float)0.0f);
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.5f, (float)0.0f);
 				t.text = "]";
 				t.fontSize = 20;
 				xOffset += 1.0f;
 				break;
 			case 4:
-				t.transform.position = new Vector3 ((float)xOffset, (float)0.0f, (float)0.0f);
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.0f, (float)0.0f);
 				t.text = "v";
 				t.fontSize = 10;
 				xOffset += 5.0f;
@@ -155,7 +155,7 @@ public class TextManager : MonoBehaviour {
 		functionTextTopLevel.SetActive (displayFunction);
 		currentDisplayFunction = displayFunction;
 
-		functionTextTopLevel.transform.position = new Vector3 (0.0f, 0.0f, 0.0f);
+		functionTextTopLevel.transform.localPosition = new Vector3 (0.0f, 1.0f, 0.0f);
 		
 
 		
@@ -171,13 +171,13 @@ public class TextManager : MonoBehaviour {
 			switch (i)
 			{
 			case 0:
-				t.transform.position = new Vector3 ((float)xOffset, (float)0.0f, (float)0.0f);
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.0f, (float)0.0f);
 				t.text = "f(x) = ";
 				t.fontSize = 10;
 				xOffset += 2.5f;
 				break;
 			case 1:
-				t.transform.position = new Vector3 ((float)xOffset, (float)0.0f, (float)0.0f);
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.0f, (float)0.0f);
 				//t.text = "[";
 				t.fontSize = 10;
 				xOffset += 1.0f;
@@ -197,7 +197,7 @@ public class TextManager : MonoBehaviour {
 		vectorTextTopLevel.transform.parent = gameObject.transform;
 
 		//Transform vectorTransform = vectorTextTopLevel.transform;
-		//vectorTextTopLevel.transform.position = new Vector3 (transform.position.x + 0.0f, transform.position.y -5.0f, transform.position.z + 0.0f);
+		vectorTextTopLevel.transform.localPosition = new Vector3 (0.0f, -1.0f, 0.0f);
 		
 		vectorTextTopLevel.SetActive (displayVector);
 		currentDisplayVector = displayVector;
@@ -216,26 +216,26 @@ public class TextManager : MonoBehaviour {
 			switch (i)
 			{
 			case 0:
-				t.transform.position = new Vector3 ((float)xOffset, (float)0.0f, (float)0.0f);
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.0f, (float)0.0f);
 				t.text = "v = ";
 				t.fontSize = 10;
 				xOffset += 1.5f;
 				break;
 			case 1:
-				t.transform.position = new Vector3 ((float)xOffset, (float)0.5f, (float)0.0f);
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.5f, (float)0.0f);
 				t.text = "[";
 				t.fontSize = 20;
 				xOffset += 1.0f;
 				break;
 			case 2:
-				t.transform.position = new Vector3 ((float)xOffset, (float)0.3f, (float)0.0f);
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.3f, (float)0.0f);
 				//matStrings = textListsMatrix(2,2, curMat, matrixStringLength);
 				//t.text = Mat2String(matStrings);
 				t.fontSize = 10;
 				xOffset += 3.0f;
 				break;
 			case 3: 
-				t.transform.position = new Vector3 ((float)xOffset, (float)0.5f, (float)0.0f);
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.5f, (float)0.0f);
 				t.text = "]";
 				t.fontSize = 20;
 				xOffset += 1.0f;

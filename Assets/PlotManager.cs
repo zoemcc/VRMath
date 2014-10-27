@@ -116,6 +116,8 @@ public class PlotManager : MonoBehaviour {
 		diagComponent0 = (float) 1.0f;
 		diagComponent2 = (float) 2.0f;
 		offDiagComponent = 0.0f;
+
+		RadiusScale = 1.0f;
 	}
 	
 	// Update is called once per frame
@@ -158,7 +160,7 @@ public class PlotManager : MonoBehaviour {
 			diagComponent0 = (float) solved[0, 0];
 			diagComponent2 = (float) solved[1, 0];
 			offDiagComponent = 0.0f;
-			RadiusScale = Mathf.Max(finger_poses[0].y, finger_poses[1].y);
+			RadiusScale = 2.0f * Mathf.Max(finger_poses[0].y, finger_poses[1].y);
 		}
 
 
@@ -179,10 +181,7 @@ public class PlotManager : MonoBehaviour {
 		float offDiagComponent = 0.5f * Mathf.Sin (1.8f * t) + 0.2f;
 		*/
 		
-		QuadForm [0, 0] = diagComponent0;
-		QuadForm [2, 2] = diagComponent2;
-		QuadForm [2, 0] = offDiagComponent;
-		QuadForm [0, 2] = offDiagComponent;
+
 		//renderer.material.SetMatrix ("_QuadForm", QuadForm);
 		
 		// Get ellipse transformation
@@ -192,10 +191,28 @@ public class PlotManager : MonoBehaviour {
 		quadForm2dim [1, 1] = (double) diagComponent2;
 		eigen = quadForm2dim.EigenvalueDecomposition;
 		eigenVectors = eigen.EigenVectors;
+		Matrix eigenVectorsTranspose = eigenVectors.Clone ();
+		eigenVectorsTranspose.Transpose ();
 		eigenValues = eigen.EigenValues;
+
+
+		// project to PSD
+		Matrix eigenValuesPSD = new Matrix(new double[][] {
+			new double[] {Math.Max(eigenValues[0].Modulus, 0.0), 0.0},
+			new double[] {0.0, Math.Max(eigenValues[1].Modulus, 0.0)}});
+		//eigenValues[0, 0] = Math.Max(eigenValues[0, 0].Modulus, 0.0);
+		//eigenValues[1, 1] = Math.Max(eigenValues[1, 1].Modulus, 0.0);
+
+
+		quadForm2dim = eigenVectors * eigenValuesPSD * eigenVectorsTranspose;
+
+		QuadForm [0, 0] = (float) quadForm2dim[0, 0];
+		QuadForm [2, 2] = (float) quadForm2dim[1, 1];
+		QuadForm [2, 0] = (float) quadForm2dim[1, 0];
+		QuadForm [0, 2] = (float) quadForm2dim[0, 1];
 		
-		eigenValuesMatInvSquareRoot [0, 0] = 1.0 / Math.Sqrt(eigenValues [0].Real);
-		eigenValuesMatInvSquareRoot [1, 1] = 1.0 / Math.Sqrt(eigenValues [1].Real);
+		eigenValuesMatInvSquareRoot [0, 0] = 1.0 / Math.Sqrt(eigenValuesPSD [0, 0] + 0.000000000000001);
+		eigenValuesMatInvSquareRoot [1, 1] = 1.0 / Math.Sqrt(eigenValuesPSD [1, 1] + 0.000000000000001);
 		
 		ellipseTransformer2dim = eigenVectors * eigenValuesMatInvSquareRoot;
 		EllipseTransformer [0, 0] = (float) ellipseTransformer2dim [0, 0];

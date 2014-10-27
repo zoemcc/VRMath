@@ -148,8 +148,8 @@ public class OptimizationPlot : MonoBehaviour {
 
 		Matrix currentPointTranspose = currentPoint.Clone ();
 		currentPointTranspose.Transpose ();
-		currentFuncValue =  (float) (0.5 * currentPointTranspose * a * currentPoint).GetArray () [0] [0];
-		curVertex.y = currentFuncValue + 0.000001f;
+		currentFuncValue =  (float) (currentPointTranspose * a * currentPoint).GetArray () [0] [0];
+		curVertex.y = currentFuncValue + 0.0001f;
 		optimizationRenderer.SetPosition (0, curVertex);
 		
 		for (int i = 0; i < iterationCount; i++) {
@@ -168,8 +168,8 @@ public class OptimizationPlot : MonoBehaviour {
 
 			currentPointTranspose = currentPoint.Clone ();
 			currentPointTranspose.Transpose ();
-			currentFuncValue =  (float) (0.5 * currentPointTranspose * a * currentPoint).GetArray () [0] [0];
-			curVertex.y = currentFuncValue + 0.0000001f;
+			currentFuncValue =  (float) (currentPointTranspose * a * currentPoint).GetArray () [0] [0];
+			curVertex.y = currentFuncValue + 0.0001f;
 
 			optimizationRenderer.SetPosition(i + 1, curVertex);
 			lastPoint = currentPoint;
