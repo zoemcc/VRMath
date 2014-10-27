@@ -62,7 +62,7 @@ public class PlotManager : MonoBehaviour {
 		meshTopLevelSquare.SetActive (displaySquare);
 		currentDisplaySquare = displaySquare;
 
-		gameObject.AddComponent ("OptimizationPlot");
+		//gameObject.AddComponent ("OptimizationPlot");
 
 
 		//generate matrix

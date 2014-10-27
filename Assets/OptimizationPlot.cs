@@ -56,6 +56,9 @@ public class OptimizationPlot : MonoBehaviour {
 	
 	[Range(-0.5f, 0.5f)]
 	public float zStart = -0.14f;
+
+	public Matrix currentPoint;
+	public float currentFuncValue = 0.0f;
 	
 	private int currentResolution;
 	private ParticleSystem.Particle[] optimizationPoints;
@@ -98,6 +101,10 @@ public class OptimizationPlot : MonoBehaviour {
 		controlCube = GameObject.Find ("ControlCube");
 		so = controlCube.GetComponent<ScaleObject> (); 
 
+		currentPoint = new Matrix(new double[][] {
+			new double[] {xStart},
+			new double[] {zStart}});
+
 		plotManagerScript = gameObject.GetComponent("PlotManager") as PlotManager;
 
 	}
@@ -121,9 +128,8 @@ public class OptimizationPlot : MonoBehaviour {
 		Matrix a = plotManagerScript.quadForm2dim;
 		//Matrix a = QuadraticFormMatrix(t);
 		
-		Matrix currentPoint = new Matrix(new double[][] {
-			new double[] {xStart},
-			new double[] {zStart}});
+		currentPoint.GetArray () [0] [0] = xStart;
+		currentPoint.GetArray () [1] [0] = zStart;
 		Matrix currentGradient;
 		Matrix currentHessianInv;
 		Matrix lastPoint = currentPoint.Clone();
@@ -142,7 +148,8 @@ public class OptimizationPlot : MonoBehaviour {
 
 		Matrix currentPointTranspose = currentPoint.Clone ();
 		currentPointTranspose.Transpose ();
-		curVertex.y = (float) (0.5 * currentPointTranspose * a * currentPoint).GetArray () [0] [0] + 0.000001f; 
+		currentFuncValue =  (float) (0.5 * currentPointTranspose * a * currentPoint).GetArray () [0] [0];
+		curVertex.y = currentFuncValue + 0.000001f;
 		optimizationRenderer.SetPosition (0, curVertex);
 		
 		for (int i = 0; i < iterationCount; i++) {
@@ -161,8 +168,8 @@ public class OptimizationPlot : MonoBehaviour {
 
 			currentPointTranspose = currentPoint.Clone ();
 			currentPointTranspose.Transpose ();
-			float height =  (float) (0.5 * currentPointTranspose * a * currentPoint).GetArray () [0] [0] + 0.000001f; 
-			curVertex.y = height;
+			currentFuncValue =  (float) (0.5 * currentPointTranspose * a * currentPoint).GetArray () [0] [0];
+			curVertex.y = currentFuncValue + 0.0000001f;
 
 			optimizationRenderer.SetPosition(i + 1, curVertex);
 			lastPoint = currentPoint;
