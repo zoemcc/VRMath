@@ -13,13 +13,15 @@ public class ScaleObject : MonoBehaviour {
 	Grabbable grabbed;
 	HandController h; 
 	Transform t;
-
+	
 	GameObject Butn; 
 	Button button; 
+	
 
 	void Start () {
 	    //var t = gameObject.transform; 
 		t = gameObject.transform;
+		graph_scale = t.localScale;
 		pos = t.localPosition; 
 		step_size = 0.01f; 
 		Hands = GameObject.Find ("/OVRCameraController/CameraLeft/HandController"); 
@@ -73,9 +75,10 @@ public class ScaleObject : MonoBehaviour {
 							scale [i] = -scale [i];
 						}
 						scale [i] = scale [i] / 2.0f; 
-				}
-
+					}
+					print ("BOTH PINCHED!!!!"); 
 					graph_scale = scale; 
+					print (graph_scale);
 
 				}
 				else if(one_pinch){
