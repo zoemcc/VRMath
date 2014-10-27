@@ -38,7 +38,7 @@ public class MatrixText : MonoBehaviour {
 	void Start () {
 		GameObject plotManagerObj = GameObject.Find ("PlotManager");
 		plotManagerScript = plotManagerObj.GetComponent("PlotManager") as PlotManager;
-		curMat = plotManagerScript.quadForm2dim;
+		//curMat = plotManagerScript.quadForm2dim;
 		
 		matrixTexts = new GameObject[numTexts];
 		float xOffset = 0.0f;

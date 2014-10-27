@@ -38,7 +38,7 @@ public class Slides : MonoBehaviour {
 		loadedS4 = new WWW (s4);
 		yield return loadedS4;
 
-		Butn = GameObject.Find ("Button 1"); 
+		Butn = GameObject.Find ("Button1"); 
 		button = Butn.GetComponent<Button> (); 
 
 		PlotManager = GameObject.Find ("PlotManager"); 
@@ -80,7 +80,7 @@ public class Slides : MonoBehaviour {
 		if (Input.GetKeyDown ("space")) {
 			print ("key down");		
 		}*/
-		print (button.scene); 
+
 		if (button.update) {
 
 			switch (button.scene)

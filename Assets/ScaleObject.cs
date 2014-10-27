@@ -28,7 +28,7 @@ public class ScaleObject : MonoBehaviour {
 		grabbed = gameObject.GetComponent<Grabbable> ();
 		h = Hands.GetComponent<HandController> ();
 
-		Butn = GameObject.Find ("Button 1"); 
+		Butn = GameObject.Find ("Button1"); 
 		button = Butn.GetComponent<Button> (); 
 
 	}
@@ -70,7 +70,7 @@ public class ScaleObject : MonoBehaviour {
 
 					Vector3 current_pos = t.localPosition; 
 					Vector3 scale = poses [1] - poses [0]; 
-					for (int i=0; i<3; i = i + 2) {
+					for (int i=0; i<3; i++) {
 						if (scale [i] < 0) {
 							scale [i] = -scale [i];
 						}
