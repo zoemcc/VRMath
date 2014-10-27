@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using MathNet.Numerics.LinearAlgebra;
+using MathNet.Numerics;
 
 public class ScaleObject : MonoBehaviour {
 
@@ -13,6 +15,13 @@ public class ScaleObject : MonoBehaviour {
 	HandController h; 
 	Transform t;
 
+	public Matrix eigenVectors;
+	public ComplexVector eigenValues;
+	public Matrix quadForm2dim;
+	public Matrix ellipseTransformer2dim;
+	public Matrix eigenValuesMatInvSquareRoot;
+	GameObject controlCube;
+	
 	void Start () {
 	    //var t = gameObject.transform; 
 		t = gameObject.transform;

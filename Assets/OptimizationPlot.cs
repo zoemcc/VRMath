@@ -63,6 +63,7 @@ public class OptimizationPlot : MonoBehaviour {
 
 	Matrix quadForm2dim;
 	GameObject controlCube;
+	PlotManager plotManagerScript;
 	
 	private void CreateOptimizationPoints () {
 		currentResolution = resolution;
@@ -89,11 +90,13 @@ public class OptimizationPlot : MonoBehaviour {
 		optimizationRenderer.SetWidth (0.01f, 0.01f);
 		optimizationRenderer.SetColors (Color.blue, Color.red);
 		optimizationRenderer.material.shader = Shader.Find ("Particles/Alpha Blended");
-		print (optimizationRenderer.material);
+		//print (optimizationRenderer.material);
 		//Material (Shader.Find (""));
 		//Material material = Material(Shader.Find ("Particles/Alpha Blended"));
 		//print (material);
 		controlCube = GameObject.Find ("ControlCube");
+
+		plotManagerScript = gameObject.GetComponent("PlotManager") as PlotManager;
 		
 	}
 
@@ -113,13 +116,7 @@ public class OptimizationPlot : MonoBehaviour {
 		zStart = -0.5f * Mathf.Cos (0.7f * t);
 		
 		/*   Grabby interaction */
-		float xx = 2.0f / Mathf.Abs(scale[0]);
-		float zz = 2.0f / Mathf.Abs(scale[2]);
-		float xz = 0.0f;
-
-		Matrix a = new Matrix (new double[][] {
-			new double[] { xx, xz },
-			new double[] { xz, zz } });
+		Matrix a = plotManagerScript.quadForm2dim;
 		//Matrix a = QuadraticFormMatrix(t);
 		
 		Matrix currentPoint = new Matrix(new double[][] {

@@ -22,7 +22,7 @@ public class mathText2 : MonoBehaviour {
 		if (gameObject.name.Equals("EquationObject")){
 			t.text = sampleGradient("5");
 		}
-		print (gameObject.name);
+		//print (gameObject.name);
 		if (gameObject.name.Equals("QuadraticForm")){
 			t.text = sampleQuadForm();
 		}
@@ -31,6 +31,8 @@ public class mathText2 : MonoBehaviour {
 			mat = sampleMatrix(2,3);
 			t.text = Mat2String(mat);
 			setPos (.5,.5,.5);
+			Shader textShader = gameObject.renderer.material.shader;
+			print (textShader);
 			print (transform.position);
 			updatePos (3,3,3);
 			print (transform.position);
