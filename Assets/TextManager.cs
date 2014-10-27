@@ -76,6 +76,7 @@ public class TextManager : MonoBehaviour {
 	void Start () {
 		GameObject plotManagerObj = GameObject.Find ("PlotManager");
 		plotManagerScript = plotManagerObj.GetComponent("PlotManager") as PlotManager;
+
 		optimizationPlotScript = plotManagerObj.GetComponent ("OptimizationPlot") as OptimizationPlot;
 		//curMat = plotManagerScript.quadForm2dim;
 		
@@ -88,6 +89,7 @@ public class TextManager : MonoBehaviour {
 		currentDisplayMatrix = displayMatrix;
 
 		matrixTextTopLevel.transform.position = new Vector3 (0.0f, 0.0f, 0.0f);
+
 		
 		float xOffset = 0.0f;
 		

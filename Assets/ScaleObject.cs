@@ -7,6 +7,7 @@ public class ScaleObject : MonoBehaviour {
 	// Use this for initialization
 
 	public Vector3 pos; 
+	public Vector3[] finger_poses;
 	public Vector3 graph_scale; 
 	public float step_size; 
 	public GameObject Hands; 
@@ -21,14 +22,14 @@ public class ScaleObject : MonoBehaviour {
 	void Start () {
 	    //var t = gameObject.transform; 
 		t = gameObject.transform;
-		graph_scale = t.localScale;
+		graph_scale = t.localScale/2.0f;
 		pos = t.localPosition; 
 		step_size = 0.01f; 
 		Hands = GameObject.Find ("/OVRCameraController/CameraLeft/HandController"); 
 		grabbed = gameObject.GetComponent<Grabbable> ();
 		h = Hands.GetComponent<HandController> ();
 
-		Butn = GameObject.Find ("Button 1"); 
+		Butn = GameObject.Find ("Button1"); 
 		button = Butn.GetComponent<Button> (); 
 
 	}
@@ -51,6 +52,7 @@ public class ScaleObject : MonoBehaviour {
 
 				GrabHand grab_hand;
 				grab_hand = hand.GetComponent<GrabHand> ();
+				FingerModel[] fingers = hand.fingers;
 
 				pinches[k] = grab_hand.pinching_;
 				pinch = grab_hand.pinching_ && pinch; 
@@ -70,7 +72,7 @@ public class ScaleObject : MonoBehaviour {
 
 					Vector3 current_pos = t.localPosition; 
 					Vector3 scale = poses [1] - poses [0]; 
-					for (int i=0; i<3; i = i + 2) {
+					for (int i=0; i<3; i++) {
 						if (scale [i] < 0) {
 							scale [i] = -scale [i];
 						}
@@ -79,7 +81,7 @@ public class ScaleObject : MonoBehaviour {
 					print ("BOTH PINCHED!!!!"); 
 					graph_scale = scale; 
 					print (graph_scale);
-
+					finger_poses = poses;
 				}
 				else if(one_pinch){
 						t.localRotation = rotation; 

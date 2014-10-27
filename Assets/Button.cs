@@ -7,16 +7,16 @@ public class Button : MonoBehaviour {
 
 	public int scene = 0; 
     public bool update = false; 
+	Grabbable grabbed; 
 
 	void Start () {
-	
+		update = false;
+		grabbed = gameObject.GetComponent<Grabbable>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		Grabbable grabbed;
-		grabbed = gameObject.GetComponent<Grabbable>();
-
+	
 		if (grabbed.scale && !update) {
 			scene = scene + 1; 
 			update = true; 

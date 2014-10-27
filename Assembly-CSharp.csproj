@@ -94,7 +94,6 @@
      <Compile Include="Assets\LeapMotion\Scripts\Utils\LeapUnityExtensions.cs" />
      <Compile Include="Assets\LeapMotion\Scripts\Utils\MagneticPinch.cs" />
      <Compile Include="Assets\MathNetTest.cs" />
-     <Compile Include="Assets\MatrixText.cs" />
      <Compile Include="Assets\Move_Object.cs" />
      <Compile Include="Assets\OVR\Scripts\OVRCamera.cs" />
      <Compile Include="Assets\OVR\Scripts\OVRCameraController.cs" />
@@ -114,6 +113,7 @@
      <Compile Include="Assets\PlotManager.cs" />
      <Compile Include="Assets\ScaleObject.cs" />
      <Compile Include="Assets\Slides.cs" />
+     <Compile Include="Assets\TextManager.cs" />
      <Compile Include="Assets\mathText2.cs" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Mobile\Mobile-BumpSpec-1DirectionalLight.shader" />
      <None Include="Assets\TestShader2.shader" />
