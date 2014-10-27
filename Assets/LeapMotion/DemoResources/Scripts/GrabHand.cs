@@ -18,7 +18,7 @@ public class GrabHand : MonoBehaviour {
   public float filtering = 0.5f;
   public float minConfidence = 0.3f;
   public float maxVelocity = 0.3f;
-
+  public Vector3 pinch_position = new Vector3(); 
 
   public  bool pinching_;
   private Collider grabbed_;
@@ -107,7 +107,7 @@ public class GrabHand : MonoBehaviour {
       }
     }
 
-    Vector3 pinch_position = 0.5f * (hand_model.fingers[0].GetTipPosition() + 
+    pinch_position = 0.5f * (hand_model.fingers[0].GetTipPosition() + 
                                      hand_model.fingers[1].GetTipPosition());
 
     // Only change state if it's different.
