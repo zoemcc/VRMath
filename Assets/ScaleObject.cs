@@ -60,11 +60,11 @@ public class ScaleObject : MonoBehaviour {
 
 				print (grab_hand.pinching_); 
 
-				poses [k] = hand.GetPalmPosition (); 
+				poses [k] = grab_hand.pinch_position; 
 
 				if(grab_hand.pinching_){
 					rotation = hand.GetPalmRotation();
-					temp_pos = hand.GetPalmPosition(); 
+					temp_pos = grab_hand.pinch_position; 
 				}
 				k++;
 			}
