@@ -88,7 +88,7 @@ public class TextManager : MonoBehaviour {
 		matrixTextTopLevel.SetActive (displayMatrix);
 		currentDisplayMatrix = displayMatrix;
 
-		matrixTextTopLevel.transform.localPosition = new Vector3 (0.0f, 0.0f, 0.0f);
+		matrixTextTopLevel.transform.localPosition = new Vector3 (-3.0f, 0.0f, 0.0f);
 
 		
 		float xOffset = 0.0f;

@@ -18,7 +18,7 @@ public class Button : MonoBehaviour {
 	void Update () {
 	
 		if (grabbed.scale && !update) {
-			scene = scene + 1; 
+			scene = (scene + 1) % 6; 
 			update = true; 
 		} 
 		else if (!grabbed.scale && update) {

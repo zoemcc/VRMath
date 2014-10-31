@@ -204,10 +204,10 @@
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\uGUI\GUI-Lit-Bumped.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\uGUI\GUI-DefaultFont.shader" />
  <Reference Include="MathNet.Iridium">
- <HintPath>/Users/michaelluskey/Documents/VRMath/Assets/MathNet.Numerics/MathNet.Iridium.dll</HintPath>
+ <HintPath>/Users/zoe/VRMath/Assets/MathNet.Numerics/MathNet.Iridium.dll</HintPath>
  </Reference>
  <Reference Include="LeapCSharp.NET3.5">
- <HintPath>/Users/michaelluskey/Documents/VRMath/Assets/Plugins/LeapCSharp.NET3.5.dll</HintPath>
+ <HintPath>/Users/zoe/VRMath/Assets/Plugins/LeapCSharp.NET3.5.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Graphs">
  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.Graphs.dll</HintPath>

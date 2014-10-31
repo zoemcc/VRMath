@@ -92,19 +92,28 @@ public class Slides : MonoBehaviour {
 
 			switch (button.scene)
 			{
+				case 0:
+				//gameObject.guiTexture.texture = slide1;
+					gameObject.renderer.material.SetTexture("_MainTex",slide1);
+					print ("setting slide1");
+					plotManger.displayRadial = true; 
+					mesh.enabled = true; 
+					textManger.displayFunction = false; 
+					textManger.displayVector = false; 
+					break;
 				case 1:
 					//gameObject.guiTexture.texture = slide1;
 					gameObject.renderer.material.SetTexture("_MainTex",slide2);
-					print ("setting slide1");
+					print ("setting slide2");
 					break;
 				case 2:
 					//gameObject.guiTexture.texture = slide2;
 					gameObject.renderer.material.SetTexture("_MainTex",slide3);
-					print ("setting slide2");	
+					print ("setting slide3");	
 					break;
 				case 3:
 					gameObject.renderer.material.SetTexture("_MainTex",slide4);
-					print ("setting slide3");	
+					print ("setting slide4");	
 					plotManger.displayRadial = true; 
 					textManger.displayMatrix = true; 
 					mesh.enabled = false; 
@@ -116,13 +125,13 @@ public class Slides : MonoBehaviour {
 					plotManger.displayRadial = false;
 					textManger.displayMatrix = false; 
 					mesh.enabled = true; 
-				break;
+					break;
 				case 5: 
 					plotManger.displayRadial = true; 
 					mesh.enabled = false; 
 					textManger.displayFunction = true; 
 					textManger.displayVector = true; 
-				break; 
+					break; 
 
 
 			}
