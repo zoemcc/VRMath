@@ -17,6 +17,8 @@ public class ScaleObject : MonoBehaviour {
 	
 	GameObject Butn; 
 	Button button; 
+
+	GameObject[] pinchSpheres;
 	
 
 	void Start () {
@@ -32,10 +34,20 @@ public class ScaleObject : MonoBehaviour {
 		Butn = GameObject.Find ("Button1"); 
 		button = Butn.GetComponent<Button> (); 
 
+		pinchSpheres = new GameObject[] {GameObject.CreatePrimitive(PrimitiveType.Sphere),
+									     GameObject.CreatePrimitive(PrimitiveType.Sphere)};
+
+		for (int i = 0; i < 2; i++){
+			pinchSpheres[i].transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+			pinchSpheres[i].SetActive(false);
+		}
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
+
 	
 		if (grabbed.scale) {
 			print ("GRABBED CUBE"); 
@@ -68,7 +80,20 @@ public class ScaleObject : MonoBehaviour {
 				}
 				k++;
 			}
-			bool one_pinch = pinches[0] && !pinches[1] || !pinches[0] && pinches[1];
+			bool one_pinch = (pinches[0] && !pinches[1]) || (!pinches[0] && pinches[1]);
+
+
+
+
+			for (int i = 0; i < 2; i++) {
+				if (pinches[i]){
+					pinchSpheres[i].SetActive(true);
+					pinchSpheres[i].transform.localPosition = poses[i];
+				}
+				else {
+					pinchSpheres[i].SetActive(false);
+				}
+			}
 
 
 			if(button.scene == 3){
@@ -80,7 +105,7 @@ public class ScaleObject : MonoBehaviour {
 						if (scale [i] < 0) {
 							scale [i] = -scale [i];
 						}
-						scale [i] = scale [i] / 2.0f; 
+						scale [i] = scale [i]; 
 					}
 					print ("BOTH PINCHED!!!!"); 
 					graph_scale = scale; 
@@ -98,6 +123,11 @@ public class ScaleObject : MonoBehaviour {
 				}
 			}
 
+		}
+		else {
+			for (int i = 0; i < 2; i++) {
+				pinchSpheres[i].SetActive(false);
+			}
 		}
 		t.localPosition = pos; 
 

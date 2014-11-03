@@ -149,7 +149,7 @@ public class PlotManager : MonoBehaviour {
 			solveFingerMatrix [0, 0] = (double) ((finger_poses [0].x) * (finger_poses [0].x));
 			solveFingerMatrix [0, 1] = (double) ((finger_poses [0].z) * (finger_poses [0].z));
 			solveFingerMatrix [1, 0] = (double) ((finger_poses [1].x) * (finger_poses [1].x));
-			solveFingerMatrix [1, 0] = (double) ((finger_poses [1].z) * (finger_poses [1].z));
+			solveFingerMatrix [1, 1] = (double) ((finger_poses [1].z) * (finger_poses [1].z));
 			
 			solveFingerVector [0, 0] = (double) Mathf.Abs(2 * finger_poses [0].y);
 			solveFingerVector [1, 0] = (double) Mathf.Abs(2 * finger_poses [1].y);
@@ -160,13 +160,9 @@ public class PlotManager : MonoBehaviour {
 			diagComponent0 = (float) solved[0, 0];
 			diagComponent2 = (float) solved[1, 0];
 			offDiagComponent = 0.0f;
-			RadiusScale = 2.0f * Mathf.Max(finger_poses[0].y, finger_poses[1].y);
+			RadiusScale = 4.0f * Mathf.Max(finger_poses[0].y, finger_poses[1].y);
 		}
 
-
-
-
-		
 
 
 		/* grabby interaction old 
