@@ -146,10 +146,18 @@ public class PlotManager : MonoBehaviour {
 			
 		if (finger_poses.Length == 2) {
 			// set up linsolve
-			solveFingerMatrix [0, 0] = (double) ((finger_poses [0].x) * (finger_poses [0].x));
-			solveFingerMatrix [0, 1] = (double) ((finger_poses [0].z) * (finger_poses [0].z));
-			solveFingerMatrix [1, 0] = (double) ((finger_poses [1].x) * (finger_poses [1].x));
-			solveFingerMatrix [1, 1] = (double) ((finger_poses [1].z) * (finger_poses [1].z));
+			double mag0xx = (double) ((finger_poses [0].x) * (finger_poses [0].x));
+			double mag0zz = (double) ((finger_poses [0].z) * (finger_poses [0].z));
+			double mag1xx = (double) ((finger_poses [1].x) * (finger_poses [1].x));
+			double mag1zz = (double) ((finger_poses [1].z) * (finger_poses [1].z));
+
+			double mag0 = Math.Sqrt(mag0xx + mag0zz);
+			double mag1 = Math.Sqrt(mag1xx + mag1zz);
+
+			solveFingerMatrix [0, 0] = mag0xx;
+			solveFingerMatrix [0, 1] = mag0zz;
+			solveFingerMatrix [1, 0] = mag1xx;
+			solveFingerMatrix [1, 1] = mag1zz;
 			
 			solveFingerVector [0, 0] = (double) Mathf.Abs(2 * finger_poses [0].y);
 			solveFingerVector [1, 0] = (double) Mathf.Abs(2 * finger_poses [1].y);
@@ -160,7 +168,8 @@ public class PlotManager : MonoBehaviour {
 			diagComponent0 = (float) solved[0, 0];
 			diagComponent2 = (float) solved[1, 0];
 			offDiagComponent = 0.0f;
-			RadiusScale = 4.0f * Mathf.Max(finger_poses[0].y, finger_poses[1].y);
+			//RadiusScale = 4.0f * Mathf.Max(finger_poses[0].y, finger_poses[1].y);
+			RadiusScale = Mathf.Max(diagComponent0, diagComponent2, 1.0f) * Mathf.Max ((float) mag0, (float) mag1);
 		}
 
 
@@ -207,8 +216,8 @@ public class PlotManager : MonoBehaviour {
 		QuadForm [2, 0] = (float) quadForm2dim[1, 0];
 		QuadForm [0, 2] = (float) quadForm2dim[0, 1];
 		
-		eigenValuesMatInvSquareRoot [0, 0] = 1.0 / Math.Sqrt(eigenValuesPSD [0, 0] + 0.000000000000001);
-		eigenValuesMatInvSquareRoot [1, 1] = 1.0 / Math.Sqrt(eigenValuesPSD [1, 1] + 0.000000000000001);
+		eigenValuesMatInvSquareRoot [0, 0] = 1.0 / Math.Sqrt(eigenValuesPSD [0, 0] + 0.000000001);
+		eigenValuesMatInvSquareRoot [1, 1] = 1.0 / Math.Sqrt(eigenValuesPSD [1, 1] + 0.000000001);
 		
 		ellipseTransformer2dim = eigenVectors * eigenValuesMatInvSquareRoot;
 		EllipseTransformer [0, 0] = (float) ellipseTransformer2dim [0, 0];

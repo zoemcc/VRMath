@@ -390,16 +390,24 @@ public class TextManager : MonoBehaviour {
 	}
 	
 	string clipNumToStringLength (double num, int length){
+		string roundedString;
+
 		int numberOfFirstDigits = Math.Round (num, 0).ToString ().Length;
-		
-		string roundedString = Math.Round(num, length - 1 - numberOfFirstDigits).ToString();
-		if (roundedString.IndexOf (".") == -1) {
-			roundedString += " ";
-		}
-		int numCurrently = roundedString.Length;
-		for (int k = 0; k + numCurrently < length; k++){
-			roundedString += "  ";
-		}
+		//if (numberOfFirstDigits > length) {
+			
+		//}
+		//else if (numberOfFirstDigits == length - 1) {
+		//}
+		//else {
+			roundedString = Math.Round(num, length - 1 - numberOfFirstDigits).ToString();
+			if (roundedString.IndexOf (".") == -1) {
+				roundedString += " ";
+			}
+			int numCurrently = roundedString.Length;
+			for (int k = 0; k + numCurrently < length; k++){
+				roundedString += "  ";
+			}
+		//}
 		return roundedString;
 	}
 	

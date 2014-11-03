@@ -70,7 +70,7 @@ public class ScaleObject : MonoBehaviour {
 				pinch = grab_hand.pinching_ && pinch; 
 
 
-				print (grab_hand.pinching_); 
+				//print (grab_hand.pinching_); 
 
 				poses [k] = grab_hand.pinch_position; 
 
@@ -109,11 +109,12 @@ public class ScaleObject : MonoBehaviour {
 					}
 					print ("BOTH PINCHED!!!!"); 
 					graph_scale = scale; 
-					print (graph_scale);
+					print (poses[0]);
+					print (poses[1]);
 					finger_poses = poses;
 				}
 				else if(one_pinch){
-						t.localRotation = rotation; 
+						//t.localRotation = rotation; 
 				}
 			}
 			else if(button.scene == 5){

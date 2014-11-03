@@ -31,14 +31,14 @@
          {
             vertexOutput output;
             
-            float4 blendedVertex = sqrt(_RadiusScale) * mul(_EllipseTransformer, input.vertex);      
+            float4 blendedVertex = _RadiusScale * mul(_EllipseTransformer, input.vertex);      
             
             float height = 0.5 * mul(blendedVertex, mul(_QuadForm, blendedVertex));
             
             float integralHeight;
             float remainderHeight = modf(10 * abs(height), integralHeight);
  
-            blendedVertex.y += height;
+            blendedVertex.y = height;
             //blendedVertex.z += 3.0f;
              
             output.pos = mul(UNITY_MATRIX_MVP, blendedVertex);
