@@ -284,7 +284,7 @@ public class PlotManager : MonoBehaviour {
 		offDiagComponent = 0.0f;
 		//RadiusScale = 4.0f * Mathf.Max(finger_poses[0].y, finger_poses[1].y);
 		//RadiusScale = Mathf.Max(diagComponent0, diagComponent2, 1.0f) * Mathf.Max ((float) mag0, (float) mag1);
-		RadiusScale = 10.0f;
+		RadiusScale = 3.0f;
 
 
 
