@@ -255,7 +255,8 @@ public class PlotManager : MonoBehaviour {
 			// we know that |Q| = Q = Q+ and h = A^T b = |h| = h+
 			// we use this to not compute the negative versions
 
-			// note that this is equivalent to doing ISRA, Image Space Reconstruction Algorithm, as a multiplicative update
+			// note that this is equivalent to doing ISRA, Image Space Reconstruction Algorithm, as a multiplicative update 
+			// (where we also use the the added delta term from the reference)
 		
 		    leastSquaresMatrixA [0, 0] = mag0xx;
 		    leastSquaresMatrixA [0, 1] = mag0zz;
@@ -281,6 +282,9 @@ public class PlotManager : MonoBehaviour {
 				new double[] {1.0},
 				new double[] {1.0}});
 
+			// TODO: add change checking so that we dont waste time here if we dont need to.  \
+			// Also we could use previous setting for eigenvalues as a warm start, but if one eigenvalue is 0, multiplicative no longer works so would have to restart.
+			// Mathematically there's no problem since lambda > 0 but with floats it might be 0 after a finite time.
 			for (int i = 0; i < optimizationTrackingIterationCount; i++) {
 				nonNegQuadProgMatrixQx = nonNegQuadProgMatrixQ * eigenValueOptimizationParabolaTracking;
 				for (int j = 0; j < 2; j++){
