@@ -31,9 +31,8 @@
          {
             vertexOutput output;
             
-            float4 blendedVertex = _RadiusScale * mul(_EllipseTransformer, input.vertex);      
-            //float4 blendedVertex = _RadiusScale * input.vertex;    
-            blendedVertex[3] = 1.0;  
+            float4 blendedVertex = sqrt(_RadiusScale) * mul(_EllipseTransformer, input.vertex);      
+            blendedVertex[3] = 1.0;  //since we scaled by _RadiusScale including the homogenous part
             
             float height = 0.5 * mul(blendedVertex, mul(_QuadForm, blendedVertex));
             

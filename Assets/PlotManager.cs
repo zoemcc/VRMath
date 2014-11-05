@@ -29,6 +29,7 @@ public class PlotManager : MonoBehaviour {
 	public Matrix quadForm2dim;
 	public Matrix ellipseTransformer2dim;
 	public Matrix eigenValuesMatInvSquareRoot;
+	public Matrix eigenValuesMatSquareRoot;
 	public float RadiusScale;
 	public double alphaForParabolaTrackingOptimization = 1E-6;
 	public double deltaForParabolaTrackingOptimization = 1E-16;
@@ -36,6 +37,7 @@ public class PlotManager : MonoBehaviour {
 	public int optimizationTrackingIterationCount = 100;
 
 	Vector3[] currentFingerPoses;
+	Matrix[] currentFingerPoses2dim;
 	
 
 	float diagComponent0;
@@ -117,6 +119,10 @@ public class PlotManager : MonoBehaviour {
 			new double[] {0.0, 0.0},
 			new double[] {0.0, 0.0}});
 
+		eigenValuesMatSquareRoot = new Matrix(new double[][] {
+			new double[] {0.0, 0.0},
+			new double[] {0.0, 0.0}});
+
 		solveFingerMatrix = new Matrix(new double[][] {
 			new double[] {0.0, 0.0},
 			new double[] {0.0, 0.0}});
@@ -146,6 +152,14 @@ public class PlotManager : MonoBehaviour {
 		eigenValueOptimizationParabolaTracking = new Matrix(new double[][] {
 			new double[] {1.0},
 			new double[] {1.0}});
+
+		currentFingerPoses2dim = new Matrix[2];
+		currentFingerPoses2dim[0] = new Matrix(new double[][] {
+			new double[] {0.0},
+			new double[] {0.0}});
+		currentFingerPoses2dim[1] = new Matrix(new double[][] {
+			new double[] {0.0},
+			new double[] {0.0}});
 		
 		controlCube = GameObject.Find ("ControlCube");
 		so = controlCube.GetComponent<ScaleObject> (); 
@@ -194,6 +208,12 @@ public class PlotManager : MonoBehaviour {
 			
 		if (finger_poses.Length == 2) {
 			currentFingerPoses = finger_poses;
+
+			currentFingerPoses2dim[0][0, 0] = currentFingerPoses [0].x;
+			currentFingerPoses2dim[0][1, 0] = currentFingerPoses [0].z;
+			
+			currentFingerPoses2dim[1][0, 0] = currentFingerPoses [1].x;
+			currentFingerPoses2dim[1][1, 0] = currentFingerPoses [1].z;
 
 
 			double mag0xx = (double) ((currentFingerPoses [0].x) * (currentFingerPoses [0].x));
@@ -284,7 +304,7 @@ public class PlotManager : MonoBehaviour {
 		offDiagComponent = 0.0f;
 		//RadiusScale = 4.0f * Mathf.Max(finger_poses[0].y, finger_poses[1].y);
 		//RadiusScale = Mathf.Max(diagComponent0, diagComponent2, 1.0f) * Mathf.Max ((float) mag0, (float) mag1);
-		RadiusScale = 3.0f;
+		//RadiusScale = 3.0f;
 
 
 
@@ -346,6 +366,23 @@ public class PlotManager : MonoBehaviour {
 		EllipseTransformer [2, 2] = (float) ellipseTransformer2dim [1, 1];
 		EllipseTransformer [3, 3] = 1.0f;
 
+
+		// Calculate right RadiusScale
+		double radiusScaleIterative = 0.0;
+
+		eigenValuesMatSquareRoot [0, 0] = Math.Sqrt(eigenValuesPSD [0, 0]);
+		eigenValuesMatSquareRoot [1, 1] = Math.Sqrt(eigenValuesPSD [1, 1]);
+		Matrix ellipseTransformer2dimInv = eigenValuesMatSquareRoot * eigenVectorsTranspose;
+		for (int i = 0; i < 2; i++){
+			double currentNorm = (ellipseTransformer2dimInv * currentFingerPoses2dim[i]).Norm2();
+			radiusScaleIterative = Math.Max ((currentNorm * currentNorm), radiusScaleIterative);
+		}
+
+		RadiusScale = (float) radiusScaleIterative;
+		//RadiusScale = Mathf.Sqrt(5.0f / 2.0f);
+
+
+
 		// double check that the matrix solves for the right height
 
 		if (currentFingerPoses != null) {
@@ -361,9 +398,9 @@ public class PlotManager : MonoBehaviour {
 				quadHeight[i] = 0.5f * Vector4.Dot(currentPoint, (QuadForm * currentPoint));
 				differenceHeight[i] = quadHeight[i] - height[i];
 				//print (differenceHeight[i]);
-				if (differenceHeight[i] > 0.5f){
-					print ("Bad News!  Super bad prediction!");
-				}
+				//if (differenceHeight[i] > 0.5f){
+				//	print ("Bad News!  Super bad prediction!");
+				//}
 			}
 			//print (differenceHeight);
 		}
