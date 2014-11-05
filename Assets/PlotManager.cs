@@ -375,7 +375,7 @@ public class PlotManager : MonoBehaviour {
 		Matrix ellipseTransformer2dimInv = eigenValuesMatSquareRoot * eigenVectorsTranspose;
 		for (int i = 0; i < 2; i++){
 			double currentNorm = (ellipseTransformer2dimInv * currentFingerPoses2dim[i]).Norm2();
-			radiusScaleIterative = Math.Max (Math.Sqrt(currentNorm * currentNorm), radiusScaleIterative);
+			radiusScaleIterative = Math.Max (currentNorm, radiusScaleIterative);
 		}
 
 		RadiusScale = (float) radiusScaleIterative;
