@@ -21,13 +21,17 @@ public class Slides : MonoBehaviour {
 	GameObject Butn; 
 	GameObject PlotManger;
 	GameObject TextManger;
+	GameObject AudioZone;
 
 	TextManager textManger; 
 	PlotManager plotManger; 
+	AudioReverbZone audioZone; 
+	AudioSource[] audioSources; 
 	MeshRenderer mesh;
 
 	Button button; 
 	static int i = 0; 
+
 
 
 
@@ -51,9 +55,13 @@ public class Slides : MonoBehaviour {
 		PlotManger = GameObject.Find ("PlotManager"); 
 		plotManger = PlotManger.GetComponent<PlotManager> (); 
 
+
 		TextManger = GameObject.Find ("TextManager"); 
 		textManger = TextManger.GetComponent<TextManager> ();
 
+		AudioZone = GameObject.Find ("AudioZone"); 
+		audioZone = AudioZone.GetComponent<AudioReverbZone> ();
+		audioSources = audioZone.GetComponents<AudioSource> (); 
 		mesh = gameObject.GetComponent<MeshRenderer> (); 
 
 
@@ -92,28 +100,44 @@ public class Slides : MonoBehaviour {
 		}*/
 
 		if (button.update) {
+			int idx = button.scene; 
+			//Update Audio 
+			if(idx != 0 && audioSources[idx-1].isPlaying){
+				audioSources[idx-1].Stop(); 
+			}
+			audioSources[idx].Play(); 
+			AudioSource audioSource = audioSources[idx]; 
 
-			switch (button.scene)
+			print(audioSource.clip.name);
+
+
+			switch (idx)
 			{
 				case 0:
 				//gameObject.guiTexture.texture = slide1;
 					gameObject.renderer.material.SetTexture("_MainTex",slide1);
 					print ("setting slide1");
+					
+					
 					plotManger.displayRadial = true; 
 					mesh.enabled = true; 
 					textManger.displayFunction = false; 
 					plotManger.displayOpt = true;	
 					textManger.displayVector = false; 
+
 					break;
 				case 1:
 					//gameObject.guiTexture.texture = slide1;
 					gameObject.renderer.material.SetTexture("_MainTex",slide2);
 					print ("setting slide2");
+					
 					break;
 				case 2:
 					//gameObject.guiTexture.texture = slide2;
 					gameObject.renderer.material.SetTexture("_MainTex",slide3);
 					print ("setting slide3");	
+						
+					//Update Audio 
 					break;
 				case 3:
 					gameObject.renderer.material.SetTexture("_MainTex",slide4);
@@ -122,22 +146,24 @@ public class Slides : MonoBehaviour {
 					textManger.displayMatrix = true; 
 					plotManger.displayOpt = true;	
 					mesh.enabled = false; 
+
 					break;
-				case 4: 
-				    
+				case 4: 			    
 				    gameObject.renderer.material.SetTexture("_MainTex",slide4);
 					print ("setting slide4");
 					plotManger.displayRadial = false;
 					textManger.displayMatrix = false; 
 					plotManger.displayOpt = false;
 					mesh.enabled = true; 
+
 					break;
 				case 5: 
 					plotManger.displayRadial = true; 
 					mesh.enabled = false; 
 					textManger.displayFunction = true; 
 					plotManger.displayOpt = true;	
-					textManger.displayVector = true; 
+					textManger.displayVector = true;
+
 					break; 
 
 
