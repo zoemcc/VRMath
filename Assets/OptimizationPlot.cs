@@ -68,6 +68,8 @@ public class OptimizationPlot : MonoBehaviour {
 	GameObject controlCube; 
 	ScaleObject so;
 	PlotManager plotManagerScript;
+
+	public bool display = true;
 	
 	private void CreateOptimizationPoints () {
 		currentResolution = resolution;
@@ -111,97 +113,103 @@ public class OptimizationPlot : MonoBehaviour {
 
 	
 	void Update () {
-		if (currentResolution != resolution || optimizationPoints == null) {
-			CreateOptimizationPoints();
-		}
-		FunctionDelegate f = functionDelegates[(int)function];
-		float t = Time.timeSinceLevelLoad;
+		if (display) {
+			optimizationRenderer.enabled = true;
+			if (currentResolution != resolution || optimizationPoints == null) {
+				CreateOptimizationPoints();
+			}
+			FunctionDelegate f = functionDelegates[(int)function];
+			float t = Time.timeSinceLevelLoad;
 
-		//optimization steps
+			//optimization steps
 
-		Vector3 scale = so.graph_scale;
+			Vector3 scale = so.graph_scale;
 
-		xStart = -0.5f * Mathf.Sin (t);
-		zStart = -0.5f * Mathf.Cos (0.7f * t);
-		
-		/*   Grabby interaction */
-		Matrix a = plotManagerScript.quadForm2dim;
-		//Matrix a = QuadraticFormMatrix(t);
-		
-		currentPoint.GetArray () [0] [0] = xStart;
-		currentPoint.GetArray () [1] [0] = zStart;
-		Matrix currentGradient;
-		Matrix currentHessianInv;
-		Matrix lastPoint = currentPoint.Clone();
-		
-		//double[] ts = new double[iterationCount + 1];
-		//double[] xs = new double[iterationCount + 1];
-		//double[] zs = new double[iterationCount + 1];
-		//xs[0] = currentPoint.GetArray()[0][0];
-		//zs[0] = currentPoint.GetArray()[1][0];
-		//optimizatizationVertices 
+			xStart = -0.5f * Mathf.Sin (t);
+			zStart = -0.5f * Mathf.Cos (0.7f * t);
+			
+			/*   Grabby interaction */
+			Matrix a = plotManagerScript.quadForm2dim;
+			//Matrix a = QuadraticFormMatrix(t);
+			
+			currentPoint.GetArray () [0] [0] = xStart;
+			currentPoint.GetArray () [1] [0] = zStart;
+			Matrix currentGradient;
+			Matrix currentHessianInv;
+			Matrix lastPoint = currentPoint.Clone();
+			
+			//double[] ts = new double[iterationCount + 1];
+			//double[] xs = new double[iterationCount + 1];
+			//double[] zs = new double[iterationCount + 1];
+			//xs[0] = currentPoint.GetArray()[0][0];
+			//zs[0] = currentPoint.GetArray()[1][0];
+			//optimizatizationVertices 
 
-		Vector3 curVertex = new Vector3();
-		curVertex.x = (float) currentPoint.GetArray()[0][0];
-		curVertex.z = (float) currentPoint.GetArray()[1][0];
-		//curVertex.y = f(curVertex, t);
-
-		Matrix currentPointTranspose = currentPoint.Clone ();
-		currentPointTranspose.Transpose ();
-		currentFuncValue =  (float) (currentPointTranspose * a * currentPoint).GetArray () [0] [0];
-		curVertex.y = currentFuncValue + 0.0001f;
-		optimizationRenderer.SetPosition (0, curVertex);
-		
-		for (int i = 0; i < iterationCount; i++) {
-			//ts[i] = i;
-			currentGradient = a * lastPoint;
-			//currentHessianInv = a.Inverse();
-			//currentPoint = lastPoint - ((double) learningRate) * currentHessianInv * currentGradient;
-			currentPoint = lastPoint - ((double) learningRate) * currentGradient;
-			//xs[i + 1] = currentPoint.GetArray()[0][0];
-			//zs[i + 1] = currentPoint.GetArray()[1][0];
-
+			Vector3 curVertex = new Vector3();
 			curVertex.x = (float) currentPoint.GetArray()[0][0];
 			curVertex.z = (float) currentPoint.GetArray()[1][0];
+			//curVertex.y = f(curVertex, t);
 
-			//float height = f(curVertex, t) + 0.1f;
-
-			currentPointTranspose = currentPoint.Clone ();
+			Matrix currentPointTranspose = currentPoint.Clone ();
 			currentPointTranspose.Transpose ();
 			currentFuncValue =  (float) (currentPointTranspose * a * currentPoint).GetArray () [0] [0];
 			curVertex.y = currentFuncValue + 0.0001f;
+			optimizationRenderer.SetPosition (0, curVertex);
+			
+			for (int i = 0; i < iterationCount; i++) {
+				//ts[i] = i;
+				currentGradient = a * lastPoint;
+				//currentHessianInv = a.Inverse();
+				//currentPoint = lastPoint - ((double) learningRate) * currentHessianInv * currentGradient;
+				currentPoint = lastPoint - ((double) learningRate) * currentGradient;
+				//xs[i + 1] = currentPoint.GetArray()[0][0];
+				//zs[i + 1] = currentPoint.GetArray()[1][0];
 
-			optimizationRenderer.SetPosition(i + 1, curVertex);
-			lastPoint = currentPoint;
-		}
+				curVertex.x = (float) currentPoint.GetArray()[0][0];
+				curVertex.z = (float) currentPoint.GetArray()[1][0];
 
-		//ts[iterationCount] = iterationCount;
+				//float height = f(curVertex, t) + 0.1f;
 
-		/*
-							*****particle system method******
-		IInterpolationMethod xInterp = Interpolation.Create(ts, xs);
-		IInterpolationMethod zInterp = Interpolation.Create(ts, zs);
-		
-		float increment = ((float) iterationCount) / ((float) (resolution - 1));
-		
-		for (int i = 0; i < resolution; i++) {
-			float curInc = increment * i;
-			Vector3 p = new Vector3((float) xInterp.Interpolate(curInc), 0.0f, (float) zInterp.Interpolate(curInc));
-			p.y = f(p, t); 
-			optimizationPoints[i].position = p;
-			Color c = optimizationPoints [i].color;
-			c.g = ((float) i) / ((float) resolution);
-			c.b = ((float) curInc) / ((float) iterationCount);
-			//c.g = 1.0f / Mathf.Exp((float) i / 15.0f);
-			optimizationPoints[i].color = c;
-		}
-		
-		particleSystem.SetParticles(optimizationPoints, optimizationPoints.Length);
+				currentPointTranspose = currentPoint.Clone ();
+				currentPointTranspose.Transpose ();
+				currentFuncValue =  (float) (currentPointTranspose * a * currentPoint).GetArray () [0] [0];
+				curVertex.y = currentFuncValue + 0.0001f;
+
+				optimizationRenderer.SetPosition(i + 1, curVertex);
+				lastPoint = currentPoint;
+			}
+
+			//ts[iterationCount] = iterationCount;
+
+			/*
+								*****particle system method******
+			IInterpolationMethod xInterp = Interpolation.Create(ts, xs);
+			IInterpolationMethod zInterp = Interpolation.Create(ts, zs);
+			
+			float increment = ((float) iterationCount) / ((float) (resolution - 1));
+			
+			for (int i = 0; i < resolution; i++) {
+				float curInc = increment * i;
+				Vector3 p = new Vector3((float) xInterp.Interpolate(curInc), 0.0f, (float) zInterp.Interpolate(curInc));
+				p.y = f(p, t); 
+				optimizationPoints[i].position = p;
+				Color c = optimizationPoints [i].color;
+				c.g = ((float) i) / ((float) resolution);
+				c.b = ((float) curInc) / ((float) iterationCount);
+				//c.g = 1.0f / Mathf.Exp((float) i / 15.0f);
+				optimizationPoints[i].color = c;
+			}
+			
+			particleSystem.SetParticles(optimizationPoints, optimizationPoints.Length);
+			*/
+
+			/*
+									****** line renderer method ******
 		*/
-
-		/*
-								****** line renderer method ******
-		*/
+		}
+		else {
+			optimizationRenderer.enabled = false;
+		}
 
 	}
 	

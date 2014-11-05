@@ -28,19 +28,22 @@ public class Slides : MonoBehaviour {
 
 	Button button; 
 	static int i = 0; 
+
+
+
 	
-	IEnumerator Start () {
+	void Start () {
 		loadedS1 = new WWW(s1);
-		yield return loadedS1;
+		//yield return loadedS1;
 		
 		loadedS2 = new WWW(s2);
-		yield return loadedS2;
+		//yield return loadedS2;
 		
 		loadedS3 = new WWW (s3);
-		yield return loadedS3;
+		//yield return loadedS3;
 		
 		loadedS4 = new WWW (s4);
-		yield return loadedS4;
+		//yield return loadedS4;
 
 		Butn = GameObject.Find ("Button1"); 
 		button = Butn.GetComponent<Button> (); 
@@ -99,6 +102,7 @@ public class Slides : MonoBehaviour {
 					plotManger.displayRadial = true; 
 					mesh.enabled = true; 
 					textManger.displayFunction = false; 
+					plotManger.displayOpt = true;	
 					textManger.displayVector = false; 
 					break;
 				case 1:
@@ -116,6 +120,7 @@ public class Slides : MonoBehaviour {
 					print ("setting slide4");	
 					plotManger.displayRadial = true; 
 					textManger.displayMatrix = true; 
+					plotManger.displayOpt = true;	
 					mesh.enabled = false; 
 					break;
 				case 4: 
@@ -124,12 +129,14 @@ public class Slides : MonoBehaviour {
 					print ("setting slide4");
 					plotManger.displayRadial = false;
 					textManger.displayMatrix = false; 
+					plotManger.displayOpt = false;
 					mesh.enabled = true; 
 					break;
 				case 5: 
 					plotManger.displayRadial = true; 
 					mesh.enabled = false; 
 					textManger.displayFunction = true; 
+					plotManger.displayOpt = true;	
 					textManger.displayVector = true; 
 					break; 
 

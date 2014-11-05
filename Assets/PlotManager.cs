@@ -7,12 +7,15 @@ using System;
 public class PlotManager : MonoBehaviour {
 	GameObject meshTopLevelRadial;
 	GameObject meshTopLevelSquare;
+	OptimizationPlot optPlot;
 
 	public bool displayRadial = true;
 	public bool displaySquare = false;
+	public bool displayOpt = false;
 
 	bool currentDisplayRadial;
 	bool currentDisplaySquare;
+	bool currentDisplayOpt;
 
 	GameObject[] squareMeshes;
 	GameObject[] radialMeshes;
@@ -27,6 +30,7 @@ public class PlotManager : MonoBehaviour {
 	public Matrix ellipseTransformer2dim;
 	public Matrix eigenValuesMatInvSquareRoot;
 	public float RadiusScale;
+	
 
 	float diagComponent0;
 	float diagComponent2;
@@ -74,6 +78,7 @@ public class PlotManager : MonoBehaviour {
 		currentDisplaySquare = displaySquare;
 
 		//gameObject.AddComponent ("OptimizationPlot");
+		optPlot = gameObject.GetComponent<OptimizationPlot>(); 
 
 
 		//generate matrix
@@ -132,6 +137,10 @@ public class PlotManager : MonoBehaviour {
 			meshTopLevelSquare.SetActive (displaySquare);
 			currentDisplaySquare = displaySquare;
 		}
+		if (displayOpt != currentDisplayOpt) {
+			optPlot.display = displayOpt;
+			currentDisplayOpt = displayOpt;
+		}
 
 		// Starting matrix calculation
 
@@ -170,6 +179,8 @@ public class PlotManager : MonoBehaviour {
 			offDiagComponent = 0.0f;
 			//RadiusScale = 4.0f * Mathf.Max(finger_poses[0].y, finger_poses[1].y);
 			RadiusScale = Mathf.Max(diagComponent0, diagComponent2, 1.0f) * Mathf.Max ((float) mag0, (float) mag1);
+
+
 		}
 
 
