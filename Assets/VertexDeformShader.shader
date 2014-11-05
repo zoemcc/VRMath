@@ -33,7 +33,7 @@
             
             float4 blendedVertex = _RadiusScale * mul(_EllipseTransformer, input.vertex);      
             
-            float height = 0.5 * mul(blendedVertex, mul(_QuadForm, blendedVertex));
+            float height = 0.25 * mul(blendedVertex, mul(_QuadForm, blendedVertex));
             
             float integralHeight;
             float remainderHeight = modf(10 * abs(height), integralHeight);

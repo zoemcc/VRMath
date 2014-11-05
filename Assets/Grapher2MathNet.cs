@@ -17,8 +17,8 @@ public class Grapher2MathNet : MonoBehaviour {
 
 	public enum GridOption {
 		Cartesian,
-		Polar,
-		PolarEllipse
+		PolarEllipse,
+		Polar
 	}
 	
 	private delegate float FunctionDelegate (Vector3 p, float t);
@@ -34,30 +34,30 @@ public class Grapher2MathNet : MonoBehaviour {
 	public FunctionOption function;
 	public GridOption gridOption;
 
-	[Range(0.05f, 5.0f)]
-	public float learningRate = 0.25f;
 
 	private GridOption currentGridOption;
 	
 	[Range(10, 100)]
 	public int resolution = 50;
 
-	[Range(1, 50)]
-	public int iterationCount = 30;
-
-	[Range(-0.5f, 0.5f)]
-	public float xStart = -0.2f;
-
-	[Range(-0.5f, 0.5f)]
-	public float zStart = -.4f;
 
 	private int currentResolution;
 	private ParticleSystem.Particle[] points;
 	private ParticleSystem.Particle[] optimizationPoints;
+
+	
+	GameObject  plotManagerObj;
+	PlotManager plotManagerScript;
+
+	void Start () {
+		plotManagerObj = GameObject.Find ("PlotManager");
+		plotManagerScript = plotManagerObj.GetComponent("PlotManager") as PlotManager;
+	}
+
 	
 	private void CreateGridPoints () {
 		currentResolution = resolution;
-		points = new ParticleSystem.Particle[resolution * resolution + resolution];
+		points = new ParticleSystem.Particle[resolution * resolution];
 		float increment = 1f / (resolution - 1);
 		int i = 0;
 		// cartesian grid
@@ -74,7 +74,7 @@ public class Grapher2MathNet : MonoBehaviour {
 		//polar grid
 		else if (gridOption == GridOption.Polar) {
 			float thetaIncBy  = (2.0f * Mathf.PI / (resolution - 1));
-			float radiusIncBy = 20.0f / (resolution - 1);
+			float radiusIncBy = 5.0f / (resolution - 1);
 			for (int thetaInc = 0; thetaInc < resolution; thetaInc++) {
 				for (int radiusInc = 0; radiusInc < resolution; radiusInc++) {
 					Vector3 p = new Vector3(radiusInc * radiusIncBy * Mathf.Cos(thetaInc * thetaIncBy), 0f, radiusInc * radiusIncBy * Mathf.Sin(thetaInc * thetaIncBy));
@@ -113,12 +113,6 @@ public class Grapher2MathNet : MonoBehaviour {
 			}
 		}
 		currentGridOption = gridOption;
-		for (int t = 0; t < resolution; t++) {
-			Vector3 p = new Vector3(0f, 0f, 0f);
-			points[i].position = p;
-			points[i].color = new Color(increment * resolution / 2, increment * resolution / 2, increment * resolution / 2);
-			points[i++].size = 0.15f;
-		}
 
 	}
 
@@ -134,8 +128,11 @@ public class Grapher2MathNet : MonoBehaviour {
 	//		optimizationPoints[i++].size = 0.15f;
 	//	}
 	//}
-	
+
 	void Update () {
+		// Get radius scale
+		Matrix quadForm = plotManagerScript.quadForm2dim;
+
 		if (currentResolution != resolution || points == null || currentGridOption != gridOption) {
 			CreateGridPoints();
 		}
@@ -147,51 +144,13 @@ public class Grapher2MathNet : MonoBehaviour {
 		//function graph steps
 		for (int i = 0; i < points.Length; i++) {
 			Vector3 p = points [i].position;
-			p.y = f (p, t);
+			p.y = QuadraticFormWMatrix (p, t, quadForm);
 			points[i].position = p;
 			Color c = points [i].color;
 			c.g = p.y;
 			points[i].color = c;
 		}
 	
-		//optimization steps
-
-		Matrix a = QuadraticFormMatrix(t);
-
-		Matrix currentPoint = new Matrix(new double[][] {
-			new double[] {xStart},
-			new double[] {zStart}});
-		Matrix lastPoint = currentPoint.Clone();
-
-		double[] ts = new double[iterationCount + 1];
-		double[] xs = new double[iterationCount + 1];
-		double[] zs = new double[iterationCount + 1];
-		xs[0] = currentPoint.GetArray()[0][0];
-		zs[0] = currentPoint.GetArray()[1][0];
-
-		for (int i = 0; i < iterationCount; i++) {
-			ts[i] = i;
-			currentPoint = lastPoint - ((double) learningRate) * a * lastPoint;
-			xs[i + 1] = currentPoint.GetArray()[0][0];
-			zs[i + 1] = currentPoint.GetArray()[1][0];
-			lastPoint = currentPoint.Clone();
-		}
-		ts[iterationCount] = iterationCount;
-		
-		IInterpolationMethod xInterp = Interpolation.Create(ts, xs);
-		IInterpolationMethod zInterp = Interpolation.Create(ts, zs);
-
-		float increment = ((float) iterationCount) / ((float) (resolution - 1));
-
-		for (int i = 0; i < resolution; i++) {
-			float curInc = increment * i;
-			Vector3 p = new Vector3((float) xInterp.Interpolate(curInc), 0.0f, (float) zInterp.Interpolate(curInc));
-			p.y = f(p, t); 
-			points[i].position = p;
-			Color c = points [i].color;
-			c.g = p.y;
-			points[i].color = c;
-		}
 		
 		particleSystem.SetParticles(points, points.Length);
 		//particleSystem.SetParticles(optimizationPoints, optimizationPoints.Length);
@@ -246,6 +205,7 @@ public class Grapher2MathNet : MonoBehaviour {
 	}
 
 	private static float QuadraticForm (Vector3 p, float t){
+
 		Matrix a = QuadraticFormMatrix (t);
 		Matrix v = new Matrix(new double[][] {
 			new double[] {p.x},
@@ -253,6 +213,19 @@ public class Grapher2MathNet : MonoBehaviour {
 		Matrix vt = v.Clone();
 		vt.Transpose();
 		Matrix v3 = vt * a * v;
+		return (float) (0.5 * v3.GetArray()[0][0]);
+	}
+
+	private static float QuadraticFormWMatrix (Vector3 p, float t, Matrix quadForm){
+	
+		
+		//Matrix a = QuadraticFormMatrix (t);
+		Matrix v = new Matrix(new double[][] {
+			new double[] {p.x},
+			new double[] {p.z}});
+		Matrix vt = v.Clone();
+		vt.Transpose();
+		Matrix v3 = vt * quadForm * v;
 		return (float) (0.5 * v3.GetArray()[0][0]);
 	}
 	

@@ -43,8 +43,6 @@ public class ScaleObject : MonoBehaviour {
 			pinchSpheres[i].SetActive(false);
 		}
 
-		finger_poses = new Vector3[2];
-		graph_scale = new Vector3();
 
 	}
 	
@@ -138,6 +136,7 @@ public class ScaleObject : MonoBehaviour {
 		}
 		else {
 			// debug double hand interaction by having a time based trajectory
+			finger_poses = new Vector3[2];
 			float t = 0.2f * Time.timeSinceLevelLoad;
 			for (int i = 0; i < 2; i++) {
 				finger_poses[i] = new Vector3(3 * Mathf.Sin((i + 1) * t + (i + 1) * 0.2f), Mathf.Sin (2 * (i + 1) * t + (i + 2) * 0.2f) + 1.8f, 4 * Mathf.Cos (3 * (i + 1) * t + (i + 3) * 0.1f));

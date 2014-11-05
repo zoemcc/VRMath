@@ -30,16 +30,28 @@ public class PlotManager : MonoBehaviour {
 	public Matrix ellipseTransformer2dim;
 	public Matrix eigenValuesMatInvSquareRoot;
 	public float RadiusScale;
+	public double alphaForParabolaTrackingOptimization = 1E-6;
+	public double deltaForParabolaTrackingOptimization = 1E-16;
+	public Matrix eigenValueOptimizationParabolaTracking;
+	public int optimizationTrackingIterationCount = 100;
+
+	Vector3[] currentFingerPoses;
 	
 
 	float diagComponent0;
 	float diagComponent2;
 	float offDiagComponent;
 
+	double mag0 = 1.0;
+	double mag1 = 1.0;
+
 
 	Matrix solveFingerMatrix;
 	Matrix solveFingerVector;
-
+	Matrix leastSquaresMatrixA;
+	Matrix leastSquaresTargetb;
+	Matrix nonNegQuadProgMatrixQ;
+	Matrix nonNegQuadProgVectorh;
 
 	GameObject controlCube;
 	ScaleObject so; 
@@ -88,8 +100,6 @@ public class PlotManager : MonoBehaviour {
 				QuadForm [i, j] = 0.0f;
 			}
 		}
-		QuadForm [0, 0] = 1.0f;
-		QuadForm [2, 2] = 1.0f;
 		
 		EllipseTransformer = new Matrix4x4();
 		for (int i = 0; i < 4; i++) {
@@ -111,9 +121,31 @@ public class PlotManager : MonoBehaviour {
 			new double[] {0.0, 0.0},
 			new double[] {0.0, 0.0}});
 
+		leastSquaresMatrixA = new Matrix(new double[][] {
+			new double[] {0.0, 0.0},
+			new double[] {0.0, 0.0},
+			new double[] {0.0, 0.0}});
+
+		nonNegQuadProgMatrixQ = new Matrix(new double[][] {
+			new double[] {0.0, 0.0},
+			new double[] {0.0, 0.0}});
+
+		leastSquaresTargetb = new Matrix(new double[][] {
+			new double[] {0.0},
+			new double[] {0.0},
+			new double[] {0.0}});
+
+		nonNegQuadProgVectorh = new Matrix(new double[][] {
+			new double[] {0.0},
+			new double[] {0.0}});
+
 		solveFingerVector = new Matrix(new double[][] {
 			new double[] {0.0},
 			new double[] {0.0}});
+
+		eigenValueOptimizationParabolaTracking = new Matrix(new double[][] {
+			new double[] {1.0},
+			new double[] {1.0}});
 		
 		controlCube = GameObject.Find ("ControlCube");
 		so = controlCube.GetComponent<ScaleObject> (); 
@@ -121,6 +153,12 @@ public class PlotManager : MonoBehaviour {
 		diagComponent0 = (float) 1.0f;
 		diagComponent2 = (float) 2.0f;
 		offDiagComponent = 0.0f;
+
+		
+		QuadForm [0, 0] = diagComponent0;
+		QuadForm [2, 2] = diagComponent2;
+		QuadForm [0, 2] = offDiagComponent;
+		QuadForm [2, 0] = offDiagComponent;
 
 		RadiusScale = 1.0f;
 	}
@@ -152,36 +190,101 @@ public class PlotManager : MonoBehaviour {
 		//Vector3[] finger_poses = new Vector3[2];
 		//finger_poses [0] = new Vector3{1.0f, 1.0f, 1.0f};
 		//finger_poses [1] = new Vector3{0.5f, 1.0f, 1.0f};
+
 			
 		if (finger_poses.Length == 2) {
-			// set up linsolve
-			double mag0xx = (double) ((finger_poses [0].x) * (finger_poses [0].x));
-			double mag0zz = (double) ((finger_poses [0].z) * (finger_poses [0].z));
-			double mag1xx = (double) ((finger_poses [1].x) * (finger_poses [1].x));
-			double mag1zz = (double) ((finger_poses [1].z) * (finger_poses [1].z));
+			currentFingerPoses = finger_poses;
 
-			double mag0 = Math.Sqrt(mag0xx + mag0zz);
-			double mag1 = Math.Sqrt(mag1xx + mag1zz);
 
+			double mag0xx = (double) ((currentFingerPoses [0].x) * (currentFingerPoses [0].x));
+			double mag0zz = (double) ((currentFingerPoses [0].z) * (currentFingerPoses [0].z));
+			double mag1xx = (double) ((currentFingerPoses [1].x) * (currentFingerPoses [1].x));
+			double mag1zz = (double) ((currentFingerPoses [1].z) * (currentFingerPoses [1].z));
+
+			mag0 = Math.Sqrt(mag0xx + mag0zz);
+			mag1 = Math.Sqrt(mag1xx + mag1zz);
+
+			double absHeightTimesTwo0 = (double) Mathf.Abs(2 * currentFingerPoses [0].y);
+			double absHeightTimesTwo1 = (double) Mathf.Abs(2 * currentFingerPoses [1].y);
+
+
+			// set up linsolve -- note this is bad!!!! we're not taking into account the PSD constraint of the eigenvalues, so our prediction is actually quite bad and not at all what we want
+			/*
 			solveFingerMatrix [0, 0] = mag0xx;
 			solveFingerMatrix [0, 1] = mag0zz;
 			solveFingerMatrix [1, 0] = mag1xx;
 			solveFingerMatrix [1, 1] = mag1zz;
 			
-			solveFingerVector [0, 0] = (double) Mathf.Abs(2 * finger_poses [0].y);
-			solveFingerVector [1, 0] = (double) Mathf.Abs(2 * finger_poses [1].y);
+			solveFingerVector [0, 0] = absHeightTimesTwo0;
+			solveFingerVector [1, 0] = absHeightTimesTwo1;
 			
 			Matrix solved = solveFingerMatrix.Solve (solveFingerVector);
 
-			/*   Grabby interaction */
+			//  Grabby interaction 
 			diagComponent0 = (float) solved[0, 0];
 			diagComponent2 = (float) solved[1, 0];
 			offDiagComponent = 0.0f;
 			//RadiusScale = 4.0f * Mathf.Max(finger_poses[0].y, finger_poses[1].y);
 			RadiusScale = Mathf.Max(diagComponent0, diagComponent2, 1.0f) * Mathf.Max ((float) mag0, (float) mag1);
 
+			*/
+
+
+			// NNQP problem see http://arxiv.org/pdf/1406.1008v1.pdf
+			// NOTE: for this case, since we use the absolute height |b| and from the nature of our A matrix is that it is nonnegative, we get
+			// we know that |Q| = Q = Q+ and h = A^T b = |h| = h+
+			// we use this to not compute the negative versions
+
+			// note that this is equivalent to doing ISRA, Image Space Reconstruction Algorithm, as a multiplicative update
+		
+		    leastSquaresMatrixA [0, 0] = mag0xx;
+		    leastSquaresMatrixA [0, 1] = mag0zz;
+		    leastSquaresMatrixA [1, 0] = mag1xx;
+		    leastSquaresMatrixA [1, 1] = mag1zz;
+			leastSquaresMatrixA [2, 0] = alphaForParabolaTrackingOptimization;
+			leastSquaresMatrixA [2, 1] = alphaForParabolaTrackingOptimization;
+
+			leastSquaresTargetb [0, 0] = absHeightTimesTwo0;
+			leastSquaresTargetb [1, 0] = absHeightTimesTwo1;
+			leastSquaresTargetb [2, 0] = 0.0;
+
+
+			Matrix leastSquaresMatrixATranspose = leastSquaresMatrixA.Clone();
+			leastSquaresMatrixATranspose.Transpose();
+
+			nonNegQuadProgMatrixQ = leastSquaresMatrixATranspose * leastSquaresMatrixA;
+			nonNegQuadProgVectorh = leastSquaresMatrixATranspose * leastSquaresTargetb;
+
+			Matrix nonNegQuadProgMatrixQx;
+
+			eigenValueOptimizationParabolaTracking = new Matrix(new double[][] {
+				new double[] {1.0},
+				new double[] {1.0}});
+
+			for (int i = 0; i < optimizationTrackingIterationCount; i++) {
+				nonNegQuadProgMatrixQx = nonNegQuadProgMatrixQ * eigenValueOptimizationParabolaTracking;
+				for (int j = 0; j < 2; j++){
+					eigenValueOptimizationParabolaTracking[j, 0] = eigenValueOptimizationParabolaTracking[j, 0] * (
+																   (nonNegQuadProgVectorh [j, 0] + deltaForParabolaTrackingOptimization) /
+																   (nonNegQuadProgMatrixQx[j, 0] + deltaForParabolaTrackingOptimization));
+				}
+			}
+
+
+
+
+
+
 
 		}
+
+		/*   Grabby interaction */
+		diagComponent0 = (float) eigenValueOptimizationParabolaTracking[0, 0];
+		diagComponent2 = (float) eigenValueOptimizationParabolaTracking[1, 0];
+		offDiagComponent = 0.0f;
+		//RadiusScale = 4.0f * Mathf.Max(finger_poses[0].y, finger_poses[1].y);
+		//RadiusScale = Mathf.Max(diagComponent0, diagComponent2, 1.0f) * Mathf.Max ((float) mag0, (float) mag1);
+		RadiusScale = 10.0f;
 
 
 
@@ -211,21 +314,26 @@ public class PlotManager : MonoBehaviour {
 		eigenVectorsTranspose.Transpose ();
 		eigenValues = eigen.EigenValues;
 
+		// identify which eigenvalue goes to x and z
+
+
 
 		// project to PSD
 		Matrix eigenValuesPSD = new Matrix(new double[][] {
-			new double[] {Math.Max(eigenValues[0].Modulus, 0.0), 0.0},
-			new double[] {0.0, Math.Max(eigenValues[1].Modulus, 0.0)}});
+			new double[] {Math.Max(eigenValues[0].Real, 0.0), 0.0},
+			new double[] {0.0, Math.Max(eigenValues[1].Real, 0.0)}});
 		//eigenValues[0, 0] = Math.Max(eigenValues[0, 0].Modulus, 0.0);
 		//eigenValues[1, 1] = Math.Max(eigenValues[1, 1].Modulus, 0.0);
 
 
-		quadForm2dim = eigenVectors * eigenValuesPSD * eigenVectorsTranspose;
+		quadForm2dim = eigenVectors * eigenValuesPSD * eigenVectorsTranspose; // unnecessary if quadform is already PSD, which it should be from our opt
+
 
 		QuadForm [0, 0] = (float) quadForm2dim[0, 0];
 		QuadForm [2, 2] = (float) quadForm2dim[1, 1];
 		QuadForm [2, 0] = (float) quadForm2dim[1, 0];
 		QuadForm [0, 2] = (float) quadForm2dim[0, 1];
+
 		
 		eigenValuesMatInvSquareRoot [0, 0] = 1.0 / Math.Sqrt(eigenValuesPSD [0, 0] + 0.000000001);
 		eigenValuesMatInvSquareRoot [1, 1] = 1.0 / Math.Sqrt(eigenValuesPSD [1, 1] + 0.000000001);
@@ -238,6 +346,27 @@ public class PlotManager : MonoBehaviour {
 		EllipseTransformer [2, 2] = (float) ellipseTransformer2dim [1, 1];
 		EllipseTransformer [3, 3] = 1.0f;
 
+		// double check that the matrix solves for the right height
+
+		if (currentFingerPoses != null) {
+			float[] height = new float[2];
+			float[] quadHeight = new float[2];
+			float[] differenceHeight = new float[2];
+			Vector4 currentPoint = new Vector4();
+			for (int i = 0; i < 2; i++) {
+				height[i] = currentFingerPoses[i].y;
+				currentPoint[0] = currentFingerPoses[i].x;
+				currentPoint[2] = currentFingerPoses[i].z;
+				currentPoint[3] = 1.0f;
+				quadHeight[i] = 0.5f * Vector4.Dot(currentPoint, (QuadForm * currentPoint));
+				differenceHeight[i] = quadHeight[i] - height[i];
+				//print (differenceHeight[i]);
+				if (differenceHeight[i] > 0.5f){
+					print ("Bad News!  Super bad prediction!");
+				}
+			}
+			//print (differenceHeight);
+		}
 	
 	}
 
