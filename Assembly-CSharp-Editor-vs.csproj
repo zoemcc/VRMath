@@ -48,13 +48,10 @@
   <ItemGroup>
      <Compile Include="Assets\LeapMotion\Editor\HandControllerEditor.cs" />
      <Compile Include="Assets\OVR\Editor\OVRBuild.cs" />
-     <Compile Include="Assets\OVR\Editor\OVRCameraControllerEditor.cs" />
-     <Compile Include="Assets\OVR\Editor\OVRDeviceEditor.cs" />
-     <Compile Include="Assets\OVR\Editor\OVREditorGUIUtility.cs" />
+     <Compile Include="Assets\OVR\Editor\OVRGameView.cs" />
      <Compile Include="Assets\OVR\Editor\OVRPlayerControllerEditor.cs" />
      <Compile Include="Assets\OVR\Editor\OVRPrefabs.cs" />
      <Compile Include="Assets\OVR\Editor\OVRShimLoader.cs" />
-     <Compile Include="Assets\OVR\Editor\OVRUGUIEditor.cs" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Mobile\Mobile-BumpSpec-1DirectionalLight.shader" />
      <None Include="Assets\TestShader2.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Particle Add.shader" />
@@ -77,6 +74,7 @@
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Normal-Glossy.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Particle Blend.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\AlphaTest-Glossy.shader" />
+     <None Include="Assets\Plugins\x86_64\donotdelete.txt" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\uGUI\GUI-Lit-Transparent.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Nature\TreeCreator\TreeCreatorBark.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResources\Shadow-ScreenBlurRotated.shader" />
@@ -185,6 +183,7 @@
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Unlit\Unlit-Alpha.shader" />
      <None Include="Assets\OVR\Shaders\OVRGUIShader.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Nature\TreeCreator\TreeCreatorLeavesFast.shader" />
+     <None Include="Assets\Plugins\x86\donotdelete.txt" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Sprites-Diffuse.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Nature\SoftOcclusion\TreeSoftOcclusionLeavesRendertex.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Normal-Parallax.shader" />

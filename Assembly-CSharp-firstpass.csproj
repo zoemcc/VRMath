@@ -69,6 +69,7 @@
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Normal-Glossy.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Particle Blend.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\AlphaTest-Glossy.shader" />
+     <None Include="Assets\Plugins\x86_64\donotdelete.txt" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\uGUI\GUI-Lit-Transparent.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Nature\TreeCreator\TreeCreatorBark.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResources\Shadow-ScreenBlurRotated.shader" />
@@ -177,6 +178,7 @@
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Unlit\Unlit-Alpha.shader" />
      <None Include="Assets\OVR\Shaders\OVRGUIShader.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Nature\TreeCreator\TreeCreatorLeavesFast.shader" />
+     <None Include="Assets\Plugins\x86\donotdelete.txt" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Sprites-Diffuse.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Nature\SoftOcclusion\TreeSoftOcclusionLeavesRendertex.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Normal-Parallax.shader" />
