@@ -32,7 +32,8 @@ public class Slides : MonoBehaviour {
 	Button button; 
 	static int i = 0; 
 
-
+	bool not_set = true; 
+	bool first = true; 
 
 
 	
@@ -66,12 +67,12 @@ public class Slides : MonoBehaviour {
 
 
 		if (loadedS1.isDone && loadedS2.isDone && loadedS3.isDone && loadedS4.isDone) {
-			print ("loaded all");
+		
 			slide1 = loadedS1.texture;
 			slide2 = loadedS2.texture;
 			slide3 = loadedS3.texture;
 			slide4 = loadedS4.texture;
-			
+			not_set = false; 
 			//gameObject.guiTexture.texture = slide1;
 			gameObject.renderer.material.SetTexture("_MainTex", slide1);
 		}
@@ -98,8 +99,20 @@ public class Slides : MonoBehaviour {
 		if (Input.GetKeyDown ("space")) {
 			print ("key down");		
 		}*/
+		if (loadedS1.isDone && loadedS2.isDone && loadedS3.isDone && loadedS4.isDone && not_set) {
+			
+			slide1 = loadedS1.texture;
+			slide2 = loadedS2.texture;
+			slide3 = loadedS3.texture;
+			slide4 = loadedS4.texture;
+			not_set = false; 
+			
+			//gameObject.guiTexture.texture = slide1;
+			gameObject.renderer.material.SetTexture("_MainTex", slide1);
+		}
 
-		if (button.update) {
+		if (button.update || first) {
+			first = false; 
 			int idx = button.scene; 
 			//Update Audio 
 			if(idx != 0 && audioSources[idx-1].isPlaying){
@@ -119,10 +132,10 @@ public class Slides : MonoBehaviour {
 					print ("setting slide1");
 					
 					
-					plotManger.displayRadial = true; 
+					plotManger.displayRadial = false; 
 					mesh.enabled = true; 
 					textManger.displayFunction = false; 
-					plotManger.displayOpt = true;	
+					plotManger.displayOpt = false;	
 					textManger.displayVector = false; 
 
 					break;
@@ -144,16 +157,17 @@ public class Slides : MonoBehaviour {
 					print ("setting slide4");	
 					plotManger.displayRadial = true; 
 					textManger.displayMatrix = true; 
-					plotManger.displayOpt = true;	
+
 					mesh.enabled = false; 
 
 					break;
 				case 4: 			    
 				    gameObject.renderer.material.SetTexture("_MainTex",slide4);
 					print ("setting slide4");
+
 					plotManger.displayRadial = false;
 					textManger.displayMatrix = false; 
-					plotManger.displayOpt = false;
+
 					mesh.enabled = true; 
 
 					break;
