@@ -4,7 +4,7 @@
     _MainTex ("Base (A=Opacity)", 2D) = ""
   }
   SubShader {
-    Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
+    // Tags {"Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent"}
 
     Lighting Off
     Cull Off
@@ -55,25 +55,27 @@
         float texImageY = DecodeFloatRGBA(tex2D(_DistortY, texDist));
         texImageY = texImageY * 2.3 - 0.6;
 
-        if (texImageX > 1 || texImageX < 0 || texImageY > 1 || texImageY < 0 )
+        if (texImageX > 1 || texImageX < 0 || texImageY > 1 || texImageY < 0) {
           return float4(0, 0, 0, 0);
+        } else {
+          // Find the undistorted pixel location.
+          float2 texCoord = float2(texImageX, texImageY);
+          float a = pow(tex2D(_MainTex, texCoord).a, (1.0 / _GammaCorrection));
 
-        // Find the undistorted pixel location.
-        float2 texCoord = float2(texImageX, texImageY);
-        float a = pow(tex2D(_MainTex, texCoord).a, (1.0 / _GammaCorrection));
+          float4 color = _Color;
 
-        float4 color = _Color;
+          if (_BlackIsTransparent == 1)
+            color.a *= a;
+          else {
+            color = a * color;;
+            color.a = 1.0;
+          }
 
-        if (_BlackIsTransparent == 1)
-          color.a *= a;
-        else {
-          color = a * color;;
-          color.a = 1.0;
-        }
-
-        return color;
+          return color;
+        } 
       }
       ENDCG
     }
   }
+  Fallback "Unlit/Texture"
 }

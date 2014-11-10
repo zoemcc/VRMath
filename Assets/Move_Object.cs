@@ -11,7 +11,7 @@ public class Move_Object : MonoBehaviour {
 		var t = gameObject.transform; 
 		pos = t.localPosition; 
 		step_size = 0.01f; 
-		Hands = GameObject.Find ("/OVRCameraController/CameraLeft/HandController"); 
+		Hands = GameObject.Find ("/OVRCameraRig/CenterEyeAnchor/HandController"); 
 		
 		
 	}

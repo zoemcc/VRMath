@@ -18,15 +18,17 @@ public class GrabHand : MonoBehaviour {
   public float filtering = 0.5f;
   public float minConfidence = 0.3f;
   public float maxVelocity = 0.3f;
-  public Vector3 pinch_position = new Vector3(); 
 
-  public  bool pinching_;
+  public bool pinching_;
+  public Vector3 pinch_position;
+
   private Collider grabbed_;
   private Quaternion start_rotation_;
   private Vector3 start_position_;
 
   private Vector3 palm_position_;
   private Quaternion palm_rotation_;
+
 
   void Start() {
     pinching_ = false;

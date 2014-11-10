@@ -82,23 +82,7 @@ public class Slides : MonoBehaviour {
 	void Update (){
 		//bool clicked = true;
 	
-		/*if (Input.GetKeyDown("space") && i==0){
-			print("space key was pressed");
-			gameObject.guiTexture.texture = slide1;
-			i++;
-			print (i);
-		}
-		
-		if (Input.GetKeyDown("space") && i==1){
-			print ("second time pressed");
-			gameObject.guiTexture.texture = slide2;
-			i--;
-			//print (Tester.i);
-		}
-
-		if (Input.GetKeyDown ("space")) {
-			print ("key down");		
-		}*/
+	
 		if (loadedS1.isDone && loadedS2.isDone && loadedS3.isDone && loadedS4.isDone && not_set) {
 			
 			slide1 = loadedS1.texture;
@@ -157,17 +141,14 @@ public class Slides : MonoBehaviour {
 					print ("setting slide4");	
 					plotManger.displayRadial = true; 
 					textManger.displayMatrix = true; 
-
 					mesh.enabled = false; 
 
 					break;
 				case 4: 			    
 				    gameObject.renderer.material.SetTexture("_MainTex",slide4);
 					print ("setting slide4");
-
 					plotManger.displayRadial = false;
 					textManger.displayMatrix = false; 
-
 					mesh.enabled = true; 
 
 					break;
