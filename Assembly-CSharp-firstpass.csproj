@@ -175,6 +175,7 @@
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\skybox cubed.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\uGUI\GUI-Default.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\CGIncludes\AutoLight.cginc" />
+     <None Include="Assets\StarfieldSpace\Starfield Space Skybox Readme.txt" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Unlit\Unlit-Alpha.shader" />
      <None Include="Assets\OVR\Shaders\OVRGUIShader.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Nature\TreeCreator\TreeCreatorLeavesFast.shader" />
