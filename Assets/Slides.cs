@@ -153,6 +153,7 @@ public class Slides : MonoBehaviour {
 
 					break;
 				case 5: 
+					print ("setting slide5");
 					plotManger.displayRadial = true; 
 					mesh.enabled = false; 
 					textManger.displayFunction = true; 

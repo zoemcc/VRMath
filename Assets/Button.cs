@@ -25,7 +25,10 @@ public class Button : MonoBehaviour {
 
 		if (!debug){
 			if (grabbed.scale && !update) {
-				scene = (scene + 1) % numScenes; 
+				scene += 1; 
+				if(scene == numScenes){
+					scene = 0; 
+				}
 				update = true; 
 			} 
 			else if (!grabbed.scale && update) {

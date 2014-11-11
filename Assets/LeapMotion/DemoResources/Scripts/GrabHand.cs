@@ -19,7 +19,7 @@ public class GrabHand : MonoBehaviour {
   public float minConfidence = 0.3f;
   public float maxVelocity = 0.3f;
 
-  public bool pinching_;
+  public bool pinching_ = false;
   public Vector3 pinch_position;
 
   private Collider grabbed_;
