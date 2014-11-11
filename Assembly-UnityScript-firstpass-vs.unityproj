@@ -72,6 +72,7 @@
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Normal-Glossy.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Particle Blend.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\AlphaTest-Glossy.shader" />
+     <None Include="Assets\Plugins\x86_64\donotdelete.txt" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\uGUI\GUI-Lit-Transparent.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Nature\TreeCreator\TreeCreatorBark.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResources\Shadow-ScreenBlurRotated.shader" />
@@ -177,9 +178,11 @@
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\skybox cubed.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\uGUI\GUI-Default.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\CGIncludes\AutoLight.cginc" />
+     <None Include="Assets\StarfieldSpace\Starfield Space Skybox Readme.txt" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Unlit\Unlit-Alpha.shader" />
      <None Include="Assets\OVR\Shaders\OVRGUIShader.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Nature\TreeCreator\TreeCreatorLeavesFast.shader" />
+     <None Include="Assets\Plugins\x86\donotdelete.txt" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Sprites-Diffuse.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Nature\SoftOcclusion\TreeSoftOcclusionLeavesRendertex.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Normal-Parallax.shader" />
@@ -199,10 +202,10 @@
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\uGUI\GUI-Lit-Bumped.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\uGUI\GUI-DefaultFont.shader" />
  <Reference Include="MathNet.Iridium">
- <HintPath>/Users/zoe/VRMath/Assets/MathNet.Numerics/MathNet.Iridium.dll</HintPath>
+ <HintPath>/Users/michaelluskey/Documents/VRMath/Assets/MathNet.Numerics/MathNet.Iridium.dll</HintPath>
  </Reference>
  <Reference Include="LeapCSharp.NET3.5">
- <HintPath>/Users/zoe/VRMath/Assets/Plugins/LeapCSharp.NET3.5.dll</HintPath>
+ <HintPath>/Users/michaelluskey/Documents/VRMath/Assets/Plugins/LeapCSharp.NET3.5.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

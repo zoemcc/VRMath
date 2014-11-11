@@ -6,7 +6,7 @@ public class Button : MonoBehaviour {
 	// Use this for initialization
 
 	public int scene = 0; 
-    public bool update = false; 
+    public bool update = true; 
 	Grabbable grabbed; 
 
 	int numScenes = 6;
@@ -16,7 +16,7 @@ public class Button : MonoBehaviour {
 	public int debugScene = 3;
 
 	void Start () {
-		update = false;
+		update = true;
 		grabbed = gameObject.GetComponent<Grabbable>();
 	}
 	

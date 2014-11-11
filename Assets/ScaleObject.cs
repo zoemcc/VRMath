@@ -28,7 +28,7 @@ public class ScaleObject : MonoBehaviour {
 		graph_scale = t.localScale/2.0f;
 		pos = t.localPosition; 
 		step_size = 0.01f; 
-		Hands = GameObject.Find ("/OVRCameraController/CameraLeft/HandController"); 
+		Hands = GameObject.Find ("/OVRCameraRig/CenterEyeAnchor/HandController"); 
 		grabbed = gameObject.GetComponent<Grabbable> ();
 		h = Hands.GetComponent<HandController> ();
 

@@ -21,14 +21,19 @@ public class Slides : MonoBehaviour {
 	GameObject Butn; 
 	GameObject PlotManger;
 	GameObject TextManger;
+	GameObject AudioZone;
 
 	TextManager textManger; 
 	PlotManager plotManger; 
+	AudioReverbZone audioZone; 
+	AudioSource[] audioSources; 
 	MeshRenderer mesh;
 
 	Button button; 
 	static int i = 0; 
 
+	bool not_set = true; 
+	bool first = true; 
 
 
 	
@@ -51,19 +56,23 @@ public class Slides : MonoBehaviour {
 		PlotManger = GameObject.Find ("PlotManager"); 
 		plotManger = PlotManger.GetComponent<PlotManager> (); 
 
+
 		TextManger = GameObject.Find ("TextManager"); 
 		textManger = TextManger.GetComponent<TextManager> ();
 
+		AudioZone = GameObject.Find ("AudioZone"); 
+		audioZone = AudioZone.GetComponent<AudioReverbZone> ();
+		audioSources = audioZone.GetComponents<AudioSource> (); 
 		mesh = gameObject.GetComponent<MeshRenderer> (); 
 
 
 		if (loadedS1.isDone && loadedS2.isDone && loadedS3.isDone && loadedS4.isDone) {
-			print ("loaded all");
+		
 			slide1 = loadedS1.texture;
 			slide2 = loadedS2.texture;
 			slide3 = loadedS3.texture;
 			slide4 = loadedS4.texture;
-			
+			not_set = false; 
 			//gameObject.guiTexture.texture = slide1;
 			gameObject.renderer.material.SetTexture("_MainTex", slide1);
 		}
@@ -73,71 +82,83 @@ public class Slides : MonoBehaviour {
 	void Update (){
 		//bool clicked = true;
 	
-		/*if (Input.GetKeyDown("space") && i==0){
-			print("space key was pressed");
-			gameObject.guiTexture.texture = slide1;
-			i++;
-			print (i);
+	
+		if (loadedS1.isDone && loadedS2.isDone && loadedS3.isDone && loadedS4.isDone && not_set) {
+			
+			slide1 = loadedS1.texture;
+			slide2 = loadedS2.texture;
+			slide3 = loadedS3.texture;
+			slide4 = loadedS4.texture;
+			not_set = false; 
+			
+			//gameObject.guiTexture.texture = slide1;
+			gameObject.renderer.material.SetTexture("_MainTex", slide1);
 		}
-		
-		if (Input.GetKeyDown("space") && i==1){
-			print ("second time pressed");
-			gameObject.guiTexture.texture = slide2;
-			i--;
-			//print (Tester.i);
-		}
 
-		if (Input.GetKeyDown ("space")) {
-			print ("key down");		
-		}*/
+		if (button.update || first) {
+			first = false; 
+			int idx = button.scene; 
+			//Update Audio 
+			if(idx != 0 && audioSources[idx-1].isPlaying){
+				audioSources[idx-1].Stop(); 
+			}
+			audioSources[idx].Play(); 
+			AudioSource audioSource = audioSources[idx]; 
 
-		if (button.update) {
+			print(audioSource.clip.name);
 
-			switch (button.scene)
+
+			switch (idx)
 			{
 				case 0:
 				//gameObject.guiTexture.texture = slide1;
 					gameObject.renderer.material.SetTexture("_MainTex",slide1);
 					print ("setting slide1");
-					plotManger.displayRadial = true; 
+					
+					
+					plotManger.displayRadial = false; 
 					mesh.enabled = true; 
 					textManger.displayFunction = false; 
-					plotManger.displayOpt = true;	
+					plotManger.displayOpt = false;	
 					textManger.displayVector = false; 
+
 					break;
 				case 1:
 					//gameObject.guiTexture.texture = slide1;
 					gameObject.renderer.material.SetTexture("_MainTex",slide2);
 					print ("setting slide2");
+					
 					break;
 				case 2:
 					//gameObject.guiTexture.texture = slide2;
 					gameObject.renderer.material.SetTexture("_MainTex",slide3);
 					print ("setting slide3");	
+						
+					//Update Audio 
 					break;
 				case 3:
 					gameObject.renderer.material.SetTexture("_MainTex",slide4);
 					print ("setting slide4");	
 					plotManger.displayRadial = true; 
 					textManger.displayMatrix = true; 
-					plotManger.displayOpt = true;	
 					mesh.enabled = false; 
+
 					break;
-				case 4: 
-				    
+				case 4: 			    
 				    gameObject.renderer.material.SetTexture("_MainTex",slide4);
 					print ("setting slide4");
 					plotManger.displayRadial = false;
 					textManger.displayMatrix = false; 
-					plotManger.displayOpt = false;
 					mesh.enabled = true; 
+
 					break;
 				case 5: 
 					plotManger.displayRadial = true; 
 					mesh.enabled = false; 
 					textManger.displayFunction = true; 
 					plotManger.displayOpt = true;	
-					textManger.displayVector = true; 
+					textManger.displayVector = true;
+
 					break; 
 
 

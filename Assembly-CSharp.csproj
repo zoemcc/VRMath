@@ -54,12 +54,27 @@
      <Compile Include="Assets\Grapher2.cs" />
      <Compile Include="Assets\Grapher2MathNet.cs" />
      <Compile Include="Assets\HUDFPS.cs" />
+     <Compile Include="Assets\LeapMotion+OVR\Scripts\BlocksPlaneGenerator.cs" />
+     <Compile Include="Assets\LeapMotion+OVR\Scripts\MovementManager.cs" />
+     <Compile Include="Assets\LeapMotion+OVR\Scripts\RandomBlocksGenerator.cs" />
+     <Compile Include="Assets\LeapMotion\DemoResources\Scripts\AerodynamicLeaf.cs" />
+     <Compile Include="Assets\LeapMotion\DemoResources\Scripts\ChangeMaterialOnGrab.cs" />
      <Compile Include="Assets\LeapMotion\DemoResources\Scripts\CubeWave.cs" />
+     <Compile Include="Assets\LeapMotion\DemoResources\Scripts\FloatingStem.cs" />
+     <Compile Include="Assets\LeapMotion\DemoResources\Scripts\FlowerBloom.cs" />
+     <Compile Include="Assets\LeapMotion\DemoResources\Scripts\FlowerGrower.cs" />
      <Compile Include="Assets\LeapMotion\DemoResources\Scripts\GrabHand.cs" />
      <Compile Include="Assets\LeapMotion\DemoResources\Scripts\Grabbable.cs" />
+     <Compile Include="Assets\LeapMotion\DemoResources\Scripts\HandCycler.cs" />
      <Compile Include="Assets\LeapMotion\DemoResources\Scripts\IgnoreInternalCollisions.cs" />
      <Compile Include="Assets\LeapMotion\DemoResources\Scripts\ImageRetrieverTypes.cs" />
+     <Compile Include="Assets\LeapMotion\DemoResources\Scripts\ParticlesOnCollision.cs" />
+     <Compile Include="Assets\LeapMotion\DemoResources\Scripts\PetalMesh.cs" />
+     <Compile Include="Assets\LeapMotion\DemoResources\Scripts\PressAnyKeyToReset.cs" />
      <Compile Include="Assets\LeapMotion\DemoResources\Scripts\RecordingControls.cs" />
+     <Compile Include="Assets\LeapMotion\DemoResources\Scripts\ResetCollisionsOnBreak.cs" />
+     <Compile Include="Assets\LeapMotion\DemoResources\Scripts\StemMesh.cs" />
+     <Compile Include="Assets\LeapMotion\DemoResources\Scripts\VoxelSheet.cs" />
      <Compile Include="Assets\LeapMotion\InteractionUtils (alpha)\Scripts\ApiDemo\AddRemoveBodies.cs" />
      <Compile Include="Assets\LeapMotion\InteractionUtils (alpha)\Scripts\ApiDemo\HoldingCallbacks.cs" />
      <Compile Include="Assets\LeapMotion\InteractionUtils (alpha)\Scripts\DllWrapper\Body.cs" />
@@ -91,25 +106,34 @@
      <Compile Include="Assets\LeapMotion\Scripts\LeapImageRetriever.cs" />
      <Compile Include="Assets\LeapMotion\Scripts\Tools\ToolModel.cs" />
      <Compile Include="Assets\LeapMotion\Scripts\Utils\ConfidenceTransparency.cs" />
+     <Compile Include="Assets\LeapMotion\Scripts\Utils\DisconnectionNotice.cs" />
+     <Compile Include="Assets\LeapMotion\Scripts\Utils\FitHeightToScreen.cs" />
+     <Compile Include="Assets\LeapMotion\Scripts\Utils\GrabbableObject.cs" />
+     <Compile Include="Assets\LeapMotion\Scripts\Utils\GrabbingHand.cs" />
+     <Compile Include="Assets\LeapMotion\Scripts\Utils\HmdFading.cs" />
      <Compile Include="Assets\LeapMotion\Scripts\Utils\LeapRecorder.cs" />
      <Compile Include="Assets\LeapMotion\Scripts\Utils\LeapUnityExtensions.cs" />
      <Compile Include="Assets\LeapMotion\Scripts\Utils\MagneticPinch.cs" />
+     <Compile Include="Assets\LeapMotion\Scripts\Utils\StretchToScreen.cs" />
+     <Compile Include="Assets\LeapMotion\Scripts\Utils\TriggerDrawing.cs" />
+     <Compile Include="Assets\LeapMotion\Scripts\Utils\Utils.cs" />
      <Compile Include="Assets\MathNetTest.cs" />
      <Compile Include="Assets\Move_Object.cs" />
-     <Compile Include="Assets\OVR\Scripts\OVRCamera.cs" />
-     <Compile Include="Assets\OVR\Scripts\OVRCameraController.cs" />
-     <Compile Include="Assets\OVR\Scripts\OVRCrosshair.cs" />
-     <Compile Include="Assets\OVR\Scripts\OVRDevice.cs" />
-     <Compile Include="Assets\OVR\Scripts\OVRGUI.cs" />
-     <Compile Include="Assets\OVR\Scripts\OVRGamepadController.cs" />
-     <Compile Include="Assets\OVR\Scripts\OVRGridCube.cs" />
-     <Compile Include="Assets\OVR\Scripts\OVRHmd.cs" />
-     <Compile Include="Assets\OVR\Scripts\OVRMainMenu.cs" />
-     <Compile Include="Assets\OVR\Scripts\OVRPlayerController.cs" />
-     <Compile Include="Assets\OVR\Scripts\OVRPresetManager.cs" />
-     <Compile Include="Assets\OVR\Scripts\OVRUGUI.cs" />
-     <Compile Include="Assets\OVR\Scripts\OVRUtils.cs" />
-     <Compile Include="Assets\OVR\Scripts\OVRVisionGuide.cs" />
+     <Compile Include="Assets\OVR\Scripts\OVRCameraRig.cs" />
+     <Compile Include="Assets\OVR\Scripts\OVRCommon.cs" />
+     <Compile Include="Assets\OVR\Scripts\OVRDisplay.cs" />
+     <Compile Include="Assets\OVR\Scripts\OVRManager.cs" />
+     <Compile Include="Assets\OVR\Scripts\OVRPluginEvent.cs" />
+     <Compile Include="Assets\OVR\Scripts\OVRTracker.cs" />
+     <Compile Include="Assets\OVR\Scripts\OvrCapi.cs" />
+     <Compile Include="Assets\OVR\Scripts\Util\OVRCrosshair.cs" />
+     <Compile Include="Assets\OVR\Scripts\Util\OVRGUI.cs" />
+     <Compile Include="Assets\OVR\Scripts\Util\OVRGamepadController.cs" />
+     <Compile Include="Assets\OVR\Scripts\Util\OVRGridCube.cs" />
+     <Compile Include="Assets\OVR\Scripts\Util\OVRMainMenu.cs" />
+     <Compile Include="Assets\OVR\Scripts\Util\OVRPlayerController.cs" />
+     <Compile Include="Assets\OVR\Scripts\Util\OVRUGUI.cs" />
+     <Compile Include="Assets\OVR\Scripts\Util\OVRVisionGuide.cs" />
      <Compile Include="Assets\OptimizationPlot.cs" />
      <Compile Include="Assets\PlotManager.cs" />
      <Compile Include="Assets\ScaleObject.cs" />
@@ -139,6 +163,7 @@
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Normal-Glossy.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Particle Blend.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\AlphaTest-Glossy.shader" />
+     <None Include="Assets\Plugins\x86_64\donotdelete.txt" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\uGUI\GUI-Lit-Transparent.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Nature\TreeCreator\TreeCreatorBark.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResources\Shadow-ScreenBlurRotated.shader" />
@@ -244,9 +269,11 @@
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\skybox cubed.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\uGUI\GUI-Default.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\CGIncludes\AutoLight.cginc" />
+     <None Include="Assets\StarfieldSpace\Starfield Space Skybox Readme.txt" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Unlit\Unlit-Alpha.shader" />
      <None Include="Assets\OVR\Shaders\OVRGUIShader.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Nature\TreeCreator\TreeCreatorLeavesFast.shader" />
+     <None Include="Assets\Plugins\x86\donotdelete.txt" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Sprites-Diffuse.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Nature\SoftOcclusion\TreeSoftOcclusionLeavesRendertex.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Normal-Parallax.shader" />
@@ -266,10 +293,10 @@
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\uGUI\GUI-Lit-Bumped.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\uGUI\GUI-DefaultFont.shader" />
  <Reference Include="MathNet.Iridium">
- <HintPath>/Users/zoe/VRMath/Assets/MathNet.Numerics/MathNet.Iridium.dll</HintPath>
+ <HintPath>/Users/michaelluskey/Documents/VRMath/Assets/MathNet.Numerics/MathNet.Iridium.dll</HintPath>
  </Reference>
  <Reference Include="LeapCSharp.NET3.5">
- <HintPath>/Users/zoe/VRMath/Assets/Plugins/LeapCSharp.NET3.5.dll</HintPath>
+ <HintPath>/Users/michaelluskey/Documents/VRMath/Assets/Plugins/LeapCSharp.NET3.5.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>

@@ -10,6 +10,7 @@ using System.Collections;
 public class Grabbable : MonoBehaviour {
 
   public bool keepDistanceWhenGrabbed = false;
+  public bool scale = false; 
   public bool preferredOrientation = false;
   public Vector3 objectOrientation;
   public Vector3 palmOrientation;
@@ -19,13 +20,10 @@ public class Grabbable : MonoBehaviour {
   public Joint breakableJoint;
   public float breakForce;
   public float breakTorque;
-  public bool scale = false; 
 
   public void OnGrab(){
-    for (int i = 0; i < ignoreOnGrab.Length; ++i) {
-		ignoreOnGrab [i].detectCollisions = false;
-	}
-
+    for (int i = 0; i < ignoreOnGrab.Length; ++i)
+      ignoreOnGrab[i].detectCollisions = false;
 
     if (breakableJoint != null) {
       breakableJoint.breakForce = breakForce;
