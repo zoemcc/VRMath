@@ -240,8 +240,8 @@ public class PlotManager : MonoBehaviour {
 
 			else if (finger_poses.Length == 1){
 				//float currentRotation = so.objectRotation
-				
-				currentRotation = so.objectRotation.y;
+				UnityEngine.Quaternion standardRotation = new UnityEngine.Quaternion(1.0f, 0f, 0f, 0f);
+				currentRotation = 2f * Mathf.PI / 180f * UnityEngine.Quaternion.Angle(so.objectRotation, UnityEngine.Quaternion.Inverse(standardRotation));
 				float cosRot = Mathf.Cos(currentRotation);
 				float sinRot = Mathf.Sin(currentRotation);
 				rotationMatrix[0, 0] = cosRot;
