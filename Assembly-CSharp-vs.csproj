@@ -138,6 +138,7 @@
      <Compile Include="Assets\PlotManager.cs" />
      <Compile Include="Assets\ScaleObject.cs" />
      <Compile Include="Assets\Slides.cs" />
+     <Compile Include="Assets\Symbolic.cs" />
      <Compile Include="Assets\TextManager.cs" />
      <Compile Include="Assets\TrackCameraLeft.cs" />
      <Compile Include="Assets\mathText2.cs" />
@@ -293,13 +294,13 @@
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\uGUI\GUI-Lit-Bumped.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\uGUI\GUI-DefaultFont.shader" />
  <Reference Include="Assembly-UnityScript-firstpass">
- <HintPath>/Users/michaelluskey/Documents/VRMath/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
+ <HintPath>/Users/zoe/VRMath/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
  </Reference>
  <Reference Include="MathNet.Iridium">
- <HintPath>/Users/michaelluskey/Documents/VRMath/Assets/MathNet.Numerics/MathNet.Iridium.dll</HintPath>
+ <HintPath>/Users/zoe/VRMath/Assets/MathNet.Numerics/MathNet.Iridium.dll</HintPath>
  </Reference>
  <Reference Include="LeapCSharp.NET3.5">
- <HintPath>/Users/michaelluskey/Documents/VRMath/Assets/Plugins/LeapCSharp.NET3.5.dll</HintPath>
+ <HintPath>/Users/zoe/VRMath/Assets/Plugins/LeapCSharp.NET3.5.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>

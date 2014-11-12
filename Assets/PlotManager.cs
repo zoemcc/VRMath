@@ -48,12 +48,17 @@ public class PlotManager : MonoBehaviour {
 	double mag1 = 1.0;
 
 
+	//Matrix SDPCurrentMatrix;
 	Matrix solveFingerMatrix;
 	Matrix solveFingerVector;
 	Matrix leastSquaresMatrixA;
 	Matrix leastSquaresTargetb;
 	Matrix nonNegQuadProgMatrixQ;
 	Matrix nonNegQuadProgVectorh;
+	Matrix rotationMatrix;
+	Matrix rotationMatrixTranspose;
+
+	float currentRotation = 0.0f;
 
 	GameObject controlCube;
 	ScaleObject so; 
@@ -160,6 +165,18 @@ public class PlotManager : MonoBehaviour {
 		currentFingerPoses2dim[1] = new Matrix(new double[][] {
 			new double[] {0.0},
 			new double[] {0.0}});
+
+		rotationMatrix = new Matrix(new double[][] {
+			new double[] {1.0, 0.0},
+			new double[] {0.0, 1.0}});
+
+		rotationMatrixTranspose = new Matrix(new double[][] {
+			new double[] {1.0, 0.0},
+			new double[] {0.0, 1.0}});
+
+		//SDPCurrentMatrix = new Matrix(new double[][] {
+		//	new double[] {1.0, 0.0},
+		//	new double[] {0.0, 1.0}});
 		
 		controlCube = GameObject.Find ("ControlCube");
 		so = controlCube.GetComponent<ScaleObject> (); 
@@ -206,20 +223,40 @@ public class PlotManager : MonoBehaviour {
 		//finger_poses [1] = new Vector3{0.5f, 1.0f, 1.0f};
 
 			
-		if (finger_poses.Length == 2) {
-			currentFingerPoses = finger_poses;
+		if (finger_poses.Length != 0) {
+			if (finger_poses.Length == 2){
+				currentFingerPoses = finger_poses;
 
-			currentFingerPoses2dim[0][0, 0] = currentFingerPoses [0].x;
-			currentFingerPoses2dim[0][1, 0] = currentFingerPoses [0].z;
-			
-			currentFingerPoses2dim[1][0, 0] = currentFingerPoses [1].x;
-			currentFingerPoses2dim[1][1, 0] = currentFingerPoses [1].z;
+				
+
+				currentFingerPoses2dim[0][0, 0] = currentFingerPoses [0].x;
+				currentFingerPoses2dim[0][1, 0] = currentFingerPoses [0].z;
+				currentFingerPoses2dim[0] = rotationMatrix * currentFingerPoses2dim[0];
+				
+				currentFingerPoses2dim[1][0, 0] = currentFingerPoses [1].x;
+				currentFingerPoses2dim[1][1, 0] = currentFingerPoses [1].z;
+				currentFingerPoses2dim[1] = rotationMatrix * currentFingerPoses2dim[1];
+			}
+
+			else if (finger_poses.Length == 1){
+				//float currentRotation = so.objectRotation
+				
+				currentRotation = so.objectRotation.eulerAngles.y;
+				float cosRot = Mathf.Cos(currentRotation);
+				float sinRot = Mathf.Sin(currentRotation);
+				rotationMatrix[0, 0] = cosRot;
+				rotationMatrix[1, 0] = sinRot;
+				rotationMatrix[0, 1] = -sinRot;
+				rotationMatrix[1, 1] = cosRot;
+				rotationMatrixTranspose = rotationMatrix.Clone();
+				rotationMatrixTranspose.Transpose();
+			}
 
 
-			double mag0xx = (double) ((currentFingerPoses [0].x) * (currentFingerPoses [0].x));
-			double mag0zz = (double) ((currentFingerPoses [0].z) * (currentFingerPoses [0].z));
-			double mag1xx = (double) ((currentFingerPoses [1].x) * (currentFingerPoses [1].x));
-			double mag1zz = (double) ((currentFingerPoses [1].z) * (currentFingerPoses [1].z));
+			double mag0xx = (double) ((currentFingerPoses2dim[0][0, 0]) * (currentFingerPoses2dim[0][0, 0]));
+			double mag0zz = (double) ((currentFingerPoses2dim[0][1, 0]) * (currentFingerPoses2dim[0][1, 0]));
+			double mag1xx = (double) ((currentFingerPoses2dim[1][0, 0]) * (currentFingerPoses2dim[1][0, 0]));
+			double mag1zz = (double) ((currentFingerPoses2dim[1][1, 0]) * (currentFingerPoses2dim[1][1, 0]));
 
 			mag0 = Math.Sqrt(mag0xx + mag0zz);
 			mag1 = Math.Sqrt(mag1xx + mag1zz);
@@ -295,6 +332,10 @@ public class PlotManager : MonoBehaviour {
 			}
 
 
+			// TODO: SDP problem to solve for the parabola (see if it feels better than rotation and NNQP
+
+
+
 
 
 
@@ -327,11 +368,15 @@ public class PlotManager : MonoBehaviour {
 
 		//renderer.material.SetMatrix ("_QuadForm", QuadForm);
 		
-		// Get ellipse transformation
+		// construct matrix by pre multiplying by rotation and post multiplying by rotation transpose
 		quadForm2dim [0, 0] = (double) diagComponent0;
 		quadForm2dim [1, 0] = (double) offDiagComponent;
 		quadForm2dim [0, 1] = (double) offDiagComponent;
 		quadForm2dim [1, 1] = (double) diagComponent2;
+
+		quadForm2dim = rotationMatrixTranspose * quadForm2dim * rotationMatrix;
+
+		// Get ellipse transformation
 		eigen = quadForm2dim.EigenvalueDecomposition;
 		eigenVectors = eigen.EigenVectors;
 		Matrix eigenVectorsTranspose = eigenVectors.Clone ();

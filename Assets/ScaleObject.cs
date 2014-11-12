@@ -6,15 +6,22 @@ public class ScaleObject : MonoBehaviour {
 
 	// Use this for initialization
 
+	public enum HandDebugMode {
+		OneHand,
+		TwoHand
+	}
+
 	public Vector3 pos; 
 	public Vector3[] finger_poses;
 	public Vector3 graph_scale; 
 	public float step_size; 
 	public GameObject Hands; 
 	public bool debug = false;
+	public HandDebugMode debugMode = HandDebugMode.OneHand;
 	Grabbable grabbed;
 	HandController h; 
 	Transform t;
+	public Quaternion objectRotation;
 	
 	GameObject Butn; 
 	Button button; 
@@ -31,6 +38,10 @@ public class ScaleObject : MonoBehaviour {
 		Hands = GameObject.Find ("/OVRCameraRig/CenterEyeAnchor/HandController"); 
 		grabbed = gameObject.GetComponent<Grabbable> ();
 		h = Hands.GetComponent<HandController> ();
+		objectRotation = new Quaternion();
+		finger_poses = new Vector3[2];
+		finger_poses[0] = new Vector3(1,1,0);
+		finger_poses[1] = new Vector3(0,1,2);
 
 		Butn = GameObject.Find ("Button1"); 
 		button = Butn.GetComponent<Button> (); 
@@ -116,7 +127,7 @@ public class ScaleObject : MonoBehaviour {
 						finger_poses = poses;
 					}
 					else if(one_pinch){
-							//t.localRotation = rotation; 
+							objectRotation = rotation; 
 					}
 				}
 				else if(button.scene == 5){
@@ -135,23 +146,39 @@ public class ScaleObject : MonoBehaviour {
 			t.localPosition = pos; 
 		}
 		else {
-			// debug double hand interaction by having a time based trajectory
-			finger_poses = new Vector3[2];
-			float t = 0.2f * Time.timeSinceLevelLoad;
-			for (int i = 0; i < 2; i++) {
-				finger_poses[i] = new Vector3(3 * Mathf.Sin((i + 1) * t + (i + 1) * 0.2f), Mathf.Sin (2 * (i + 1) * t + (i + 2) * 0.2f) + 1.8f, 4 * Mathf.Cos (3 * (i + 1) * t + (i + 3) * 0.1f));
-				pinchSpheres[i].SetActive(true);
-				pinchSpheres[i].transform.localPosition = finger_poses[i];
-			}
-
-			Vector3 scale = finger_poses [1] - finger_poses [0]; 
-			for (int i=0; i<3; i++) {
-				if (scale [i] < 0) {
-					scale [i] = -scale [i];
+			if (debugMode == HandDebugMode.TwoHand){
+				// debug double hand interaction by having a time based trajectory
+				finger_poses = new Vector3[2];
+				float t = 0.2f * Time.timeSinceLevelLoad;
+				for (int i = 0; i < 2; i++) {
+					finger_poses[i] = new Vector3(3 * Mathf.Sin((i + 1) * t + (i + 1) * 0.2f),
+					                              Mathf.Sin (2 * (i + 1) * t + (i + 2) * 0.2f) + 1.8f,
+					                              4 * Mathf.Cos (3 * (i + 1) * t + (i + 3) * 0.1f));
+					pinchSpheres[i].SetActive(true);
+					pinchSpheres[i].transform.localPosition = finger_poses[i];
 				}
-				scale [i] = scale [i]; 
+
+				Vector3 scale = finger_poses [1] - finger_poses [0]; 
+				for (int i=0; i<3; i++) {
+					if (scale [i] < 0) {
+						scale [i] = -scale [i];
+					}
+					scale [i] = scale [i]; 
+				}
+				graph_scale = scale; 
 			}
-			graph_scale = scale; 
+			else if (debugMode == HandDebugMode.OneHand){
+				// debug one hand interaction by having a time based rotation trajectory
+				float t = 0.01f * Time.timeSinceLevelLoad;
+				finger_poses = new Vector3[1];
+				Vector4 objectRotationVec = new Vector4(3 * Mathf.Sin(t + 0.2f),
+				                                		Mathf.Sin (2 * t + 2 * 0.2f) + 1.8f,
+				                                		4 * Mathf.Cos (3 * t + 3 * 0.1f),
+				               							5 * Mathf.Cos (2.5f * t + 4 * 0.1f));
+				objectRotationVec = objectRotationVec / objectRotationVec.magnitude;         
+				objectRotation = new Quaternion(objectRotationVec[0], objectRotationVec[1],
+				                                objectRotationVec[2], objectRotationVec[3]);
+			}
 		}
 	}
 }
