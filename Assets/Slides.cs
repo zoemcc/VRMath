@@ -57,7 +57,7 @@ public class Slides : MonoBehaviour {
 		plotManger = PlotManger.GetComponent<PlotManager> (); 
 
 
-		TextManger = GameObject.Find ("TextManager"); 
+		TextManger = GameObject.Find ("OVRCameraRig/CenterEyeAnchor/TextManager"); 
 		textManger = TextManger.GetComponent<TextManager> ();
 
 		AudioZone = GameObject.Find ("AudioZone"); 
@@ -153,6 +153,7 @@ public class Slides : MonoBehaviour {
 
 					break;
 				case 5: 
+					print ("setting slide5");
 					plotManger.displayRadial = true; 
 					mesh.enabled = false; 
 					textManger.displayFunction = true; 

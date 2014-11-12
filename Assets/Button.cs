@@ -18,14 +18,22 @@ public class Button : MonoBehaviour {
 	void Start () {
 		update = true;
 		grabbed = gameObject.GetComponent<Grabbable>();
+		MeshRenderer mesh = gameObject.GetComponent<MeshRenderer> (); 
+
+		mesh.enabled = false; 
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
 		if (!debug){
-			if (grabbed.scale && !update) {
-				scene = (scene + 1) % numScenes; 
+
+			  
+ 			if (Input.GetKeyDown(KeyCode.Mouse0) && !update) {
+				scene += 1; 
+				if(scene == numScenes){
+					scene = 0; 
+				}
 				update = true; 
 			} 
 			else if (!grabbed.scale && update) {
