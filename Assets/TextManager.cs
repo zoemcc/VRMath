@@ -393,6 +393,8 @@ public class TextManager : MonoBehaviour {
 		string roundedString;
 
 		int numberOfFirstDigits = Math.Round (num, 0).ToString ().Length;
+		// TODO: make these two cases work, currently if number is too big an error happens but we should resort to scientific notation
+		// and if there is just enough digits we shouldn't put a decimal point there.
 		//if (numberOfFirstDigits > length) {
 			
 		//}

@@ -131,7 +131,9 @@ public class ScaleObject : MonoBehaviour {
 						finger_poses = poses;
 					}
 					else if(one_pinch){
-							objectRotation = rotation; 
+						finger_poses = new Vector3[1];
+						finger_poses[0] = poses[0];
+						objectRotation = rotation; 
 					}
 				}
 				else if(button.scene == 5){
@@ -173,7 +175,7 @@ public class ScaleObject : MonoBehaviour {
 			}
 			else if (debugMode == HandDebugMode.OneHand){
 				// debug one hand interaction by having a time based rotation trajectory
-				float t = 0.01f * Time.timeSinceLevelLoad;
+				float t = 0.2f * Time.timeSinceLevelLoad;
 				finger_poses = new Vector3[1];
 				Vector4 objectRotationVec = new Vector4(3 * Mathf.Sin(t + 0.2f),
 				                                		Mathf.Sin (2 * t + 2 * 0.2f) + 1.8f,
