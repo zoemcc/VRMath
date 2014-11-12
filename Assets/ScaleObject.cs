@@ -131,7 +131,9 @@ public class ScaleObject : MonoBehaviour {
 						finger_poses = poses;
 					}
 					else if(one_pinch){
-							objectRotation = rotation; 
+						finger_poses = new Vector3[1];
+						finger_poses[0] = poses[0];
+						objectRotation = rotation; 
 					}
 				}
 				else if(button.scene == 5){

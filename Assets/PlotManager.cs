@@ -241,7 +241,7 @@ public class PlotManager : MonoBehaviour {
 			else if (finger_poses.Length == 1){
 				//float currentRotation = so.objectRotation
 				
-				currentRotation = so.objectRotation.eulerAngles.y;
+				currentRotation = so.objectRotation.y;
 				float cosRot = Mathf.Cos(currentRotation);
 				float sinRot = Mathf.Sin(currentRotation);
 				rotationMatrix[0, 0] = cosRot;
