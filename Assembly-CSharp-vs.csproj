@@ -138,6 +138,7 @@
      <Compile Include="Assets\PlotManager.cs" />
      <Compile Include="Assets\ScaleObject.cs" />
      <Compile Include="Assets\Slides.cs" />
+     <Compile Include="Assets\Symbolic.cs" />
      <Compile Include="Assets\TextManager.cs" />
      <Compile Include="Assets\TrackCameraLeft.cs" />
      <Compile Include="Assets\mathText2.cs" />

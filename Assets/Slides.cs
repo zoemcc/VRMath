@@ -57,7 +57,7 @@ public class Slides : MonoBehaviour {
 		plotManger = PlotManger.GetComponent<PlotManager> (); 
 
 
-		TextManger = GameObject.Find ("TextManager"); 
+		TextManger = GameObject.Find ("OVRCameraRig/CenterEyeAnchor/TextManager"); 
 		textManger = TextManger.GetComponent<TextManager> ();
 
 		AudioZone = GameObject.Find ("AudioZone"); 
