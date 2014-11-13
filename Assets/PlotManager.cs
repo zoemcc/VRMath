@@ -38,6 +38,7 @@ public class PlotManager : MonoBehaviour {
 
 	Vector3[] currentFingerPoses;
 	Matrix[] currentFingerPoses2dim;
+	Matrix[] currentFingerPoses2dimRotated;
 	
 
 	float diagComponent0;
@@ -57,6 +58,7 @@ public class PlotManager : MonoBehaviour {
 	Matrix nonNegQuadProgVectorh;
 	Matrix rotationMatrix;
 	Matrix rotationMatrixTranspose;
+	Vector2 currentFingerHeight;
 
 	float currentRotation = 0.0f;
 
@@ -166,6 +168,14 @@ public class PlotManager : MonoBehaviour {
 			new double[] {0.0},
 			new double[] {0.0}});
 
+		currentFingerPoses2dimRotated = new Matrix[2];
+		currentFingerPoses2dimRotated[0] = new Matrix(new double[][] {
+			new double[] {0.0},
+			new double[] {0.0}});
+		currentFingerPoses2dimRotated[1] = new Matrix(new double[][] {
+			new double[] {0.0},
+			new double[] {0.0}});
+
 		rotationMatrix = new Matrix(new double[][] {
 			new double[] {1.0, 0.0},
 			new double[] {0.0, 1.0}});
@@ -173,6 +183,8 @@ public class PlotManager : MonoBehaviour {
 		rotationMatrixTranspose = new Matrix(new double[][] {
 			new double[] {1.0, 0.0},
 			new double[] {0.0, 1.0}});
+
+		currentFingerHeight = new Vector2(1.0f, 2.0f);
 
 		//SDPCurrentMatrix = new Matrix(new double[][] {
 		//	new double[] {1.0, 0.0},
@@ -222,26 +234,30 @@ public class PlotManager : MonoBehaviour {
 		//finger_poses [0] = new Vector3{1.0f, 1.0f, 1.0f};
 		//finger_poses [1] = new Vector3{0.5f, 1.0f, 1.0f};
 
+		bool updatedFingerPos = false;
 			
 		if (finger_poses.Length != 0) {
 			if (finger_poses.Length == 2){
+				updatedFingerPos = true;
 				currentFingerPoses = finger_poses;
-
-				
 
 				currentFingerPoses2dim[0][0, 0] = currentFingerPoses [0].x;
 				currentFingerPoses2dim[0][1, 0] = currentFingerPoses [0].z;
-				currentFingerPoses2dim[0] = rotationMatrix * currentFingerPoses2dim[0];
+				currentFingerHeight[0] = currentFingerPoses [0].y;
 				
 				currentFingerPoses2dim[1][0, 0] = currentFingerPoses [1].x;
 				currentFingerPoses2dim[1][1, 0] = currentFingerPoses [1].z;
-				currentFingerPoses2dim[1] = rotationMatrix * currentFingerPoses2dim[1];
+				currentFingerHeight[1] = currentFingerPoses [1].y;
+
+				
+				currentFingerPoses2dimRotated[0] = rotationMatrix * currentFingerPoses2dim[0];
+				currentFingerPoses2dimRotated[1] = rotationMatrix * currentFingerPoses2dim[1];
 			}
 
 			else if (finger_poses.Length == 1){
 				//float currentRotation = so.objectRotation
 				UnityEngine.Quaternion standardRotation = new UnityEngine.Quaternion(1.0f, 0f, 0f, 0f);
-				currentRotation = 2f * Mathf.PI / 180f * UnityEngine.Quaternion.Angle(so.objectRotation, UnityEngine.Quaternion.Inverse(standardRotation));
+				currentRotation = 2f * Mathf.PI / 180f * UnityEngine.Quaternion.Angle(so.objectRotation, standardRotation);
 				float cosRot = Mathf.Cos(currentRotation);
 				float sinRot = Mathf.Sin(currentRotation);
 				rotationMatrix[0, 0] = cosRot;
@@ -253,16 +269,16 @@ public class PlotManager : MonoBehaviour {
 			}
 
 
-			double mag0xx = (double) ((currentFingerPoses2dim[0][0, 0]) * (currentFingerPoses2dim[0][0, 0]));
-			double mag0zz = (double) ((currentFingerPoses2dim[0][1, 0]) * (currentFingerPoses2dim[0][1, 0]));
-			double mag1xx = (double) ((currentFingerPoses2dim[1][0, 0]) * (currentFingerPoses2dim[1][0, 0]));
-			double mag1zz = (double) ((currentFingerPoses2dim[1][1, 0]) * (currentFingerPoses2dim[1][1, 0]));
+			double mag0xx = (double) ((currentFingerPoses2dimRotated[0][0, 0]) * (currentFingerPoses2dimRotated[0][0, 0]));
+			double mag0zz = (double) ((currentFingerPoses2dimRotated[0][1, 0]) * (currentFingerPoses2dimRotated[0][1, 0]));
+			double mag1xx = (double) ((currentFingerPoses2dimRotated[1][0, 0]) * (currentFingerPoses2dimRotated[1][0, 0]));
+			double mag1zz = (double) ((currentFingerPoses2dimRotated[1][1, 0]) * (currentFingerPoses2dimRotated[1][1, 0]));
 
 			mag0 = Math.Sqrt(mag0xx + mag0zz);
 			mag1 = Math.Sqrt(mag1xx + mag1zz);
 
-			double absHeightTimesTwo0 = (double) Mathf.Abs(2 * currentFingerPoses [0].y);
-			double absHeightTimesTwo1 = (double) Mathf.Abs(2 * currentFingerPoses [1].y);
+			double maxHeightTimesTwo0 = (double) Mathf.Max(2 * currentFingerHeight [0], 0.0f);
+			double maxHeightTimesTwo1 = (double) Mathf.Max(2 * currentFingerHeight [1], 0.0f);
 
 
 			// set up linsolve -- note this is bad!!!! we're not taking into account the PSD constraint of the eigenvalues, so our prediction is actually quite bad and not at all what we want
@@ -302,8 +318,8 @@ public class PlotManager : MonoBehaviour {
 			leastSquaresMatrixA [2, 0] = alphaForParabolaTrackingOptimization;
 			leastSquaresMatrixA [2, 1] = alphaForParabolaTrackingOptimization;
 
-			leastSquaresTargetb [0, 0] = absHeightTimesTwo0;
-			leastSquaresTargetb [1, 0] = absHeightTimesTwo1;
+			leastSquaresTargetb [0, 0] = maxHeightTimesTwo0;
+			leastSquaresTargetb [1, 0] = maxHeightTimesTwo1;
 			leastSquaresTargetb [2, 0] = 0.0;
 
 
@@ -335,12 +351,6 @@ public class PlotManager : MonoBehaviour {
 			// TODO: SDP problem to solve for the parabola (see if it feels better than rotation and NNQP
 
 
-
-
-
-
-
-
 		}
 
 		/*   Grabby interaction */
@@ -368,7 +378,7 @@ public class PlotManager : MonoBehaviour {
 
 		//renderer.material.SetMatrix ("_QuadForm", QuadForm);
 		
-		// construct matrix by pre multiplying by rotation and post multiplying by rotation transpose
+		// construct matrix by pre multiplying by rotation transpose and post multiplying by rotation
 		quadForm2dim [0, 0] = (double) diagComponent0;
 		quadForm2dim [1, 0] = (double) offDiagComponent;
 		quadForm2dim [0, 1] = (double) offDiagComponent;
@@ -417,22 +427,26 @@ public class PlotManager : MonoBehaviour {
 
 
 		// Calculate right RadiusScale
-		double radiusScaleIterative = 0.0;
+		if (updatedFingerPos)
+		{
+			double radiusScaleIterative = 0.0;
 
-		eigenValuesMatSquareRoot [0, 0] = Math.Sqrt(eigenValuesPSD [0, 0]);
-		eigenValuesMatSquareRoot [1, 1] = Math.Sqrt(eigenValuesPSD [1, 1]);
-		Matrix ellipseTransformer2dimInv = eigenValuesMatSquareRoot * eigenVectorsTranspose;
-		for (int i = 0; i < 2; i++){
-			double currentNorm = (ellipseTransformer2dimInv * currentFingerPoses2dim[i]).Norm2();
-			radiusScaleIterative = Math.Max (currentNorm, radiusScaleIterative);
+			eigenValuesMatSquareRoot [0, 0] = Math.Sqrt(eigenValuesPSD [0, 0]);
+			eigenValuesMatSquareRoot [1, 1] = Math.Sqrt(eigenValuesPSD [1, 1]);
+			Matrix ellipseTransformer2dimInv = eigenValuesMatSquareRoot * eigenVectorsTranspose;
+			for (int i = 0; i < 2; i++){
+				double currentNorm = (ellipseTransformer2dimInv * currentFingerPoses2dim[i]).Norm2();
+				//double currentNorm = (currentFingerPoses2dim[i]).Norm2();
+				radiusScaleIterative = Math.Max (currentNorm, radiusScaleIterative);
+			}
+
+			RadiusScale = (float) radiusScaleIterative;
 		}
-
-		RadiusScale = (float) radiusScaleIterative;
 		//RadiusScale = Mathf.Sqrt(5.0f / 2.0f);
 
 
 
-		// double check that the matrix solves for the right height
+		// double check that the matrix solves for the right height 
 
 		if (currentFingerPoses != null) {
 			float[] height = new float[2];
