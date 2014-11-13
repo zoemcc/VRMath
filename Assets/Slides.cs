@@ -118,9 +118,10 @@ public class Slides : MonoBehaviour {
 					
 					plotManger.displayRadial = false; 
 					mesh.enabled = true; 
-					textManger.displayFunction = false; 
+					textManger.displayLearningRate = false; 
 					plotManger.displayOpt = false;	
 					textManger.displayVector = false; 
+					textManger.displayMatrixEigs = false;
 
 					break;
 				case 1:
@@ -141,6 +142,7 @@ public class Slides : MonoBehaviour {
 					print ("setting slide4");	
 					plotManger.displayRadial = true; 
 					textManger.displayMatrix = true; 
+					textManger.displayMatrixEigs = true;
 					mesh.enabled = false; 
 
 					break;
@@ -149,6 +151,7 @@ public class Slides : MonoBehaviour {
 					print ("setting slide4");
 					plotManger.displayRadial = false;
 					textManger.displayMatrix = false; 
+					textManger.displayMatrixEigs = false;
 					mesh.enabled = true; 
 
 					break;
@@ -156,7 +159,7 @@ public class Slides : MonoBehaviour {
 					print ("setting slide5");
 					plotManger.displayRadial = true; 
 					mesh.enabled = false; 
-					textManger.displayFunction = true; 
+					textManger.displayLearningRate = true; 
 					plotManger.displayOpt = true;	
 					textManger.displayVector = true;
 

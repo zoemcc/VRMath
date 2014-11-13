@@ -59,6 +59,7 @@ public class OptimizationPlot : MonoBehaviour {
 
 	public Matrix currentPoint;
 	public float currentFuncValue = 0.0f;
+
 	
 	private int currentResolution;
 	private ParticleSystem.Particle[] optimizationPoints;
@@ -70,6 +71,9 @@ public class OptimizationPlot : MonoBehaviour {
 	PlotManager plotManagerScript;
 
 	public bool display = true;
+
+	public Vector2 optStartPos;
+	public Matrix optStartPosMat;
 	
 	private void CreateOptimizationPoints () {
 		currentResolution = resolution;
@@ -93,7 +97,7 @@ public class OptimizationPlot : MonoBehaviour {
 	void Start () {
 		optimizationRenderer = gameObject.AddComponent<LineRenderer>();
 		//optimizationRenderer = new LineRenderer();
-		optimizationRenderer.SetWidth (0.01f, 0.01f);
+		optimizationRenderer.SetWidth (0.10f, 0.10f);
 		optimizationRenderer.SetColors (Color.blue, Color.red);
 		optimizationRenderer.material.shader = Shader.Find ("Particles/Alpha Blended");
 		//print (optimizationRenderer.material);
@@ -108,6 +112,11 @@ public class OptimizationPlot : MonoBehaviour {
 			new double[] {zStart}});
 
 		plotManagerScript = gameObject.GetComponent("PlotManager") as PlotManager;
+
+		optStartPos = new Vector2(1f, .5f);
+		optStartPosMat = new Matrix(new double[][] {
+			new double[] {1.0},
+			new double[] {0.5}});
 
 	}
 
@@ -125,15 +134,20 @@ public class OptimizationPlot : MonoBehaviour {
 
 			Vector3 scale = so.graph_scale;
 
-			xStart = -0.5f * Mathf.Sin (t);
-			zStart = -0.5f * Mathf.Cos (0.7f * t);
+			//xStart = -0.5f * Mathf.Sin (t);
+			//zStart = -0.5f * Mathf.Cos (0.7f * t);
 			
 			/*   Grabby interaction */
 			Matrix a = plotManagerScript.quadForm2dim;
 			//Matrix a = QuadraticFormMatrix(t);
+
+			optStartPos = so.optStartPos;
+			optStartPosMat[0, 0] = (double) optStartPos.x;
+			optStartPosMat[1, 0] = (double) optStartPos.y;
+			learningRate = 0.05f * Mathf.Pow(0.75f * so.handDifferenceLearningRate.magnitude, 2);
 			
-			currentPoint.GetArray () [0] [0] = xStart;
-			currentPoint.GetArray () [1] [0] = zStart;
+			currentPoint.GetArray () [0] [0] = optStartPos[0];
+			currentPoint.GetArray () [1] [0] = optStartPos[1];
 			Matrix currentGradient;
 			Matrix currentHessianInv;
 			Matrix lastPoint = currentPoint.Clone();
@@ -152,7 +166,7 @@ public class OptimizationPlot : MonoBehaviour {
 
 			Matrix currentPointTranspose = currentPoint.Clone ();
 			currentPointTranspose.Transpose ();
-			currentFuncValue =  (float) (currentPointTranspose * a * currentPoint).GetArray () [0] [0];
+			currentFuncValue =  0.5f * (float) (currentPointTranspose * a * currentPoint).GetArray () [0] [0];
 			curVertex.y = currentFuncValue + 0.0001f;
 			optimizationRenderer.SetPosition (0, curVertex);
 			
@@ -172,8 +186,8 @@ public class OptimizationPlot : MonoBehaviour {
 
 				currentPointTranspose = currentPoint.Clone ();
 				currentPointTranspose.Transpose ();
-				currentFuncValue =  (float) (currentPointTranspose * a * currentPoint).GetArray () [0] [0];
-				curVertex.y = currentFuncValue + 0.0001f;
+				currentFuncValue =  0.5f * (float) (currentPointTranspose * a * currentPoint).GetArray () [0] [0];
+				curVertex.y = currentFuncValue + 0.0000000001f;
 
 				optimizationRenderer.SetPosition(i + 1, curVertex);
 				lastPoint = currentPoint;

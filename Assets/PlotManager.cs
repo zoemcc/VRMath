@@ -26,7 +26,6 @@ public class PlotManager : MonoBehaviour {
 	public EigenvalueDecomposition eigen; 
 	public Matrix eigenVectors;
 	public ComplexVector eigenValues;
-	public Matrix quadForm2dim;
 	public Matrix ellipseTransformer2dim;
 	public Matrix eigenValuesMatInvSquareRoot;
 	public Matrix eigenValuesMatSquareRoot;
@@ -35,6 +34,11 @@ public class PlotManager : MonoBehaviour {
 	public double deltaForParabolaTrackingOptimization = 1E-16;
 	public Matrix eigenValueOptimizationParabolaTracking;
 	public int optimizationTrackingIterationCount = 100;
+	
+	public Matrix quadForm2dim;
+	public Matrix rotationMatrix;
+	public Matrix eigsMatrix;
+	public Matrix rotationMatrixTranspose;
 
 	Vector3[] currentFingerPoses;
 	Matrix[] currentFingerPoses2dim;
@@ -56,9 +60,10 @@ public class PlotManager : MonoBehaviour {
 	Matrix leastSquaresTargetb;
 	Matrix nonNegQuadProgMatrixQ;
 	Matrix nonNegQuadProgVectorh;
-	Matrix rotationMatrix;
-	Matrix rotationMatrixTranspose;
 	Vector2 currentFingerHeight;
+
+	public Vector3[] finger_poses;
+	public Vector3 optStartPos;
 
 	float currentRotation = 0.0f;
 
@@ -117,6 +122,9 @@ public class PlotManager : MonoBehaviour {
 			}
 		}
 		quadForm2dim = new Matrix(new double[][] {
+			new double[] {0.0, 0.0},
+			new double[] {0.0, 0.0}});
+		eigsMatrix = new Matrix(new double[][] {
 			new double[] {0.0, 0.0},
 			new double[] {0.0, 0.0}});
 		ellipseTransformer2dim = new Matrix(new double[][] {
@@ -204,6 +212,9 @@ public class PlotManager : MonoBehaviour {
 		QuadForm [2, 0] = offDiagComponent;
 
 		RadiusScale = 1.0f;
+
+
+
 	}
 	
 	// Update is called once per frame
@@ -229,7 +240,7 @@ public class PlotManager : MonoBehaviour {
 
 		Vector3 scale = so.graph_scale;
 
-		Vector3[] finger_poses = so.finger_poses;
+		finger_poses = so.finger_poses;
 		//Vector3[] finger_poses = new Vector3[2];
 		//finger_poses [0] = new Vector3{1.0f, 1.0f, 1.0f};
 		//finger_poses [1] = new Vector3{0.5f, 1.0f, 1.0f};
@@ -379,12 +390,12 @@ public class PlotManager : MonoBehaviour {
 		//renderer.material.SetMatrix ("_QuadForm", QuadForm);
 		
 		// construct matrix by pre multiplying by rotation transpose and post multiplying by rotation
-		quadForm2dim [0, 0] = (double) diagComponent0;
-		quadForm2dim [1, 0] = (double) offDiagComponent;
-		quadForm2dim [0, 1] = (double) offDiagComponent;
-		quadForm2dim [1, 1] = (double) diagComponent2;
+		eigsMatrix [0, 0] = (double) diagComponent0;
+		eigsMatrix [1, 0] = (double) offDiagComponent;
+		eigsMatrix [0, 1] = (double) offDiagComponent;
+		eigsMatrix [1, 1] = (double) diagComponent2;
 
-		quadForm2dim = rotationMatrixTranspose * quadForm2dim * rotationMatrix;
+		quadForm2dim = rotationMatrixTranspose * eigsMatrix * rotationMatrix;
 
 		// Get ellipse transformation
 		eigen = quadForm2dim.EigenvalueDecomposition;

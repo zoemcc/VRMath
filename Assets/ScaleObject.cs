@@ -22,6 +22,9 @@ public class ScaleObject : MonoBehaviour {
 	HandController h; 
 	Transform t;
 	public Quaternion objectRotation;
+
+	public Vector2 optStartPos;
+	public Vector3 handDifferenceLearningRate;
 	
 	GameObject Butn; 
 	Button button; 
@@ -53,6 +56,9 @@ public class ScaleObject : MonoBehaviour {
 			pinchSpheres[i].transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
 			pinchSpheres[i].SetActive(false);
 		}
+
+		optStartPos = new Vector2(1.0f, 0.5f);
+		handDifferenceLearningRate = new Vector3(1.0f, 1.0f, 1.0f);
 
 
 	}
@@ -137,9 +143,12 @@ public class ScaleObject : MonoBehaviour {
 					}
 				}
 				else if(button.scene == 5){
-
-					if(one_pinch){
-						pos = temp_pos; 
+					if (pinch && hands.Count > 1) {
+						handDifferenceLearningRate = poses [1] - poses [0]; 
+					}
+					else if(one_pinch){
+						optStartPos[0] = poses[0].x;
+						optStartPos[1] = poses[0].z;
 					}
 				}
 

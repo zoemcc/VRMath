@@ -15,25 +15,42 @@ public class TextManager : MonoBehaviour {
 	static string x_i = "x" + _i; 
 	static string y_i = "x" + _i; 
 	static string alpha = '\u0391'.ToString();
+
 	string[,] matStrings;
+	string[,] eigsStrings;
+	string[,] rotStrings;
+	string[,] rotTransposeStrings;
 	string[,] vectorStrings;
+
 	TextMesh t;
 
 	Matrix curMat;
+	Matrix curRot;
+	Matrix curRotTranspose;
+	Matrix curEigs;
 	Matrix curVector;
-	float curFuncValue;
+	float curLearningRate;
 	
 	PlotManager plotManagerScript;
 	OptimizationPlot optimizationPlotScript;
+
 	TextMesh matrixTextMesh;
-	TextMesh functionTextMesh;
+	TextMesh matrixEigsTextMesh;
+	TextMesh matrixRotTextMesh;
+	TextMesh matrixRotTransposeTextMesh;
+	TextMesh learningRateTextMesh;
 	TextMesh vectorTextMesh;
 	
 	int numMatrixTexts = 5;
 	int idxMatrixText = 2;
+
+	int numMatrixEigsTexts = 9;
+	int idxMatrixRotTransposeText = 2;
+	int idxMatrixEigsText = 4;
+	int idxMatrixRotText = 6;
 	
-	int numFunctionTexts = 2;
-	int idxFunctionText = 1;
+	int numLearningRateTexts = 2;
+	int idxLearningRateText = 1;
 
 	int numVectorTexts = 4;
 	int idxVectorText = 2;
@@ -41,15 +58,18 @@ public class TextManager : MonoBehaviour {
 	int matrixStringLength = 5;
 	
 	public bool displayMatrix = true;
-	public bool displayFunction = false;
+	public bool displayMatrixEigs = true;
+	public bool displayLearningRate = false;
 	public bool displayVector = false;
 	
 	bool currentDisplayMatrix = false;
-	bool currentDisplayFunction = false;
+	bool currentDisplayMatrixEigs = false;
+	bool currentDisplayLearningRate = false;
 	bool currentDisplayVector = false;
 	
 	GameObject matrixTextTopLevel;
-	GameObject functionTextTopLevel;
+	GameObject matrixEigsTextTopLevel;
+	GameObject learningRateTextTopLevel;
 	GameObject vectorTextTopLevel;
 	
 	
@@ -61,6 +81,17 @@ public class TextManager : MonoBehaviour {
 	//							  "v" ]
 	GameObject[] matrixTexts;
 
+	// 9 gameobjects as children, ["height = v'", 
+	//					          "[", 
+	//							  "rotTranspose",
+	//							  "] [",
+	//							  "eigs",
+	//							  "] [",
+	//							  "rot",
+	//							  "]",
+	//							  "v" ]
+	GameObject[] matrixEigsTexts;
+
 	// 4 gameobjects as children, ["v = ", 
 	//					          "[", 
 	//							  "x, y", 
@@ -69,7 +100,7 @@ public class TextManager : MonoBehaviour {
 
 	// 2 gameobjects as children, ["f(v) = ", 
 	//					          "v" ]
-	GameObject[] functionTexts;
+	GameObject[] learningRateTexts;
 	
 	
 	// Use this for initialization
@@ -78,7 +109,6 @@ public class TextManager : MonoBehaviour {
 		plotManagerScript = plotManagerObj.GetComponent("PlotManager") as PlotManager;
 
 		optimizationPlotScript = plotManagerObj.GetComponent ("OptimizationPlot") as OptimizationPlot;
-		//curMat = plotManagerScript.quadForm2dim;
 		
 		matrixTexts = new GameObject[numMatrixTexts];
 		
@@ -144,26 +174,24 @@ public class TextManager : MonoBehaviour {
 		matrixTextMesh = matrixTexts [idxMatrixText].GetComponent("TextMesh") as TextMesh;
 
 
-		// function text rendering
+		matrixEigsTexts = new GameObject[numMatrixEigsTexts];
 		
-		functionTexts = new GameObject[numFunctionTexts];
+		matrixEigsTextTopLevel = new GameObject ("MatrixEigsText");
+		matrixEigsTextTopLevel.transform.parent = gameObject.transform;
+		
+		matrixEigsTextTopLevel.SetActive (displayMatrixEigs);
+		currentDisplayMatrixEigs = displayMatrixEigs;
+		
+		matrixEigsTextTopLevel.transform.localPosition = new Vector3 (-4.0f, -2.5f, 0.0f);
+		
+		
 		xOffset = 0.0f;
 		
-		functionTextTopLevel = new GameObject ("FunctionText");
-		functionTextTopLevel.transform.parent = gameObject.transform;
 		
-		functionTextTopLevel.SetActive (displayFunction);
-		currentDisplayFunction = displayFunction;
-
-		functionTextTopLevel.transform.localPosition = new Vector3 (0.0f, 1.0f, 0.0f);
-		
-
-		
-		
-		for (int i = 0; i < numFunctionTexts; i++) {
+		for (int i = 0; i < numMatrixEigsTexts; i++) {
 			
 			
-			GameObject texti = AddMeshComponentChild("text: " + i.ToString(), functionTextTopLevel);
+			GameObject texti = AddMeshComponentChild("text: " + i.ToString(), matrixEigsTextTopLevel);
 			TextMesh t = texti.GetComponent("TextMesh") as TextMesh;
 			
 			
@@ -172,9 +200,100 @@ public class TextManager : MonoBehaviour {
 			{
 			case 0:
 				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.0f, (float)0.0f);
-				t.text = "f(x) = ";
+				t.text = "A = ";
 				t.fontSize = 10;
-				xOffset += 2.5f;
+				xOffset += 1.8f;
+				break;
+			case 1:
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.425f, (float)0.0f);
+				t.text = "[";
+				t.fontSize = 14;
+				xOffset += 0.6f;
+				break;
+			case 2:
+				// rotTranpose matrix
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.3f, (float)0.0f);
+				t.fontSize = 7;
+				xOffset += 4.0f;
+				break;
+			case 3: 
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.425f, (float)0.0f);
+				t.text = "][";
+				t.fontSize = 14;
+				xOffset += 0.9f;
+				break;
+			case 4:
+				// eigs matrix
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.3f, (float)0.0f);
+				t.fontSize = 7;
+				xOffset += 4.0f;
+				break;
+			case 5: 
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.425f, (float)0.0f);
+				t.text = "][";
+				t.fontSize = 14;
+				xOffset += 0.9f;
+				break;
+			case 6:
+				// rot matrix
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.3f, (float)0.0f);
+				t.fontSize = 7;
+				xOffset += 4.0f;
+				break;
+			case 7:
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.425f, (float)0.0f);
+				t.text = "]";
+				t.fontSize = 14;
+				xOffset += 0.6f;
+				break;
+			case 8:
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.0f, (float)0.0f);
+				t.text = "";
+				t.fontSize = 10;
+				xOffset += 5.0f;
+				break;
+			}
+			
+			matrixEigsTexts[i] = texti;
+			
+		}
+		
+		matrixEigsTextMesh = matrixEigsTexts [idxMatrixEigsText].GetComponent("TextMesh") as TextMesh;
+		matrixRotTextMesh = matrixEigsTexts [idxMatrixRotText].GetComponent("TextMesh") as TextMesh;
+		matrixRotTransposeTextMesh = matrixEigsTexts [idxMatrixRotTransposeText].GetComponent("TextMesh") as TextMesh;
+
+
+		// learning rate text rendering
+
+		learningRateTexts = new GameObject[numLearningRateTexts];
+		xOffset = 0.0f;
+		
+		learningRateTextTopLevel = new GameObject ("LearningRateText");
+		learningRateTextTopLevel.transform.parent = gameObject.transform;
+		
+		learningRateTextTopLevel.SetActive (displayLearningRate);
+		currentDisplayLearningRate = displayLearningRate;
+
+		learningRateTextTopLevel.transform.localPosition = new Vector3 (0.0f, 1.0f, 0.0f);
+		
+
+		
+		
+		for (int i = 0; i < numLearningRateTexts; i++) {
+			
+			
+			GameObject texti = AddMeshComponentChild("text: " + i.ToString(), learningRateTextTopLevel);
+			TextMesh t = texti.GetComponent("TextMesh") as TextMesh;
+			
+			
+			
+			switch (i)
+			{
+			case 0:
+				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.0f, (float)0.0f);
+				t.text = "learning rate = ";
+				t.fontSize = 10;
+				xOffset += 7f;
 				break;
 			case 1:
 				t.transform.localPosition = new Vector3 ((float)xOffset, (float)0.0f, (float)0.0f);
@@ -183,10 +302,10 @@ public class TextManager : MonoBehaviour {
 				xOffset += 1.0f;
 				break;
 			}
-			functionTexts[i] = texti;
+			learningRateTexts[i] = texti;
 		}
 		
-		functionTextMesh = functionTexts [idxFunctionText].GetComponent("TextMesh") as TextMesh;
+		learningRateTextMesh = learningRateTexts [idxLearningRateText].GetComponent("TextMesh") as TextMesh;
 
 		// vector text rendering
 
@@ -416,13 +535,17 @@ public class TextManager : MonoBehaviour {
 	// Update is called once per frame 
 	void Update () {
 		
-		if (displayFunction != currentDisplayFunction) {
-			functionTextTopLevel.SetActive (displayFunction);
-			currentDisplayFunction = displayFunction;
+		if (displayLearningRate != currentDisplayLearningRate) {
+			learningRateTextTopLevel.SetActive (displayLearningRate);
+			currentDisplayLearningRate = displayLearningRate;
 		}
 		if (displayMatrix != currentDisplayMatrix) {
 			matrixTextTopLevel.SetActive (displayMatrix);
 			currentDisplayMatrix = displayMatrix;
+		}
+		if (displayMatrixEigs != currentDisplayMatrixEigs) {
+			matrixEigsTextTopLevel.SetActive (displayMatrixEigs);
+			currentDisplayMatrixEigs = displayMatrixEigs;
 		}
 		if (displayVector != currentDisplayVector) {
 			vectorTextTopLevel.SetActive (displayVector);
@@ -434,12 +557,24 @@ public class TextManager : MonoBehaviour {
 		matStrings = textListsMatrix(2,2, curMat, matrixStringLength);
 		matrixTextMesh.text = Mat2String(matStrings);
 
-		curVector = optimizationPlotScript.currentPoint.Clone();
+		curEigs = plotManagerScript.eigsMatrix;
+		eigsStrings = textListsMatrix(2,2, curEigs, matrixStringLength);
+		matrixEigsTextMesh.text = Mat2String(eigsStrings);
+
+		curRot = plotManagerScript.rotationMatrix;
+		rotStrings = textListsMatrix(2,2, curRot, matrixStringLength);
+		matrixRotTextMesh.text = Mat2String(rotStrings);
+
+		curRotTranspose = plotManagerScript.rotationMatrixTranspose;
+		rotTransposeStrings = textListsMatrix(2,2, curRotTranspose, matrixStringLength);
+		matrixRotTransposeTextMesh.text = Mat2String(rotTransposeStrings);
+
+		curVector = optimizationPlotScript.optStartPosMat.Clone();
 		vectorStrings = textListsMatrix(2,1, curVector, matrixStringLength);
 		vectorTextMesh.text = Mat2String(vectorStrings);
 
-		curFuncValue = optimizationPlotScript.currentFuncValue;
-		functionTextMesh.text = clipNumToStringLength((double) curFuncValue, matrixStringLength + 3).ToString ();
+		curLearningRate = optimizationPlotScript.learningRate;
+		learningRateTextMesh.text = clipNumToStringLength((double) curLearningRate, matrixStringLength + 3).ToString ();
 
 
 	}
