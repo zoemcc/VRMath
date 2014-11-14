@@ -70,7 +70,7 @@ public class OptimizationPlot : MonoBehaviour {
 	ScaleObject so;
 	PlotManager plotManagerScript;
 
-	public bool display = true;
+	public bool display = false;
 
 	public Vector2 optStartPos;
 	public Matrix optStartPosMat;
@@ -122,6 +122,9 @@ public class OptimizationPlot : MonoBehaviour {
 
 	
 	void Update () {
+		if (plotManagerScript.displayOpt != display){
+			display = plotManagerScript.displayOpt;
+		}
 		if (display) {
 			optimizationRenderer.enabled = true;
 			if (currentResolution != resolution || optimizationPoints == null) {

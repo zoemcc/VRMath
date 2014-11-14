@@ -65,6 +65,7 @@ public class Slides : MonoBehaviour {
 		audioSources = audioZone.GetComponents<AudioSource> (); 
 		mesh = gameObject.GetComponent<MeshRenderer> (); 
 
+		plotManger.displayOpt = false;	
 
 		if (loadedS1.isDone && loadedS2.isDone && loadedS3.isDone && loadedS4.isDone) {
 		
@@ -140,6 +141,10 @@ public class Slides : MonoBehaviour {
 				case 3:
 					gameObject.renderer.material.SetTexture("_MainTex",slide4);
 					print ("setting slide4");	
+					textManger.displayLearningRate = false; 
+					textManger.displayVector = false;
+					plotManger.displayOpt = true;	
+
 					plotManger.displayRadial = true; 
 					textManger.displayMatrix = true; 
 					textManger.displayMatrixEigs = true;
@@ -150,6 +155,8 @@ public class Slides : MonoBehaviour {
 				    gameObject.renderer.material.SetTexture("_MainTex",slide4);
 					print ("setting slide4");
 					plotManger.displayRadial = false;
+					plotManger.displayOpt = false;
+
 					textManger.displayMatrix = false; 
 					textManger.displayMatrixEigs = false;
 					mesh.enabled = true; 
@@ -160,8 +167,12 @@ public class Slides : MonoBehaviour {
 					plotManger.displayRadial = true; 
 					mesh.enabled = false; 
 					textManger.displayLearningRate = true; 
-					plotManger.displayOpt = true;	
 					textManger.displayVector = true;
+					plotManger.displayOpt = true;	
+
+					textManger.displayMatrix = false; 
+					textManger.displayMatrixEigs = false;
+					
 
 					break; 
 

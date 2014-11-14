@@ -12,8 +12,9 @@ public class Button : MonoBehaviour {
 	int numScenes = 6;
 
 	public bool debug = false;
+	public bool alreadySeenAll = false;
 
-	public int debugScene = 3;
+	public int debugScene = 0;
 
 	void Start () {
 		update = true;
@@ -31,8 +32,12 @@ public class Button : MonoBehaviour {
 			  
  			if (Input.GetKeyDown(KeyCode.Mouse0) && !update) {
 				scene += 1; 
-				if(scene == numScenes){
-					scene = 0; 
+				if(scene == numScenes){ //first loop through, go back to matrix manipulation
+					scene = 3;
+					alreadySeenAll = true;
+				}
+				else if (scene == 4 && alreadySeenAll){ //have already been through, so send matrix to optimization and vice versa
+					scene = 5;
 				}
 				update = true; 
 			} 

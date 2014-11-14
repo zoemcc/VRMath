@@ -11,10 +11,21 @@ public class GraphSetter : MonoBehaviour {
 	void Start () {
 		plotManagerObj = GameObject.Find ("PlotManager");
 		plotManagerScript = plotManagerObj.GetComponent("PlotManager") as PlotManager;
+
+		centerEyeAnchor = GameObject.Find ("CenterEyeAnchor");
+
+		mesh = GetComponent<MeshFilter>().mesh;
+		bound = new Bounds(Vector3.zero, new Vector3(200, 200, 200));
+		mesh.bounds = bound;
 	}
 
 	GameObject  plotManagerObj;
 	PlotManager plotManagerScript;
+
+	GameObject centerEyeAnchor;
+
+	Mesh mesh;
+	Bounds bound;
 
 	Matrix4x4 QuadForm;
 	Matrix4x4 EllipseTransformer;
@@ -31,8 +42,11 @@ public class GraphSetter : MonoBehaviour {
 		renderer.material.SetMatrix ("_QuadForm", QuadForm);
 
 		// Get ellipse transformation
-		//EllipseTransformer = plotManager.GetComponent<Matrix4x4> ("EllipseTransformer");
 		EllipseTransformer = plotManagerScript.EllipseTransformer;
 		renderer.material.SetMatrix ("_EllipseTransformer", EllipseTransformer);
+
+		bound.center = centerEyeAnchor.transform.position;
+		bound.extents = new Vector3(100, 100, 100);
+		mesh.bounds = bound;
 	}
 }
