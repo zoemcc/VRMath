@@ -1,30 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
+
+using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra;
+
+using System;
+using System.Collections;
 using System.Linq;
 using System.Linq.Expressions;
-//using System.Reflection.Emit;
+using System.Reflection;
+//using Ex = Expression;
 
-public class Symbolic : MonoBehaviour {
+public class Symbolic{
 
-	//Expression<Func<int, bool>> lambda = num => num < 5;
 
-	// Use this for initialization
-	void Start () {
-	
-		// Manually build the expression tree for  
-		// the lambda expression num => num < 5.
-		ParameterExpression numParam = Expression.Parameter(typeof(int), "num");
-		ConstantExpression five = Expression.Constant(5, typeof(int));
-		BinaryExpression numLessThanFive = Expression.LessThan(numParam, five);
-		//Expression<F
-		//Expression<Func<int, bool>> lambda1;// =
-		//	Expression.Lambda<Func<int, bool>>(
-		//		numLessThanFive,
-		//		new ParameterExpression[] { numParam });
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
+
 }

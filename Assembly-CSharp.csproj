@@ -118,6 +118,7 @@
      <Compile Include="Assets\LeapMotion\Scripts\Utils\TriggerDrawing.cs" />
      <Compile Include="Assets\LeapMotion\Scripts\Utils\Utils.cs" />
      <Compile Include="Assets\MathNetTest.cs" />
+     <Compile Include="Assets\MathNetUtils.cs" />
      <Compile Include="Assets\Move_Object.cs" />
      <Compile Include="Assets\OVR\Scripts\OVRCameraRig.cs" />
      <Compile Include="Assets\OVR\Scripts\OVRCommon.cs" />
@@ -139,6 +140,7 @@
      <Compile Include="Assets\ScaleObject.cs" />
      <Compile Include="Assets\Slides.cs" />
      <Compile Include="Assets\Symbolic.cs" />
+     <Compile Include="Assets\SymbolicUnity.cs" />
      <Compile Include="Assets\TextManager.cs" />
      <Compile Include="Assets\TrackCameraLeft.cs" />
      <Compile Include="Assets\mathText2.cs" />
