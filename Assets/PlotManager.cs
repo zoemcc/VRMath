@@ -486,6 +486,9 @@ public class PlotManager : MonoBehaviour {
 		newMesh.transform.parent = parent.transform;
 		newMesh.AddComponent<MeshFilter> ();
 		newMesh.AddComponent<MeshRenderer> ();
+		//string shaderPre = ShaderGen.shaderPreString();
+		//print (shaderPre);
+		//newMesh.renderer.material = new Material (shaderPre);
 		newMesh.renderer.material = new Material (Shader.Find ("Cg shader for plotting 2d functions"));
 		MeshFilter meshFilter = newMesh.GetComponent<MeshFilter> ();
 		meshFilter.mesh = Resources.Load<Mesh> (assetPath + "/" + assetName);

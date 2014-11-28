@@ -41,26 +41,26 @@ public class SymbolicUnity : MonoBehaviour {
 
 		ParameterExpression quadForm = Expression.Parameter(typeof(Matrix), "quadForm");
 		ParameterExpression inputVector = Expression.Parameter(typeof(Matrix), "inputVector");
-		BinaryExpression matrixMulBin = Expression.Multiply(quadForm, inputVector);
-		//Expression transposeInputVector = Expression.Call(inputVector,
-		//                typeof(MathNetUtils).GetMethod("pureTranspose"));
-		MethodInfo transposeMethod = typeof(Matrix).GetMethod("Transpose", new Type[] {typeof(Matrix)});
-		Expression inputVectorTranspose = Expression.Call(transposeMethod, inputVector);
-		BinaryExpression quadFormExpr = Expression.Multiply(inputVectorTranspose, matrixMulBin);
-		//String quadFormString = quadFormExpr.ToString();
-		
-		BinaryExpression quadFormHalfExpr = Expression.Multiply(Expression.Constant(new Matrix(new double[][]{new double[] {0.5}})), quadFormExpr);
+
+		BinaryExpression quadFormHalfExpr = Symbolic.halfQuadForm(quadForm, inputVector);
+
+		String quadFormString = quadFormHalfExpr.ToString();
+		print (quadFormString);
 
 		Expression<Func<Matrix, Matrix, Matrix>> quadFormLambda = 
 			Expression.Lambda<Func<Matrix, Matrix, Matrix>>(
 				quadFormHalfExpr,
 				new ParameterExpression[] {quadForm, inputVector});
 
+
+		print (quadFormLambda.ToString());
+		
+
 		Func<Matrix, Matrix, Matrix> quadFormFunc = quadFormLambda.Compile();
 
 		Matrix inputVectorTest = new Matrix(new double[][]{new double[] {1.0}, new double[] {0.5}});
 		Matrix inputMatrixTest = new Matrix(new double[][]{new double[] {3.0, 0.5}, new double[] {0.5, 2.0}});
-		Matrix.Transpose(inputMatrixTest);
+
 
 		Matrix outputTest = quadFormFunc(inputMatrixTest, inputVectorTest);
 
