@@ -1,30 +1,39 @@
 ﻿using UnityEngine;
 using System.Collections;
+
+using MathNet.Numerics;
+using MathNet.Numerics.LinearAlgebra;
+
+using System;
+using System.Collections;
 using System.Linq;
 using System.Linq.Expressions;
-//using System.Reflection.Emit;
+using System.Reflection;
 
-public class Symbolic : MonoBehaviour {
+public class Symbolic{
 
-	//Expression<Func<int, bool>> lambda = num => num < 5;
-
-	// Use this for initialization
-	void Start () {
-	
-		// Manually build the expression tree for  
-		// the lambda expression num => num < 5.
-		ParameterExpression numParam = Expression.Parameter(typeof(int), "num");
-		ConstantExpression five = Expression.Constant(5, typeof(int));
-		BinaryExpression numLessThanFive = Expression.LessThan(numParam, five);
-		//Expression<F
-		//Expression<Func<int, bool>> lambda1;// =
-		//	Expression.Lambda<Func<int, bool>>(
-		//		numLessThanFive,
-		//		new ParameterExpression[] { numParam });
+	public static Expression transpose(Expression inputMatrixExpression){
+		MethodInfo transposeMethod = typeof(Matrix).GetMethod("Transpose", new Type[] {typeof(Matrix)});
+		Expression outputMatrixTransposeExpression = Expression.Call(transposeMethod, inputMatrixExpression);
+		return outputMatrixTransposeExpression;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	public static ConstantExpression scalarConstantMatrix(double inputDouble){
+		return Expression.Constant(new Matrix(new double[][]{new double[] {inputDouble}}));
 	}
+
+	public static BinaryExpression dotProduct(Expression inputVector1, Expression inputVector2){
+		return Expression.Multiply(transpose(inputVector1), inputVector2);
+	}
+
+	public static BinaryExpression halfQuadForm(Expression quadFormMatrix, Expression inputVector){
+		BinaryExpression quadFormExpr = dotProduct(inputVector, Expression.Multiply(quadFormMatrix, inputVector));
+		return Expression.Multiply(scalarConstantMatrix(0.5), quadFormExpr);
+	}
+
+	//public static Expression[] walkExpressionTree(){
+	//	ElementInit expinit = Expression.ElementInit();
+	//}
+
+
 }

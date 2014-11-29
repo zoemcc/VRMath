@@ -36,12 +36,10 @@
             blendedVertex[3] = 1.0;  //since we scaled by _RadiusScale including the homogenous part
             
             float height = 0.5 * mul(blendedVertex, mul(_QuadForm, blendedVertex));
+            blendedVertex.y = height;
             
             float integralHeight;
             float remainderHeight = modf(10 * abs(height), integralHeight);
- 
-            blendedVertex.y = height;
-            //blendedVertex.z += 3.0f;
              
             output.pos = mul(UNITY_MATRIX_MVP, blendedVertex);
             

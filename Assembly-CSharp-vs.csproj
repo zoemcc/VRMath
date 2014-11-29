@@ -53,6 +53,7 @@
      <Compile Include="Assets\Grapher1.cs" />
      <Compile Include="Assets\Grapher2.cs" />
      <Compile Include="Assets\Grapher2MathNet.cs" />
+     <Compile Include="Assets\GraphicsPrimitiveVisitor.cs" />
      <Compile Include="Assets\HUDFPS.cs" />
      <Compile Include="Assets\LeapMotion+OVR\Scripts\BlocksPlaneGenerator.cs" />
      <Compile Include="Assets\LeapMotion+OVR\Scripts\MovementManager.cs" />
@@ -118,6 +119,7 @@
      <Compile Include="Assets\LeapMotion\Scripts\Utils\TriggerDrawing.cs" />
      <Compile Include="Assets\LeapMotion\Scripts\Utils\Utils.cs" />
      <Compile Include="Assets\MathNetTest.cs" />
+     <Compile Include="Assets\MathNetUtils.cs" />
      <Compile Include="Assets\Move_Object.cs" />
      <Compile Include="Assets\OVR\Scripts\OVRCameraRig.cs" />
      <Compile Include="Assets\OVR\Scripts\OVRCommon.cs" />
@@ -137,8 +139,11 @@
      <Compile Include="Assets\OptimizationPlot.cs" />
      <Compile Include="Assets\PlotManager.cs" />
      <Compile Include="Assets\ScaleObject.cs" />
+     <Compile Include="Assets\ShaderGen.cs" />
      <Compile Include="Assets\Slides.cs" />
      <Compile Include="Assets\Symbolic.cs" />
+     <Compile Include="Assets\SymbolicMatrix.cs" />
+     <Compile Include="Assets\SymbolicUnity.cs" />
      <Compile Include="Assets\TextManager.cs" />
      <Compile Include="Assets\TrackCameraLeft.cs" />
      <Compile Include="Assets\mathText2.cs" />
