@@ -9,103 +9,248 @@ using System.Reflection;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics;
 
-public class SymbolicMatrix {
+public enum MatrixExpressionType {
+	MatrixMultiply,
+	ScalarMultiply,
+	Add,
+	Subtract,
+	Constant,
+	Parameter
+}
 
-	public enum MatrixType {
-		Matrix,
-		RowVector,
-		ColumnVector,
-		Scalar
-	}
+public enum MatrixShapeType {
+	Matrix,
+	RowVector,
+	ColumnVector,
+	Scalar
+}
 
-	public MatrixType type;
+public class SymbolicMatrixExpr {
+
+	public MatrixExpressionType exprType;
+	public MatrixShapeType shapeType;
 	public Expression dataExp;
 	public int[] shape;
 	public bool isConstant;
+	public string name;
+	public ParameterExpression[] parameters;
+	
+	private SymbolicMatrixExpr(){
+		// blank slate matrix for internal use 
+	}
 
-	SymbolicMatrix(Matrix inputMatrix, bool inputIsConstant, string name){
-		// matrix in the wild
+	public static SymbolicMatrixExpr constantMatrix(Matrix inputMatrix, string name){
+		// constant matrix
 
-		this.isConstant = inputIsConstant;
-		this.shape = new int[] { inputMatrix.RowCount, inputMatrix.ColumnCount};
+		SymbolicMatrixExpr returnMat = new SymbolicMatrixExpr();
+
+		returnMat.isConstant = true;
+		returnMat.shape = new int[] { inputMatrix.RowCount, inputMatrix.ColumnCount};
 
 		//shape calculations
-		this.type = SymbolicMatrix.shapeToMatType(this.shape);
+		returnMat.shapeType = SymbolicMatrixExpr.shapeToMatShapeType(returnMat.shape);
 
+		// data and type calculations
+		returnMat.dataExp = (ConstantExpression) Expression.Constant(inputMatrix);
+		returnMat.parameters = new ParameterExpression[] {};
+		returnMat.exprType = MatrixExpressionType.Constant;
 
-		// data calculations
-		if (inputIsConstant){
-			this.dataExp = (ConstantExpression) Expression.Constant(inputMatrix);
+		// name
+		returnMat.name = name;
+
+		return returnMat;
+	}
+
+	public static SymbolicMatrixExpr parametricMatrix(int[] shape, string name){
+		// parametric matrix
+
+		SymbolicMatrixExpr returnMat = new SymbolicMatrixExpr();
+		
+		returnMat.isConstant = false;
+		returnMat.shape = new int[] {shape[0], shape[1]};
+		
+		//shape calculations
+		returnMat.shapeType = SymbolicMatrixExpr.shapeToMatShapeType(returnMat.shape);
+		
+		// data and type calculations
+		ParameterExpression expr = Expression.Parameter(typeof(Matrix), name);
+		returnMat.dataExp = expr;
+		returnMat.parameters = new ParameterExpression[] {expr};
+		returnMat.exprType = MatrixExpressionType.Parameter;
+		
+		// name
+		returnMat.name = name;
+
+		return returnMat;
+	}
+
+	public static SymbolicMatrixExpr multiply(SymbolicMatrixExpr inputSymbMatLeft, SymbolicMatrixExpr inputSymbMatRight){
+		// shape calculations
+
+		SymbolicMatrixExpr returnMat = new SymbolicMatrixExpr();
+
+		// calculate return shape and check that it is a valid matrix multiply
+		int[] shapeLeft  = inputSymbMatLeft.shape;
+		int[] shapeRight = inputSymbMatRight.shape;
+		if (shapeLeft[1] != shapeRight[0]){
+			throw new Exception("Shapes are not compatible for matrix multiply");
 		}
 		else {
-			this.dataExp = (ParameterExpression) Expression.Parameter(typeof(Matrix), name);
+			returnMat.shape = new int[] {shapeLeft[0], shapeRight[1]};
 		}
-	}
 
-	SymbolicMatrix(UnarySymbolicFunction unaryFunc, SymbolicMatrix inputSymbMat){
-		// apply a unary function to a given symbolic matrix
-		// unaryFunc : the function to be applied to the one matrix
-		// inputSymbMat : the input symbolic matrix
-
-
-		// shape calculations
-		this.shape = unaryFunc.shapeTransformer(inputSymbMat.shape);
-		this.type = SymbolicMatrix.shapeToMatType(this.shape);
-		this.isConstant = inputSymbMat.isConstant;
-		this.dataExp = unaryFunc.unaryFunc(inputSymbMat.dataExp);
-
-	}
-
-	SymbolicMatrix(BinarySymbolicFunction binaryFunc, SymbolicMatrix inputSymbMatLeft, SymbolicMatrix inputSymbMatRight){
-		// apply a binary function to two given symbolic matrices
-		// binaryFunc : the function to be applied to the two matrices
-		// inputSymbMatLeft : the first input symbolic matrix 
-		// inputSymbMatRight : the second input symbolic matrix
+		returnMat.shapeType = SymbolicMatrixExpr.shapeToMatShapeType(returnMat.shape);
 		
-		
-		// shape calculations
-		this.shape = binaryFunc.shapeTransformer(inputSymbMatLeft.shape, inputSymbMatRight.shape);
-		this.type = SymbolicMatrix.shapeToMatType(this.shape);
-
 		// constant calculation
 		if (inputSymbMatLeft.isConstant && inputSymbMatRight.isConstant){
-			this.isConstant = true;
+			returnMat.isConstant = true;
+			returnMat.parameters = new ParameterExpression[] {};
 		}
 		else {
-			this.isConstant = false;
+			returnMat.isConstant = false;
+			returnMat.parameters = SymbolicMatrixExpr.concatParameters(inputSymbMatLeft, inputSymbMatRight);
 		}
-
-
-		this.dataExp = binaryFunc.binaryFunc(inputSymbMatLeft.dataExp, inputSymbMatRight.dataExp);
 		
+		returnMat.dataExp = Expression.Multiply(inputSymbMatLeft.dataExp, inputSymbMatRight.dataExp);
+		returnMat.exprType = MatrixExpressionType.MatrixMultiply;
+
+		returnMat.name = "(" + inputSymbMatLeft.name + ") * (" + inputSymbMatRight.name + ")";
+		returnMat.parameters = SymbolicMatrixExpr.concatParameters(inputSymbMatLeft, inputSymbMatRight);
+
+		return returnMat;
 	}
 
-	public static MatrixType shapeToMatType(int[] shape){
+	public static SymbolicMatrixExpr add(SymbolicMatrixExpr inputSymbMatLeft, SymbolicMatrixExpr inputSymbMatRight){
+		// shape calculations
+		
+		SymbolicMatrixExpr returnMat = new SymbolicMatrixExpr();
+
+		// calculate return shape and check that it is a valid matrix add
+		int[] shapeLeft  = inputSymbMatLeft.shape;
+		int[] shapeRight = inputSymbMatRight.shape;
+		if (shapeLeft[0] != shapeRight[0] || shapeLeft[1] != shapeRight[1]){
+			throw new Exception("Shapes are not compatible for matrix add");
+		}
+		else {
+			returnMat.shape = new int[] {shapeLeft[0], shapeLeft[1]};
+		}
+
+		returnMat.shapeType = SymbolicMatrixExpr.shapeToMatShapeType(returnMat.shape);
+		
+		// constant calculation
+		if (inputSymbMatLeft.isConstant && inputSymbMatRight.isConstant){
+			returnMat.isConstant = true;
+			returnMat.parameters = new ParameterExpression[] {};
+		}
+		else {
+			returnMat.isConstant = false;
+			returnMat.parameters = SymbolicMatrixExpr.concatParameters(inputSymbMatLeft, inputSymbMatRight);
+		}
+
+		returnMat.dataExp = Expression.Add(inputSymbMatLeft.dataExp, inputSymbMatRight.dataExp);
+		returnMat.exprType = MatrixExpressionType.Add;
+
+		returnMat.name = "(" + inputSymbMatLeft.name + ") + (" + inputSymbMatRight.name + ")";
+
+		return returnMat;
+	}
+
+	public static SymbolicMatrixExpr subtract(SymbolicMatrixExpr inputSymbMatLeft, SymbolicMatrixExpr inputSymbMatRight){
+		// shape calculations
+		
+		SymbolicMatrixExpr returnMat = new SymbolicMatrixExpr();
+		
+		// calculate return shape and check that it is a valid matrix add
+		int[] shapeLeft  = inputSymbMatLeft.shape;
+		int[] shapeRight = inputSymbMatRight.shape;
+		if (shapeLeft[0] != shapeRight[0] || shapeLeft[1] != shapeRight[1]){
+			throw new Exception("Shapes are not compatible for matrix subtract");
+		}
+		else {
+			returnMat.shape = new int[] {shapeLeft[0], shapeLeft[1]};
+		}
+		
+		returnMat.shapeType = SymbolicMatrixExpr.shapeToMatShapeType(returnMat.shape);
+		
+		// constant calculation
+		if (inputSymbMatLeft.isConstant && inputSymbMatRight.isConstant){
+			returnMat.isConstant = true;
+			returnMat.parameters = new ParameterExpression[] {};
+		}
+		else {
+			returnMat.isConstant = false;
+			returnMat.parameters = SymbolicMatrixExpr.concatParameters(inputSymbMatLeft, inputSymbMatRight);
+		}
+
+		returnMat.dataExp = Expression.Subtract(inputSymbMatLeft.dataExp, inputSymbMatRight.dataExp);
+		returnMat.exprType = MatrixExpressionType.Subtract;
+
+		returnMat.name = "(" + inputSymbMatLeft.name + ") - (" + inputSymbMatRight.name + ")";
+
+		return returnMat;
+	}
+
+	public static SymbolicMatrixExpr scale(SymbolicMatrixExpr inputSymbScalar, SymbolicMatrixExpr inputSymbMatrix){
+		// shape calculations
+		
+		SymbolicMatrixExpr returnMat = new SymbolicMatrixExpr();
+		
+		// check that the scalar input (left symbolic matrix) is a scalar
+		int[] matShape = inputSymbMatrix.shape;
+		if (inputSymbScalar.shapeType != MatrixShapeType.Scalar){
+			throw new Exception("Scalar for scalar multiply does not have the correct shape ([1, 1])");
+		}
+		else {
+			returnMat.shape = new int[] {matShape[0], matShape[1]};
+		}
+	
+		returnMat.shapeType = SymbolicMatrixExpr.shapeToMatShapeType(returnMat.shape);
+		
+		// constant calculation
+		if (inputSymbScalar.isConstant && inputSymbMatrix.isConstant){
+			returnMat.isConstant = true;
+			returnMat.parameters = new ParameterExpression[] {};
+		}
+		else {
+			returnMat.isConstant = false;
+			returnMat.parameters = SymbolicMatrixExpr.concatParameters(inputSymbScalar, inputSymbMatrix);
+		}
+		
+		returnMat.dataExp = Expression.Multiply(inputSymbScalar.dataExp, inputSymbMatrix.dataExp);
+		returnMat.exprType = MatrixExpressionType.ScalarMultiply;
+
+		returnMat.name = "(" + inputSymbScalar.name + ") * (" + inputSymbMatrix.name + ")";
+
+		return returnMat;
+	}
+
+	public static MatrixShapeType shapeToMatShapeType(int[] shape){
 
 		int numRows = shape[0];
 		int numCols = shape[1];
 
-		MatrixType type;
+		MatrixShapeType type;
 
 		if (numRows == 1 && numCols == 1){
-			type = MatrixType.Scalar;
+			type = MatrixShapeType.Scalar;
 		}
-		
 		else if (numRows == 1){
-			type = MatrixType.RowVector;
+			type = MatrixShapeType.RowVector;
 		}
-		
 		else if (numCols == 1){
-			type = MatrixType.ColumnVector;
+			type = MatrixShapeType.ColumnVector;
 		}
-		
 		else {
-			type = MatrixType.Matrix;
+			type = MatrixShapeType.Matrix;
 		}
 
 		return type;
-
 	}
+	
+	private static ParameterExpression[] concatParameters(SymbolicMatrixExpr expr1, SymbolicMatrixExpr expr2){
+		return (expr1.parameters).Concat(expr2.parameters).ToArray();
+	}
+
 
 	public static Func<int[], int[]> shapeIdentity = shape => shape;
 
@@ -114,44 +259,9 @@ public class SymbolicMatrix {
 	//	return arbitrary => input;
 	//}
 
-	//public static SymbolicMatrix matrixMultiply(SymbolicMatrix left, SymbolicMatrix right){
-		// dispatches according to the shape to more specialized methods
-
-
-	//}
 
 
 
 }
 
-
-public class UnarySymbolicFunction {
-	// apply a unary function to a given symbolic matrix
-	// unaryFunc : the function to be applied to the one matrix
-	// shapeTransformer : how does it transform the shape of the input matrix?
-	
-	public Func<Expression, Expression> unaryFunc;
-	public Func<int[], int[]> shapeTransformer;
-	
-	UnarySymbolicFunction(Func<Expression, Expression> unaryFunc, Func<int[], int[]> shapeTransformer){
-		this.unaryFunc = unaryFunc;
-		this.shapeTransformer = shapeTransformer;
-	}
-	
-}
-
-public class BinarySymbolicFunction {
-	// apply a binary function to two given symbolic matrices
-	// binaryFunc : the function to be applied to the two matrices
-	// shapeTransformer : how does it transform the shape of the input matrices?\
-
-	public Func<Expression, Expression, Expression> binaryFunc;
-	public Func<int[], int[], int[]> shapeTransformer;
-
-	BinarySymbolicFunction(Func<Expression, Expression, Expression> binaryFunc, Func<int[], int[], int[]> shapeTransformer){
-		this.binaryFunc = binaryFunc;
-		this.shapeTransformer = shapeTransformer;
-	}
-	
-}
 
