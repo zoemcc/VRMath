@@ -388,10 +388,12 @@ public class TextManager : MonoBehaviour {
 		
 	}
 	
-	string[,] textListsMatrix(int rows, int col, Matrix matrix, int stringLength){
-		string[,] mat = zeros (rows,col);
+	string[,] textListsMatrix(Matrix matrix, int stringLength){
+		int rows = matrix.RowCount;
+		int cols = matrix.ColumnCount;
+		string[,] mat = zeros (rows,cols);
 		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < col; j++) {
+			for (int j = 0; j < cols; j++) {
 				mat [i, j] = clipNumToStringLength(matrix.GetArray() [i] [j], stringLength);
 			}
 		}
@@ -554,23 +556,23 @@ public class TextManager : MonoBehaviour {
 		
 		
 		curMat = plotManagerScript.quadForm2dim;
-		matStrings = textListsMatrix(2,2, curMat, matrixStringLength);
+		matStrings = textListsMatrix(curMat, matrixStringLength);
 		matrixTextMesh.text = Mat2String(matStrings);
 
 		curEigs = plotManagerScript.eigsMatrix;
-		eigsStrings = textListsMatrix(2,2, curEigs, matrixStringLength);
+		eigsStrings = textListsMatrix(curEigs, matrixStringLength);
 		matrixEigsTextMesh.text = Mat2String(eigsStrings);
 
 		curRot = plotManagerScript.rotationMatrix;
-		rotStrings = textListsMatrix(2,2, curRot, matrixStringLength);
+		rotStrings = textListsMatrix(curRot, matrixStringLength);
 		matrixRotTextMesh.text = Mat2String(rotStrings);
 
 		curRotTranspose = plotManagerScript.rotationMatrixTranspose;
-		rotTransposeStrings = textListsMatrix(2,2, curRotTranspose, matrixStringLength);
+		rotTransposeStrings = textListsMatrix(curRotTranspose, matrixStringLength);
 		matrixRotTransposeTextMesh.text = Mat2String(rotTransposeStrings);
 
 		curVector = optimizationPlotScript.optStartPosMat.Clone();
-		vectorStrings = textListsMatrix(2,1, curVector, matrixStringLength);
+		vectorStrings = textListsMatrix(curVector, matrixStringLength);
 		vectorTextMesh.text = Mat2String(vectorStrings);
 
 		curLearningRate = optimizationPlotScript.learningRate;

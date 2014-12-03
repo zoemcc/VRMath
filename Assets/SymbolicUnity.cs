@@ -66,6 +66,20 @@ public class SymbolicUnity : MonoBehaviour {
 
 		print (outputTest.GetArray()[0][0]);
 
+		// SymbolicMatrixExpr test stuff
+
+		SymbolicMatrixExpr inputSymbVector = SymbolicMatrixExpr.constantMatrix(inputVectorTest, "v");
+		SymbolicMatrixExpr inputSymbMatrix = SymbolicMatrixExpr.constantMatrix(inputMatrixTest, "A");
+
+		SymbolicMatrixExpr matVecMultSymb = SymbolicMatrixExpr.multiply(inputSymbMatrix, inputSymbVector);
+		print (matVecMultSymb.name + " = ");
+		double[][] result = (((Func<Matrix>) matVecMultSymb.lambdafy().Compile()) ()).GetArray();
+		print ("[" + result[0][0].ToString() + ", " + result[1][0].ToString() + "]");
+		print ("Return Shape: " + matVecMultSymb.shape[0].ToString() + ", " + matVecMultSymb.shape[1].ToString());
+
+		// check that this next line produces a shape error
+		//SymbolicMatrixExpr matVecMultSymbError = SymbolicMatrixExpr.multiply(matVecMultSymb, inputSymbVector);
+
 
 	}
 	
