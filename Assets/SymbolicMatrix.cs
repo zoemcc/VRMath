@@ -10,12 +10,13 @@ using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics;
 
 public enum MatrixExpressionType {
+	Constant,
+	Parameter,
+	Transpose,
 	MatrixMultiply,
 	ScalarMultiply,
 	Add,
-	Subtract,
-	Constant,
-	Parameter
+	Subtract
 }
 
 public enum MatrixShapeType {
@@ -84,8 +85,32 @@ public class SymbolicMatrixExpr {
 		return returnMat;
 	}
 
+	public static SymbolicMatrixExpr transposeMatrix(SymbolicMatrixExpr inputSymbMat){
+		// transpose the input matrix
+		
+		SymbolicMatrixExpr returnMat = new SymbolicMatrixExpr();
+		
+		returnMat.isConstant = inputSymbMat.isConstant;
+
+		int[] shape = inputSymbMat.shape;
+		returnMat.shape = new int[] {shape[1], shape[0]};
+		
+		//shape calculations
+		returnMat.shapeType = SymbolicMatrixExpr.shapeToMatShapeType(returnMat.shape);
+		
+		// data and type calculations
+		returnMat.dataExp = Symbolic.transpose(inputSymbMat.dataExp);
+		returnMat.parameters = inputSymbMat.parameters.ToArray();
+		returnMat.exprType = MatrixExpressionType.Transpose;
+		
+		// name
+		returnMat.name = "(" + inputSymbMat.name + ")^T";
+		
+		return returnMat;
+	}
+
 	public static SymbolicMatrixExpr multiply(SymbolicMatrixExpr inputSymbMatLeft, SymbolicMatrixExpr inputSymbMatRight){
-		// shape calculations
+		// matrix multiply two matrices
 
 		SymbolicMatrixExpr returnMat = new SymbolicMatrixExpr();
 
@@ -119,9 +144,43 @@ public class SymbolicMatrixExpr {
 
 		return returnMat;
 	}
+	
+	public static SymbolicMatrixExpr scale(SymbolicMatrixExpr inputSymbScalar, SymbolicMatrixExpr inputSymbMatrix){
+		// scale the right matrix by the input scalar (left matrix)
+		
+		SymbolicMatrixExpr returnMat = new SymbolicMatrixExpr();
+		
+		// check that the scalar input (left symbolic matrix) is a scalar
+		int[] matShape = inputSymbMatrix.shape;
+		if (inputSymbScalar.shapeType != MatrixShapeType.Scalar){
+			throw new Exception("Scalar for scalar multiply does not have the correct shape ([1, 1])");
+		}
+		else {
+			returnMat.shape = new int[] {matShape[0], matShape[1]};
+		}
+		
+		returnMat.shapeType = SymbolicMatrixExpr.shapeToMatShapeType(returnMat.shape);
+		
+		// constant calculation
+		if (inputSymbScalar.isConstant && inputSymbMatrix.isConstant){
+			returnMat.isConstant = true;
+			returnMat.parameters = new ParameterExpression[] {};
+		}
+		else {
+			returnMat.isConstant = false;
+			returnMat.parameters = SymbolicMatrixExpr.concatParameters(inputSymbScalar, inputSymbMatrix);
+		}
+		
+		returnMat.dataExp = Expression.Multiply(inputSymbScalar.dataExp, inputSymbMatrix.dataExp);
+		returnMat.exprType = MatrixExpressionType.ScalarMultiply;
+		
+		returnMat.name = "(" + inputSymbScalar.name + ") * (" + inputSymbMatrix.name + ")";
+		
+		return returnMat;
+	}
 
 	public static SymbolicMatrixExpr add(SymbolicMatrixExpr inputSymbMatLeft, SymbolicMatrixExpr inputSymbMatRight){
-		// shape calculations
+		// add two symbolic matrices
 		
 		SymbolicMatrixExpr returnMat = new SymbolicMatrixExpr();
 
@@ -156,7 +215,7 @@ public class SymbolicMatrixExpr {
 	}
 
 	public static SymbolicMatrixExpr subtract(SymbolicMatrixExpr inputSymbMatLeft, SymbolicMatrixExpr inputSymbMatRight){
-		// shape calculations
+		// subtract the right symbolic matrix from the left symbolic matrix
 		
 		SymbolicMatrixExpr returnMat = new SymbolicMatrixExpr();
 		
@@ -186,40 +245,6 @@ public class SymbolicMatrixExpr {
 		returnMat.exprType = MatrixExpressionType.Subtract;
 
 		returnMat.name = "(" + inputSymbMatLeft.name + ") - (" + inputSymbMatRight.name + ")";
-
-		return returnMat;
-	}
-
-	public static SymbolicMatrixExpr scale(SymbolicMatrixExpr inputSymbScalar, SymbolicMatrixExpr inputSymbMatrix){
-		// shape calculations
-		
-		SymbolicMatrixExpr returnMat = new SymbolicMatrixExpr();
-		
-		// check that the scalar input (left symbolic matrix) is a scalar
-		int[] matShape = inputSymbMatrix.shape;
-		if (inputSymbScalar.shapeType != MatrixShapeType.Scalar){
-			throw new Exception("Scalar for scalar multiply does not have the correct shape ([1, 1])");
-		}
-		else {
-			returnMat.shape = new int[] {matShape[0], matShape[1]};
-		}
-	
-		returnMat.shapeType = SymbolicMatrixExpr.shapeToMatShapeType(returnMat.shape);
-		
-		// constant calculation
-		if (inputSymbScalar.isConstant && inputSymbMatrix.isConstant){
-			returnMat.isConstant = true;
-			returnMat.parameters = new ParameterExpression[] {};
-		}
-		else {
-			returnMat.isConstant = false;
-			returnMat.parameters = SymbolicMatrixExpr.concatParameters(inputSymbScalar, inputSymbMatrix);
-		}
-		
-		returnMat.dataExp = Expression.Multiply(inputSymbScalar.dataExp, inputSymbMatrix.dataExp);
-		returnMat.exprType = MatrixExpressionType.ScalarMultiply;
-
-		returnMat.name = "(" + inputSymbScalar.name + ") * (" + inputSymbMatrix.name + ")";
 
 		return returnMat;
 	}
@@ -261,9 +286,6 @@ public class SymbolicMatrixExpr {
 	//public static Func<T, T> constant(T input){
 	//	return arbitrary => input;
 	//}
-
-
-
 
 }
 
