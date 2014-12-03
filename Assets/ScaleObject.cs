@@ -105,9 +105,6 @@ public class ScaleObject : MonoBehaviour {
 				}
 				bool one_pinch = (pinches[0] && !pinches[1]) || (!pinches[0] && pinches[1]);
 
-
-
-
 				for (int i = 0; i < 2; i++) {
 					if (pinches[i]){
 						pinchSpheres[i].SetActive(true);

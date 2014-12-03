@@ -53,6 +53,7 @@
      <Compile Include="Assets\Grapher1.cs" />
      <Compile Include="Assets\Grapher2.cs" />
      <Compile Include="Assets\Grapher2MathNet.cs" />
+     <Compile Include="Assets\GraphicsPrimitiveVisitor.cs" />
      <Compile Include="Assets\HUDFPS.cs" />
      <Compile Include="Assets\LeapMotion+OVR\Scripts\BlocksPlaneGenerator.cs" />
      <Compile Include="Assets\LeapMotion+OVR\Scripts\MovementManager.cs" />
@@ -138,12 +139,15 @@
      <Compile Include="Assets\OptimizationPlot.cs" />
      <Compile Include="Assets\PlotManager.cs" />
      <Compile Include="Assets\ScaleObject.cs" />
+     <Compile Include="Assets\ShaderGen.cs" />
      <Compile Include="Assets\Slides.cs" />
      <Compile Include="Assets\Symbolic.cs" />
+     <Compile Include="Assets\SymbolicMatrix.cs" />
      <Compile Include="Assets\SymbolicUnity.cs" />
      <Compile Include="Assets\TextManager.cs" />
      <Compile Include="Assets\TrackCameraLeft.cs" />
      <Compile Include="Assets\mathText2.cs" />
+     <Compile Include="Assets\vector_primitives.cs" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Mobile\Mobile-BumpSpec-1DirectionalLight.shader" />
      <None Include="Assets\TestShader2.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Particle Add.shader" />
@@ -296,13 +300,13 @@
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\uGUI\GUI-Lit-Bumped.shader" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\uGUI\GUI-DefaultFont.shader" />
  <Reference Include="Assembly-UnityScript-firstpass">
- <HintPath>/Users/zoe/VRMath/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
+ <HintPath>/Users/michaelluskey/Documents/VRMath/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
  </Reference>
  <Reference Include="MathNet.Iridium">
- <HintPath>/Users/zoe/VRMath/Assets/MathNet.Numerics/MathNet.Iridium.dll</HintPath>
+ <HintPath>/Users/michaelluskey/Documents/VRMath/Assets/MathNet.Numerics/MathNet.Iridium.dll</HintPath>
  </Reference>
  <Reference Include="LeapCSharp.NET3.5">
- <HintPath>/Users/zoe/VRMath/Assets/Plugins/LeapCSharp.NET3.5.dll</HintPath>
+ <HintPath>/Users/michaelluskey/Documents/VRMath/Assets/Plugins/LeapCSharp.NET3.5.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>

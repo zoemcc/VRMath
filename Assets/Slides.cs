@@ -27,6 +27,7 @@ public class Slides : MonoBehaviour {
 	PlotManager plotManger; 
 	AudioReverbZone audioZone; 
 	AudioSource[] audioSources; 
+	vector_primitives vp; 
 	MeshRenderer mesh;
 
 	Button button; 
@@ -49,6 +50,8 @@ public class Slides : MonoBehaviour {
 		
 		loadedS4 = new WWW (s4);
 		//yield return loadedS4;
+
+		vp = gameObject.GetComponent<vector_primitives> (); 
 
 		Butn = GameObject.Find ("Button1"); 
 		button = Butn.GetComponent<Button> (); 
@@ -161,6 +164,12 @@ public class Slides : MonoBehaviour {
 					textManger.displayMatrixEigs = false;
 					mesh.enabled = true; 
 
+					//Testing For Vector Primitives
+					Vector3 vec1 = new Vector3(1.0f,1.0f,-1.0f); 
+					Vector3 vec2 = new Vector3(2.0f,-1.0f,3.0f);
+					//vp.scale_vector(10.0f,vec1);  
+					vp.multiply_vectors(vec1,vec2);  
+					
 					break;
 				case 5: 
 					print ("setting slide5");
