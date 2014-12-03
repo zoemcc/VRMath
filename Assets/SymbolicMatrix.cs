@@ -251,6 +251,9 @@ public class SymbolicMatrixExpr {
 		return (expr1.parameters).Concat(expr2.parameters).ToArray();
 	}
 
+	public LambdaExpression lambdafy(){
+		return (LambdaExpression) Expression.Lambda(this.dataExp, this.parameters);
+	}
 
 	public static Func<int[], int[]> shapeIdentity = shape => shape;
 
