@@ -72,6 +72,8 @@ public class SymbolicUnity : MonoBehaviour {
 		SymbolicMatrixExpr inputSymbMatrix = SymbolicMatrixExpr.constantMatrix(inputMatrixTest, "A");
 
 		SymbolicMatrixExpr matVecMultSymb = SymbolicMatrixExpr.multiply(inputSymbMatrix, inputSymbVector);
+		SymbolicMatrixExpr quadFormSymb = SymbolicMatrixExpr.multiply(SymbolicMatrixExpr.transposeMatrix(inputSymbVector), matVecMultSymb);
+		SymbolicMatrixExpr vecAdd = SymbolicMatrixExpr.add(inputSymbVector, inputSymbVector);
 		print (matVecMultSymb.name + " = ");
 		double[][] result = (((Func<Matrix>) matVecMultSymb.lambdafy().Compile()) ()).GetArray();
 		print ("[" + result[0][0].ToString() + ", " + result[1][0].ToString() + "]");
@@ -79,6 +81,19 @@ public class SymbolicUnity : MonoBehaviour {
 
 		// check that this next line produces a shape error
 		//SymbolicMatrixExpr matVecMultSymbError = SymbolicMatrixExpr.multiply(matVecMultSymb, inputSymbVector);
+
+		// test childfirsttopsort
+
+		SymbolicMatrixExpr[] topSort = SymbolicMatrixExpr.childrenFirstTopSort(quadFormSymb);
+		//SymbolicMatrixExpr[] topSort = SymbolicMatrixExpr.childrenFirstTopSort(vecAdd);
+
+		int treeSize = quadFormSymb.treeSize;
+		print ("tree size: " + treeSize.ToString());
+
+		for (int i = 0; i < treeSize; i++){
+			SymbolicMatrixExpr symb = topSort[i];
+			print (symb.name);
+		}
 
 
 	}

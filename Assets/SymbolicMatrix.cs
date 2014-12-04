@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-
-using System;
+﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -35,6 +34,8 @@ public class SymbolicMatrixExpr {
 	public bool isConstant;
 	public string name;
 	public ParameterExpression[] parameters;
+	public SymbolicMatrixExpr[] children;
+	public int treeSize;
 	
 	private SymbolicMatrixExpr(){
 		// blank slate matrix for internal use 
@@ -56,8 +57,9 @@ public class SymbolicMatrixExpr {
 		returnMat.parameters = new ParameterExpression[] {};
 		returnMat.exprType = MatrixExpressionType.Constant;
 
-		// name
 		returnMat.name = name;
+		returnMat.children = new SymbolicMatrixExpr[] {};
+		returnMat.treeSize = 1;
 
 		return returnMat;
 	}
@@ -78,9 +80,10 @@ public class SymbolicMatrixExpr {
 		returnMat.dataExp = expr;
 		returnMat.parameters = new ParameterExpression[] {expr};
 		returnMat.exprType = MatrixExpressionType.Parameter;
-		
-		// name
+
 		returnMat.name = name;
+		returnMat.children = new SymbolicMatrixExpr[] {};
+		returnMat.treeSize = 1;
 
 		return returnMat;
 	}
@@ -102,9 +105,15 @@ public class SymbolicMatrixExpr {
 		returnMat.dataExp = Symbolic.transpose(inputSymbMat.dataExp);
 		returnMat.parameters = inputSymbMat.parameters.ToArray();
 		returnMat.exprType = MatrixExpressionType.Transpose;
-		
-		// name
-		returnMat.name = "(" + inputSymbMat.name + ")^T";
+
+		if (inputSymbMat.children.GetLength(0) == 0){
+			returnMat.name = inputSymbMat.name + "^T";
+		}
+		else {
+			returnMat.name = "(" + inputSymbMat.name + ")^T";
+		}
+		returnMat.children = new SymbolicMatrixExpr[] {inputSymbMat};
+		returnMat.treeSize = inputSymbMat.treeSize + 1;
 		
 		return returnMat;
 	}
@@ -139,8 +148,23 @@ public class SymbolicMatrixExpr {
 		returnMat.dataExp = Expression.Multiply(inputSymbMatLeft.dataExp, inputSymbMatRight.dataExp);
 		returnMat.exprType = MatrixExpressionType.MatrixMultiply;
 
-		returnMat.name = "(" + inputSymbMatLeft.name + ") * (" + inputSymbMatRight.name + ")";
-		returnMat.parameters = SymbolicMatrixExpr.concatParameters(inputSymbMatLeft, inputSymbMatRight);
+		String returnMatName = "";
+		if (inputSymbMatLeft.children.GetLength(0) == 0){
+			returnMatName = inputSymbMatLeft.name + " * ";
+		}
+		else {
+			returnMatName = "(" + inputSymbMatLeft.name + ") * ";
+		}
+		if (inputSymbMatRight.children.GetLength(0) == 0){
+			returnMatName = returnMatName + inputSymbMatRight.name;
+		}
+		else {
+			returnMatName = returnMatName + "(" + inputSymbMatRight.name + ")";
+		}
+		returnMat.name = returnMatName;
+
+		returnMat.children = new SymbolicMatrixExpr[] {inputSymbMatLeft, inputSymbMatRight};
+		returnMat.treeSize = inputSymbMatLeft.treeSize + inputSymbMatRight.treeSize + 1;
 
 		return returnMat;
 	}
@@ -174,7 +198,23 @@ public class SymbolicMatrixExpr {
 		returnMat.dataExp = Expression.Multiply(inputSymbScalar.dataExp, inputSymbMatrix.dataExp);
 		returnMat.exprType = MatrixExpressionType.ScalarMultiply;
 		
-		returnMat.name = "(" + inputSymbScalar.name + ") * (" + inputSymbMatrix.name + ")";
+		String returnMatName = "";
+		if (inputSymbScalar.children.GetLength(0) == 0){
+			returnMatName = inputSymbScalar.name + " * ";
+		}
+		else {
+			returnMatName = "(" + inputSymbScalar.name + ") * ";
+		}
+		if (inputSymbMatrix.children.GetLength(0) == 0){
+			returnMatName = returnMatName + inputSymbMatrix.name;
+		}
+		else {
+			returnMatName = returnMatName + "(" + inputSymbMatrix.name + ")";
+		}
+		returnMat.name = returnMatName;
+
+		returnMat.children = new SymbolicMatrixExpr[] {inputSymbScalar, inputSymbMatrix};
+		returnMat.treeSize = inputSymbScalar.treeSize + inputSymbMatrix.treeSize + 1;
 		
 		return returnMat;
 	}
@@ -209,7 +249,23 @@ public class SymbolicMatrixExpr {
 		returnMat.dataExp = Expression.Add(inputSymbMatLeft.dataExp, inputSymbMatRight.dataExp);
 		returnMat.exprType = MatrixExpressionType.Add;
 
-		returnMat.name = "(" + inputSymbMatLeft.name + ") + (" + inputSymbMatRight.name + ")";
+		String returnMatName = "";
+		if (inputSymbMatLeft.children.GetLength(0) == 0){
+			returnMatName = inputSymbMatLeft.name + " + ";
+		}
+		else {
+			returnMatName = "(" + inputSymbMatLeft.name + ") + ";
+		}
+		if (inputSymbMatRight.children.GetLength(0) == 0){
+			returnMatName = returnMatName + inputSymbMatRight.name;
+		}
+		else {
+			returnMatName = returnMatName + "(" + inputSymbMatRight.name + ")";
+		}
+		returnMat.name = returnMatName;
+
+		returnMat.children = new SymbolicMatrixExpr[] {inputSymbMatLeft, inputSymbMatRight};
+		returnMat.treeSize = inputSymbMatLeft.treeSize + inputSymbMatRight.treeSize + 1;
 
 		return returnMat;
 	}
@@ -244,7 +300,23 @@ public class SymbolicMatrixExpr {
 		returnMat.dataExp = Expression.Subtract(inputSymbMatLeft.dataExp, inputSymbMatRight.dataExp);
 		returnMat.exprType = MatrixExpressionType.Subtract;
 
-		returnMat.name = "(" + inputSymbMatLeft.name + ") - (" + inputSymbMatRight.name + ")";
+		String returnMatName = "";
+		if (inputSymbMatLeft.children.GetLength(0) == 0){
+			returnMatName = inputSymbMatLeft.name + " - ";
+		}
+		else {
+			returnMatName = "(" + inputSymbMatLeft.name + ") - ";
+		}
+		if (inputSymbMatRight.children.GetLength(0) == 0){
+			returnMatName = returnMatName + inputSymbMatRight.name;
+		}
+		else {
+			returnMatName = returnMatName + "(" + inputSymbMatRight.name + ")";
+		}
+		returnMat.name = returnMatName;
+
+		returnMat.children = new SymbolicMatrixExpr[] {inputSymbMatLeft, inputSymbMatRight};
+		returnMat.treeSize = inputSymbMatLeft.treeSize + inputSymbMatRight.treeSize + 1;
 
 		return returnMat;
 	}
@@ -277,6 +349,8 @@ public class SymbolicMatrixExpr {
 	}
 
 	public LambdaExpression lambdafy(){
+		// might have to condense the parameters into a single parameter of type Matrix[] 
+		// in order to handle variable numbers of parameters
 		return (LambdaExpression) Expression.Lambda(this.dataExp, this.parameters);
 	}
 
@@ -286,6 +360,38 @@ public class SymbolicMatrixExpr {
 	//public static Func<T, T> constant(T input){
 	//	return arbitrary => input;
 	//}
+
+	public static SymbolicMatrixExpr[] childrenFirstTopSort(SymbolicMatrixExpr inputMatrix){
+		Stack symbolicStack = new Stack();
+		symbolicStack.Push(inputMatrix);
+		SymbolicMatrixExpr[] returnSortedExprs = new SymbolicMatrixExpr[inputMatrix.treeSize];
+		int currentExprIdx = 0;
+		HashSet<SymbolicMatrixExpr> alreadyAddedChildren = new HashSet<SymbolicMatrixExpr>();
+
+		while (symbolicStack.Count > 0){
+			SymbolicMatrixExpr currentExpr = (SymbolicMatrixExpr) symbolicStack.Pop();
+
+			// no children or children have been added to return
+			int numChildren = currentExpr.children.GetLength(0);
+			if (numChildren == 0 || alreadyAddedChildren.Contains(currentExpr)){
+				returnSortedExprs[currentExprIdx] = currentExpr;
+				currentExprIdx++;
+			}
+			//has children and they haven't been added to the stack yet
+			else {
+				symbolicStack.Push(currentExpr);
+				foreach (SymbolicMatrixExpr child in currentExpr.children){
+					symbolicStack.Push(child);
+				}
+				if (numChildren > 0){
+					alreadyAddedChildren.Add (currentExpr);
+				}
+			}
+		}
+		return returnSortedExprs;
+	}
+
+	//private static List<SymbolicMatrixExpr> childrenFirstTopSortHelper(Stack 
 
 }
 
