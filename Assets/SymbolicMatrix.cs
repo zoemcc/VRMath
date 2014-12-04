@@ -148,7 +148,7 @@ public class SymbolicMatrixExpr {
 		returnMat.dataExp = Expression.Multiply(inputSymbMatLeft.dataExp, inputSymbMatRight.dataExp);
 		returnMat.exprType = MatrixExpressionType.MatrixMultiply;
 
-		String returnMatName = "";
+		String returnMatName;
 		if (inputSymbMatLeft.children.GetLength(0) == 0){
 			returnMatName = inputSymbMatLeft.name + " * ";
 		}
@@ -198,7 +198,7 @@ public class SymbolicMatrixExpr {
 		returnMat.dataExp = Expression.Multiply(inputSymbScalar.dataExp, inputSymbMatrix.dataExp);
 		returnMat.exprType = MatrixExpressionType.ScalarMultiply;
 		
-		String returnMatName = "";
+		String returnMatName;
 		if (inputSymbScalar.children.GetLength(0) == 0){
 			returnMatName = inputSymbScalar.name + " * ";
 		}
@@ -249,7 +249,7 @@ public class SymbolicMatrixExpr {
 		returnMat.dataExp = Expression.Add(inputSymbMatLeft.dataExp, inputSymbMatRight.dataExp);
 		returnMat.exprType = MatrixExpressionType.Add;
 
-		String returnMatName = "";
+		String returnMatName;
 		if (inputSymbMatLeft.children.GetLength(0) == 0){
 			returnMatName = inputSymbMatLeft.name + " + ";
 		}
@@ -300,7 +300,7 @@ public class SymbolicMatrixExpr {
 		returnMat.dataExp = Expression.Subtract(inputSymbMatLeft.dataExp, inputSymbMatRight.dataExp);
 		returnMat.exprType = MatrixExpressionType.Subtract;
 
-		String returnMatName = "";
+		String returnMatName;
 		if (inputSymbMatLeft.children.GetLength(0) == 0){
 			returnMatName = inputSymbMatLeft.name + " - ";
 		}
@@ -362,36 +362,21 @@ public class SymbolicMatrixExpr {
 	//}
 
 	public static SymbolicMatrixExpr[] childrenFirstTopSort(SymbolicMatrixExpr inputMatrix){
-		Stack symbolicStack = new Stack();
-		symbolicStack.Push(inputMatrix);
-		SymbolicMatrixExpr[] returnSortedExprs = new SymbolicMatrixExpr[inputMatrix.treeSize];
-		int currentExprIdx = 0;
-		HashSet<SymbolicMatrixExpr> alreadyAddedChildren = new HashSet<SymbolicMatrixExpr>();
-
-		while (symbolicStack.Count > 0){
-			SymbolicMatrixExpr currentExpr = (SymbolicMatrixExpr) symbolicStack.Pop();
-
-			// no children or children have been added to return
-			int numChildren = currentExpr.children.GetLength(0);
-			if (numChildren == 0 || alreadyAddedChildren.Contains(currentExpr)){
-				returnSortedExprs[currentExprIdx] = currentExpr;
-				currentExprIdx++;
-			}
-			//has children and they haven't been added to the stack yet
-			else {
-				symbolicStack.Push(currentExpr);
-				foreach (SymbolicMatrixExpr child in currentExpr.children){
-					symbolicStack.Push(child);
-				}
-				if (numChildren > 0){
-					alreadyAddedChildren.Add (currentExpr);
-				}
-			}
-		}
+		List<SymbolicMatrixExpr> returnList = childrenFirstTopSortHelper(inputMatrix);
+		SymbolicMatrixExpr[] returnSortedExprs = returnList.ToArray();
 		return returnSortedExprs;
 	}
 
-	//private static List<SymbolicMatrixExpr> childrenFirstTopSortHelper(Stack 
+	private static List<SymbolicMatrixExpr> childrenFirstTopSortHelper(SymbolicMatrixExpr currentExpr){
+		List<SymbolicMatrixExpr> currentList = new List<SymbolicMatrixExpr>();
+		if (currentExpr != null){
+			foreach (SymbolicMatrixExpr child in currentExpr.children){
+				currentList.AddRange(childrenFirstTopSortHelper(child));
+			}
+			currentList.Add (currentExpr);
+		}
+		return currentList;
+	}
 
 }
 
