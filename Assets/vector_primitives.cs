@@ -11,13 +11,14 @@ public class vector_primitives : MonoBehaviour {
 	MeshRenderer arrow_mesh2; 
 	MeshRenderer ans_arrow_mesh; 
 	public bool not_done = false; 
+	public float iterations = 0.0f; 
 
 
 
-	void Start () {
-		arrow1 = GameObject.Find ("Arrow1/Arrow18"); 
-		arrow2 = GameObject.Find ("Arrow2/Arrow18"); 
-		ans_arrow = GameObject.Find ("Ans_Arrow/Arrow18"); 
+	void Start (string arrow1, string arrow2, string ans_arrow) {
+		arrow1 = GameObject.Find (arrow1+"/Arrow18"); 
+		arrow2 = GameObject.Find (arrow2+"/Arrow18"); 
+		ans_arrow = GameObject.Find (ans_arrow+"/Arrow18"); 
 		arrow_mesh1 = arrow1.GetComponent<MeshRenderer> (); 
 		arrow_mesh2 = arrow2.GetComponent<MeshRenderer> (); 
 		ans_arrow_mesh = ans_arrow.GetComponent<MeshRenderer> (); 
@@ -25,6 +26,9 @@ public class vector_primitives : MonoBehaviour {
 		arrow_mesh1.enabled = false;
 		arrow_mesh2.enabled = false;
 		ans_arrow_mesh.enabled = false;
+		arrow1.renderer.material.color = Color.cyan;
+		arrow2.renderer.material.color = Color.magenta;
+		ans_arrow.renderer.material.color = Color.green;
 	
 	}
 	
@@ -33,17 +37,26 @@ public class vector_primitives : MonoBehaviour {
 	
 	}
 
-	public bool scale_vector(float scale, Vector3 vec){
+	public bool scale_vector(float scale, Vector3 vec,float num_frames){
 
 		not_done = true; 
 
-		Quaternion rot = Quaternion.LookRotation(vec, Vector3.up);
+		Quaternion rot = Quaternion.LookRotation (vec, Vector3.up);
 
 		ans_arrow.transform.rotation = rot; 
 		arrow1.transform.rotation = rot; 
 
-		arrow1.transform.localScale =  new Vector3 (vec.sqrMagnitude, 1.0f, 1.0f); 
-		ans_arrow.transform.localScale = new Vector3 (scale*vec.sqrMagnitude, 1.0f, 1.0f);
+		arrow1.transform.localScale = new Vector3 (vec.sqrMagnitude, 1.0f, 1.0f); 
+
+		if (iterations < 1.0) {
+			ans_arrow.transform.localScale = new Vector3 (scale * vec.sqrMagnitude*iterations, 1.0f, 1.0f);
+			iterations += 1/num_frames; 
+		 
+		}
+		else{
+			iterations = 0.0f; 
+			not_done = false; 
+		}
 
 		arrow_mesh1.enabled = true; 
 		ans_arrow_mesh.enabled = true; 
@@ -54,10 +67,10 @@ public class vector_primitives : MonoBehaviour {
 			arrow_mesh1.enabled = false; 
 			ans_arrow_mesh.enabled = false; 
 		}
-		return true; 
+		return not_done; 
 	}
 
-	public bool add_vectors(Vector3 vec1, Vector3 vec2){
+	public bool add_vectors(Vector3 vec1, Vector3 vec2,float num_frames){
 
 		not_done = true; 
 
@@ -72,9 +85,12 @@ public class vector_primitives : MonoBehaviour {
 		arrow2.transform.rotation = rot2; 
 
 
+
 		ans_arrow.transform.localScale = new Vector3 (ans_vec.sqrMagnitude, 1.0f, 1.0f); 
 		arrow1.transform.localScale = new Vector3 (vec1.sqrMagnitude, 1.0f, 1.0f); 
 		arrow2.transform.localScale = new Vector3 (vec2.sqrMagnitude, 1.0f, 1.0f); 
+
+		ans_arrow.transform.position = arrow1.transform.position + 0.5f * arrow1.transform.localScale; 
 
 		arrow_mesh1.enabled = true; 
 		arrow_mesh2.enabled = true; 

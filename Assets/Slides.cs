@@ -86,7 +86,9 @@ public class Slides : MonoBehaviour {
 	void Update (){
 		//bool clicked = true;
 	
-	
+		Vector3 vec1 = new Vector3(1.0f,1.0f,-1.0f); 
+		Vector3 vec2 = new Vector3(2.0f,-1.0f,3.0f);
+		vp.add_vectors(vec1,vec2,100.0f); 
 		if (loadedS1.isDone && loadedS2.isDone && loadedS3.isDone && loadedS4.isDone && not_set) {
 			
 			slide1 = loadedS1.texture;
@@ -165,10 +167,8 @@ public class Slides : MonoBehaviour {
 					mesh.enabled = true; 
 
 					//Testing For Vector Primitives
-					Vector3 vec1 = new Vector3(1.0f,1.0f,-1.0f); 
-					Vector3 vec2 = new Vector3(2.0f,-1.0f,3.0f);
-					//vp.scale_vector(10.0f,vec1);  
-					vp.multiply_vectors(vec1,vec2);  
+					 
+					//;  
 					
 					break;
 				case 5: 
