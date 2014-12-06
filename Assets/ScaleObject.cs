@@ -80,7 +80,7 @@ public class ScaleObject : MonoBehaviour {
 				int k = 0;
 				Quaternion rotation = new Quaternion();
 				Vector3 temp_pos = new Vector3();
-			
+							
 				foreach (HandModel hand in h.hand_physics_.Values){
 
 					GrabHand grab_hand;

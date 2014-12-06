@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class vector_primitives : MonoBehaviour {
+public class vector_primitives {
 
 	// Use this for initialization
 	GameObject arrow1; 
@@ -12,30 +12,38 @@ public class vector_primitives : MonoBehaviour {
 	MeshRenderer ans_arrow_mesh; 
 	public bool not_done = false; 
 	public float iterations = 0.0f; 
+	//string arrow1_str,arrow2_str,ans_arrow_str;
+
+	public vector_primitives(GameObject parent)
+	{
 
 
 
-	void Start (string arrow1, string arrow2, string ans_arrow) {
-		arrow1 = GameObject.Find (arrow1+"/Arrow18"); 
-		arrow2 = GameObject.Find (arrow2+"/Arrow18"); 
-		ans_arrow = GameObject.Find (ans_arrow+"/Arrow18"); 
+		arrow1 = GameObject.Instantiate( Resources.LoadAssetAtPath("Assets/Resources/Arrow18.prefab", typeof(GameObject))) as GameObject;
+		arrow2 = GameObject.Instantiate( Resources.LoadAssetAtPath("Assets/Resources/Arrow18.prefab", typeof(GameObject))) as GameObject;
+		ans_arrow = GameObject.Instantiate( Resources.LoadAssetAtPath("Assets/Resources/Arrow18.prefab", typeof(GameObject))) as GameObject;
+
+
+		arrow1 = arrow1.transform.GetChild (0).gameObject; 
+		arrow2 = arrow2.transform.GetChild (0).gameObject; 
+		ans_arrow = ans_arrow.transform.GetChild (0).gameObject; 
+
 		arrow_mesh1 = arrow1.GetComponent<MeshRenderer> (); 
 		arrow_mesh2 = arrow2.GetComponent<MeshRenderer> (); 
 		ans_arrow_mesh = ans_arrow.GetComponent<MeshRenderer> (); 
+		
+		arrow1.SetActive (false);
+		arrow2.SetActive (false);
+		ans_arrow.SetActive (false);
 
-		arrow_mesh1.enabled = false;
-		arrow_mesh2.enabled = false;
-		ans_arrow_mesh.enabled = false;
+
 		arrow1.renderer.material.color = Color.cyan;
 		arrow2.renderer.material.color = Color.magenta;
-		ans_arrow.renderer.material.color = Color.green;
+		ans_arrow.renderer.material.color = Color.green; 
+	
 	
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
 	public bool scale_vector(float scale, Vector3 vec,float num_frames){
 
@@ -58,14 +66,14 @@ public class vector_primitives : MonoBehaviour {
 			not_done = false; 
 		}
 
-		arrow_mesh1.enabled = true; 
-		ans_arrow_mesh.enabled = true; 
+		arrow1.SetActive (true);  
+		ans_arrow.SetActive (true); 
 
 	
 		if (!not_done) {
 			ans_arrow_mesh.transform.localScale = arrow1.transform.localScale; 
-			arrow_mesh1.enabled = false; 
-			ans_arrow_mesh.enabled = false; 
+			arrow1.SetActive(false); 
+			ans_arrow.SetActive(false); 
 		}
 		return not_done; 
 	}

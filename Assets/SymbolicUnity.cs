@@ -66,6 +66,36 @@ public class SymbolicUnity : MonoBehaviour {
 
 		print (outputTest.GetArray()[0][0]);
 
+		// SymbolicMatrixExpr test stuff
+
+		SymbolicMatrixExpr inputSymbVector = SymbolicMatrixExpr.constantMatrix(inputVectorTest, "v");
+		SymbolicMatrixExpr inputSymbMatrix = SymbolicMatrixExpr.constantMatrix(inputMatrixTest, "A");
+
+		SymbolicMatrixExpr matVecMultSymb = SymbolicMatrixExpr.multiply(inputSymbMatrix, inputSymbVector);
+		SymbolicMatrixExpr quadFormSymb = SymbolicMatrixExpr.multiply(SymbolicMatrixExpr.transposeMatrix(inputSymbVector), matVecMultSymb);
+		SymbolicMatrixExpr vecAdd = SymbolicMatrixExpr.add(inputSymbVector, inputSymbVector);
+		SymbolicMatrixExpr vec2Add = SymbolicMatrixExpr.add(vecAdd, vecAdd);
+		print (matVecMultSymb.name + " = ");
+		double[][] result = (((Func<Matrix>) matVecMultSymb.lambdafy().Compile()) ()).GetArray();
+		print ("[" + result[0][0].ToString() + ", " + result[1][0].ToString() + "]");
+		print ("Return Shape: " + matVecMultSymb.shape[0].ToString() + ", " + matVecMultSymb.shape[1].ToString());
+
+		// check that this next line produces a shape error
+		//SymbolicMatrixExpr matVecMultSymbError = SymbolicMatrixExpr.multiply(matVecMultSymb, inputSymbVector);
+
+		// test childrenFirstTopSort
+
+		SymbolicMatrixExpr currentTopSort = vec2Add;
+		SymbolicMatrixExpr[] topSort = SymbolicMatrixExpr.childrenFirstTopSort(currentTopSort);
+
+		int treeSize = currentTopSort.treeSize;
+		print ("tree size: " + treeSize.ToString());
+
+		for (int i = 0; i < treeSize; i++){
+			SymbolicMatrixExpr symb = topSort[i];
+			print (symb.name);
+		}
+
 
 	}
 	
