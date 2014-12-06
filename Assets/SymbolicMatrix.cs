@@ -106,12 +106,7 @@ public class SymbolicMatrixExpr {
 		returnMat.parameters = inputSymbMat.parameters.ToArray();
 		returnMat.exprType = MatrixExpressionType.Transpose;
 
-		if (inputSymbMat.children.GetLength(0) == 0){
-			returnMat.name = inputSymbMat.name + "^T";
-		}
-		else {
-			returnMat.name = "(" + inputSymbMat.name + ")^T";
-		}
+		returnMat.name = SymbolicMatrixExpr.nameParenthesForNonLeaves(inputSymbMat) + "^T";
 		returnMat.children = new SymbolicMatrixExpr[] {inputSymbMat};
 		returnMat.treeSize = inputSymbMat.treeSize + 1;
 		
@@ -148,20 +143,8 @@ public class SymbolicMatrixExpr {
 		returnMat.dataExp = Expression.Multiply(inputSymbMatLeft.dataExp, inputSymbMatRight.dataExp);
 		returnMat.exprType = MatrixExpressionType.MatrixMultiply;
 
-		String returnMatName;
-		if (inputSymbMatLeft.children.GetLength(0) == 0){
-			returnMatName = inputSymbMatLeft.name + " * ";
-		}
-		else {
-			returnMatName = "(" + inputSymbMatLeft.name + ") * ";
-		}
-		if (inputSymbMatRight.children.GetLength(0) == 0){
-			returnMatName = returnMatName + inputSymbMatRight.name;
-		}
-		else {
-			returnMatName = returnMatName + "(" + inputSymbMatRight.name + ")";
-		}
-		returnMat.name = returnMatName;
+		returnMat.name = SymbolicMatrixExpr.nameParenthesForNonLeaves(inputSymbMatLeft) + " * " 
+			+ SymbolicMatrixExpr.nameParenthesForNonLeaves(inputSymbMatRight);
 
 		returnMat.children = new SymbolicMatrixExpr[] {inputSymbMatLeft, inputSymbMatRight};
 		returnMat.treeSize = inputSymbMatLeft.treeSize + inputSymbMatRight.treeSize + 1;
@@ -198,20 +181,8 @@ public class SymbolicMatrixExpr {
 		returnMat.dataExp = Expression.Multiply(inputSymbScalar.dataExp, inputSymbMatrix.dataExp);
 		returnMat.exprType = MatrixExpressionType.ScalarMultiply;
 		
-		String returnMatName;
-		if (inputSymbScalar.children.GetLength(0) == 0){
-			returnMatName = inputSymbScalar.name + " * ";
-		}
-		else {
-			returnMatName = "(" + inputSymbScalar.name + ") * ";
-		}
-		if (inputSymbMatrix.children.GetLength(0) == 0){
-			returnMatName = returnMatName + inputSymbMatrix.name;
-		}
-		else {
-			returnMatName = returnMatName + "(" + inputSymbMatrix.name + ")";
-		}
-		returnMat.name = returnMatName;
+		returnMat.name = SymbolicMatrixExpr.nameParenthesForNonLeaves(inputSymbScalar) + " * " 
+			+ SymbolicMatrixExpr.nameParenthesForNonLeaves(inputSymbMatrix);
 
 		returnMat.children = new SymbolicMatrixExpr[] {inputSymbScalar, inputSymbMatrix};
 		returnMat.treeSize = inputSymbScalar.treeSize + inputSymbMatrix.treeSize + 1;
@@ -249,21 +220,9 @@ public class SymbolicMatrixExpr {
 		returnMat.dataExp = Expression.Add(inputSymbMatLeft.dataExp, inputSymbMatRight.dataExp);
 		returnMat.exprType = MatrixExpressionType.Add;
 
-		String returnMatName;
-		if (inputSymbMatLeft.children.GetLength(0) == 0){
-			returnMatName = inputSymbMatLeft.name + " + ";
-		}
-		else {
-			returnMatName = "(" + inputSymbMatLeft.name + ") + ";
-		}
-		if (inputSymbMatRight.children.GetLength(0) == 0){
-			returnMatName = returnMatName + inputSymbMatRight.name;
-		}
-		else {
-			returnMatName = returnMatName + "(" + inputSymbMatRight.name + ")";
-		}
-		returnMat.name = returnMatName;
-
+		returnMat.name = SymbolicMatrixExpr.nameParenthesForNonLeaves(inputSymbMatLeft) + " + " 
+			+ SymbolicMatrixExpr.nameParenthesForNonLeaves(inputSymbMatRight);
+		
 		returnMat.children = new SymbolicMatrixExpr[] {inputSymbMatLeft, inputSymbMatRight};
 		returnMat.treeSize = inputSymbMatLeft.treeSize + inputSymbMatRight.treeSize + 1;
 
@@ -300,20 +259,9 @@ public class SymbolicMatrixExpr {
 		returnMat.dataExp = Expression.Subtract(inputSymbMatLeft.dataExp, inputSymbMatRight.dataExp);
 		returnMat.exprType = MatrixExpressionType.Subtract;
 
-		String returnMatName;
-		if (inputSymbMatLeft.children.GetLength(0) == 0){
-			returnMatName = inputSymbMatLeft.name + " - ";
-		}
-		else {
-			returnMatName = "(" + inputSymbMatLeft.name + ") - ";
-		}
-		if (inputSymbMatRight.children.GetLength(0) == 0){
-			returnMatName = returnMatName + inputSymbMatRight.name;
-		}
-		else {
-			returnMatName = returnMatName + "(" + inputSymbMatRight.name + ")";
-		}
-		returnMat.name = returnMatName;
+		returnMat.name = SymbolicMatrixExpr.nameParenthesForNonLeaves(inputSymbMatLeft) + " - " 
+			           + SymbolicMatrixExpr.nameParenthesForNonLeaves(inputSymbMatRight);
+		
 
 		returnMat.children = new SymbolicMatrixExpr[] {inputSymbMatLeft, inputSymbMatRight};
 		returnMat.treeSize = inputSymbMatLeft.treeSize + inputSymbMatRight.treeSize + 1;
@@ -377,6 +325,18 @@ public class SymbolicMatrixExpr {
 		}
 		return currentList;
 	}
+
+	public static String nameParenthesForNonLeaves(SymbolicMatrixExpr inputExpression){
+		String returnMatName;
+		if (inputExpression.children.GetLength(0) == 0){
+			returnMatName = inputExpression.name;
+		}
+		else {
+			returnMatName = "(" + inputExpression.name + ")";
+		}
+		return returnMatName;
+	}
+	
 
 }
 
