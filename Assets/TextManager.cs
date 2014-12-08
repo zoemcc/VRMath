@@ -388,7 +388,7 @@ public class TextManager : MonoBehaviour {
 		
 	}
 	
-	string[,] textListsMatrix(Matrix matrix, int stringLength){
+	public static string[,] textListsMatrix(Matrix matrix, int stringLength){
 		int rows = matrix.RowCount;
 		int cols = matrix.ColumnCount;
 		string[,] mat = zeros (rows,cols);
@@ -466,7 +466,7 @@ public class TextManager : MonoBehaviour {
 	}
 	
 	/* Matrix printing */
-	string Mat2String(string[,] mat){
+	public static string Mat2String(string[,] mat){
 		//return matrix as printable string
 		string str = "";
 		for(int row =0; row<mat.GetLength(0); row++) {
@@ -478,7 +478,7 @@ public class TextManager : MonoBehaviour {
 		return str;
 	}
 	
-	string[,] zeros(int rows, int col){
+	public static string[,] zeros(int rows, int col){
 		// create string matrix of zeros
 		string[,] mat = new string[rows,col];
 		for (int i=0; i<rows; i++) {
@@ -510,7 +510,7 @@ public class TextManager : MonoBehaviour {
 		
 	}
 	
-	string clipNumToStringLength (double num, int length){
+	public static string clipNumToStringLength (double num, int length){
 		string roundedString;
 
 		int numberOfFirstDigits = Math.Round (num, 0).ToString ().Length;

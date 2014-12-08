@@ -177,7 +177,10 @@ public class SymbolicMatrixExpr {
 			returnMat.isConstant = false;
 			returnMat.parameters = SymbolicMatrixExpr.concatParameters(inputSymbScalar, inputSymbMatrix);
 		}
-		
+
+		// TODO: WARNING: does not work when using lambdafy, currently only works for evaluate to evaluate the tree
+		// still need to figure out how to call non-static members
+		//returnMat.dataExp = Expression.Multiply(Symbolic.extractScalar(inputSymbScalar.dataExp), inputSymbMatrix.dataExp); 
 		returnMat.dataExp = Expression.Multiply(inputSymbScalar.dataExp, inputSymbMatrix.dataExp);
 		returnMat.exprType = MatrixExpressionType.ScalarMultiply;
 		
@@ -336,7 +339,135 @@ public class SymbolicMatrixExpr {
 		}
 		return returnMatName;
 	}
+
+	public Matrix[] evaluate(Dictionary<string, Matrix> nameDict){
+		return evaluateRecursive(this, nameDict).ToArray();
+	}
+
+	public static List<Matrix> evaluateRecursive(SymbolicMatrixExpr currentExpr, Dictionary<string, Matrix> nameDict){
+		List<Matrix> currentResultsList = new List<Matrix>();
+		List<Matrix> currentChildren = new List<Matrix>();
+		if (currentExpr != null){
+			foreach (SymbolicMatrixExpr child in currentExpr.children){
+				List<Matrix> childList = evaluateRecursive(child, nameDict);
+				currentChildren.Add ((Matrix) childList.Last());
+				currentResultsList.AddRange(childList);
+			}
+			Matrix currentResult;
+			switch (currentExpr.exprType){
+				//TODO: only evaluate unary or binary expressions currently, would like to extend to more general children structures
+				case MatrixExpressionType.Constant:
+					currentResult = (Matrix) ((ConstantExpression) currentExpr.dataExp).Value;
+					break;	
+				case MatrixExpressionType.Parameter:
+					currentResult = nameDict[((ParameterExpression) currentExpr.dataExp).Name];
+					break;	
+				case MatrixExpressionType.Transpose:
+					currentResult = Matrix.Transpose(currentChildren.First());
+					break;
+				case MatrixExpressionType.MatrixMultiply:
+					currentResult = (currentChildren.First() * currentChildren.Last());
+					break;	
+				case MatrixExpressionType.ScalarMultiply:
+					Matrix intermediate = currentChildren.Last().Clone();
+					intermediate.Multiply(((Matrix) currentChildren.First()).GetArray()[0][0]);
+					currentResult = intermediate;
+					break;
+				case MatrixExpressionType.Add:
+					currentResult = (currentChildren.First() + currentChildren.Last());
+					break;
+				case MatrixExpressionType.Subtract:
+					currentResult = (currentChildren.First() - currentChildren.Last());
+					break;
+				default:
+					currentResult = Matrix.Zeros(1);
+					break;
+			}
+			currentResultsList.Add (currentResult);
+
+		}
+		return currentResultsList;
+	}
+
+	public MatrixExprWithData[] evaluateWithInputsAndType(Dictionary<string, Matrix> nameDict){
+		List<MatrixExprWithData> resultsList = evaluateRecursiveWithInputsAndType(this, nameDict);
+		MatrixExprWithData[] returnArray = resultsList.ToArray();
+		return returnArray;
+	}
+
+	public static List<MatrixExprWithData> evaluateRecursiveWithInputsAndType(SymbolicMatrixExpr currentExpr, Dictionary<string, Matrix> nameDict){
+		List<MatrixExprWithData> currentResultsList = new List<MatrixExprWithData>();
+		List<Matrix> currentChildren = new List<Matrix>();
+		if (currentExpr != null){
+			foreach (SymbolicMatrixExpr child in currentExpr.children){
+				List<MatrixExprWithData> childList = evaluateRecursiveWithInputsAndType(child, nameDict);
+				currentChildren.Add ((Matrix) childList.Last().output);
+				currentResultsList.AddRange(childList);
+			}
+			MatrixExprWithData currentResult;
+			switch (currentExpr.exprType){
+				case MatrixExpressionType.Constant:
+					currentResult = new MatrixExprWithData(new Matrix[] {(Matrix) ((ConstantExpression) currentExpr.dataExp).Value}, currentExpr.exprType);
+					break;	
+				case MatrixExpressionType.Parameter:
+					currentResult = new MatrixExprWithData(new Matrix[] {nameDict[((ParameterExpression) currentExpr.dataExp).Name]}, currentExpr.exprType);
+					break;	
+				default:
+					currentResult = new MatrixExprWithData(currentChildren.ToArray(), currentExpr.exprType);
+					break;
+			}
+			currentResultsList.Add (currentResult);
+		}
+		return currentResultsList;
+	}
+
+	public static SymbolicMatrixExpr identity(int size){
+		Matrix identityMatrix = Matrix.Identity(size, size);
+		SymbolicMatrixExpr identityExpr = constantMatrix(identityMatrix, "I");
+		return identityExpr;
+	}
 	
+
+}
+
+public class MatrixExprWithData{
+	public MatrixExpressionType exprType;
+	public Matrix[] inputs;
+	public Matrix output;
+
+	public MatrixExprWithData(Matrix[] inputs, MatrixExpressionType exprType){
+		this.inputs = (Matrix[]) inputs.Clone();
+		this.exprType = exprType;
+		switch (this.exprType){
+			//TODO: only evaluate unary or binary expressions currently, would like to extend to more general children structures
+			case MatrixExpressionType.Constant:
+				this.output = inputs[0];
+				break;	
+			case MatrixExpressionType.Parameter:
+				this.output = inputs[0];
+				break;	
+			case MatrixExpressionType.Transpose:
+				this.output = Matrix.Transpose(inputs[0]);
+				break;
+			case MatrixExpressionType.MatrixMultiply:
+				this.output = (inputs[0] * inputs[1]);
+				break;	
+			case MatrixExpressionType.ScalarMultiply:
+				Matrix intermediate = inputs[1].Clone();
+				intermediate.Multiply(inputs[0].GetArray()[0][0]);
+				this.output = intermediate;
+				break;
+			case MatrixExpressionType.Add:
+				this.output = (inputs[0] + inputs[1]);
+				break;
+			case MatrixExpressionType.Subtract:
+				this.output = (inputs[0] - inputs[1]);
+				break;
+			default:
+				this.output = Matrix.Zeros(1);
+				break;
+		}
+	}
 
 }
 

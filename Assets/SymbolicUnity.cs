@@ -5,6 +5,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -71,8 +72,16 @@ public class SymbolicUnity : MonoBehaviour {
 		SymbolicMatrixExpr inputSymbVector = SymbolicMatrixExpr.constantMatrix(inputVectorTest, "v");
 		SymbolicMatrixExpr inputSymbMatrix = SymbolicMatrixExpr.constantMatrix(inputMatrixTest, "A");
 
+		SymbolicMatrixExpr param1SymbVector = SymbolicMatrixExpr.parametricMatrix(new int[] {2, 1}, "v1p");
+		SymbolicMatrixExpr param2SymbVector = SymbolicMatrixExpr.parametricMatrix(new int[] {2, 1}, "v2p");
+		SymbolicMatrixExpr paramSymbMatrix  = SymbolicMatrixExpr.parametricMatrix(new int[] {2, 2}, "Ap");
+
+		SymbolicMatrixExpr scalarHalf = SymbolicMatrixExpr.constantMatrix(new Matrix(new double[][] {new double[] {0.5}}), "0.5");
+
 		SymbolicMatrixExpr matVecMultSymb = SymbolicMatrixExpr.multiply(inputSymbMatrix, inputSymbVector);
+		SymbolicMatrixExpr halfMatVecMultSymb = SymbolicMatrixExpr.scale(scalarHalf, matVecMultSymb);
 		SymbolicMatrixExpr quadFormSymb = SymbolicMatrixExpr.multiply(SymbolicMatrixExpr.transposeMatrix(inputSymbVector), matVecMultSymb);
+		SymbolicMatrixExpr halfQuadFormSymb = SymbolicMatrixExpr.multiply(SymbolicMatrixExpr.transposeMatrix(inputSymbVector), halfMatVecMultSymb);
 		SymbolicMatrixExpr vecAdd = SymbolicMatrixExpr.add(inputSymbVector, inputSymbVector);
 		SymbolicMatrixExpr vec2Add = SymbolicMatrixExpr.add(vecAdd, vecAdd);
 		print (matVecMultSymb.name + " = ");
@@ -80,12 +89,26 @@ public class SymbolicUnity : MonoBehaviour {
 		print ("[" + result[0][0].ToString() + ", " + result[1][0].ToString() + "]");
 		print ("Return Shape: " + matVecMultSymb.shape[0].ToString() + ", " + matVecMultSymb.shape[1].ToString());
 
+		print (halfQuadFormSymb.name + " = ");
+		//double[][] quadFormResult = (((Func<Matrix>) halfQuadFormSymb.lambdafy().Compile()) ()).GetArray();
+		MatrixExprWithData[] halfQuadFormResultsWithInputAndType = halfQuadFormSymb.evaluateWithInputsAndType(new Dictionary<string, Matrix>());
+		//Matrix[] halfQuadFormResults = halfQuadFormSymb.evaluate(new Dictionary<string, Matrix>());
+		foreach (MatrixExprWithData matExpr in halfQuadFormResultsWithInputAndType){
+			Matrix outMat = matExpr.output;
+			MatrixExpressionType exprType = matExpr.exprType;
+			print (exprType);
+			print ( TextManager.Mat2String(TextManager.textListsMatrix(outMat, 3)));
+		}
+		//double[][] quadFormResult = halfQuadFormResults.Last().GetArray();
+		//print (quadFormResult[0][0].ToString());
+		//print ("Return Shape: " + matVecMultSymb.shape[0].ToString() + ", " + matVecMultSymb.shape[1].ToString());
+
 		// check that this next line produces a shape error
 		//SymbolicMatrixExpr matVecMultSymbError = SymbolicMatrixExpr.multiply(matVecMultSymb, inputSymbVector);
 
 		// test childrenFirstTopSort
 
-		SymbolicMatrixExpr currentTopSort = vec2Add;
+		SymbolicMatrixExpr currentTopSort = halfQuadFormSymb;
 		SymbolicMatrixExpr[] topSort = SymbolicMatrixExpr.childrenFirstTopSort(currentTopSort);
 
 		int treeSize = currentTopSort.treeSize;
@@ -95,6 +118,8 @@ public class SymbolicUnity : MonoBehaviour {
 			SymbolicMatrixExpr symb = topSort[i];
 			print (symb.name);
 		}
+
+		// testing variable number of parameters
 
 
 	}
