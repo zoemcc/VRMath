@@ -21,7 +21,7 @@ namespace AssemblyCSharp
 		public VectorAnimation (GameObject parent, Color color)
 		{
 			GameObject vector_p = GameObject.Instantiate( Resources.LoadAssetAtPath("Assets/Resources/Arrow18.prefab", typeof(GameObject))) as GameObject;
-			vector.transform.parent = parent.transform; 
+			vector_p.transform.parent = parent.transform; 
 
 			vector = vector_p.transform.GetChild (0).gameObject; 
 
