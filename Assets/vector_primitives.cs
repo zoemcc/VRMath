@@ -9,7 +9,7 @@ public class vector_primitives {
 	VectorAnimation arrow2; 
 	VectorAnimation ans_arrow; 
 	VectorAnimation[] arrows = new VectorAnimation[10]; 
-
+	GameObject debug_ball = GameObject.CreatePrimitive (PrimitiveType.Cube);
 	BarAnimation bar; 
 
 	public bool not_done = false; 
@@ -67,6 +67,7 @@ public class vector_primitives {
 		float phase_interval = num_frames / Num_Vecs; 
 		//Debug code
 		iterations += 1.0f; 
+
 		for (int i=0; i<Num_Vecs-1; i++) {
 			if ( iterations >= i*phase_interval && iterations < (i+1)*phase_interval) {
 					for(int t=0;t<=i; t++){
@@ -80,6 +81,9 @@ public class vector_primitives {
 					float iter_small = (iterations-i*phase_interval)/phase_interval;
 					arrow2.drawVector (iter_small * arrows[i].getEndPoint(), iter_small * arrows[i].getEndPoint () + vectors[i+1]); 
 					ans_arrow.drawVector (new Vector3 (0.0f, 0.0f, 0.0f), arrow2.getEndPoint ()); 
+					debug_ball.transform.localPosition = arrow2.getEndPoint(); 
+					debug_ball.transform.localScale =  new Vector3(5.0f,5.0f,5.0f); 
+					debug_ball.SetActive(true); 
 					
 			} else if(iterations > num_frames) {
 					iterations = 0.0f; 
@@ -94,7 +98,7 @@ public class vector_primitives {
 				arrows[i].hideVector(); 
 			}
 		}
-		return true; 
+		return not_done; 
 		
 	}
 
@@ -130,7 +134,7 @@ public class vector_primitives {
 			ans_arrow.hideVector(); 
 			bar.hideBar(); 
 		}
-		return true; 
+		return not_done; 
 		
 	}
 
@@ -146,10 +150,14 @@ public class vector_primitives {
 			iterations = 0.0f; 
 		}
 
+		debug_ball.transform.localPosition = arrow1.getEndPoint(); 
+		debug_ball.transform.localScale =  new Vector3(5.0f,5.0f,5.0f); 
+		debug_ball.SetActive(true); 
+
 		if (!not_done) {
 			arrow1.hideVector ();  
 		}
-		return true; 
+		return not_done; 
 	}
 
 
