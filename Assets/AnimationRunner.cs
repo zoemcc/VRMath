@@ -18,6 +18,12 @@ public class AnimationRunner : MonoBehaviour {
 	Vector3[] inputs;
 	float numFrames;
 
+	bool hasBeenSet = false;
+
+	float startTime = 0f;
+
+	bool runningAnimation = false;
+
 	// Use this for initialization
 	void Start () {
 
@@ -28,7 +34,13 @@ public class AnimationRunner : MonoBehaviour {
 		this.animType = animType;
 		this.inputs = inputs;
 		this.numFrames = numFrames;
-		switch (this.animType)
+		if(this.vectors == null){
+			this.vectors = new vector_primitives(parent);
+		}
+		this.startTime = Time.time;
+		this.hasBeenSet = true;
+		this.runningAnimation = true;
+		/*switch (this.animType)
 		{
 		case AnimationType.Dot:
 			//animation instantiate  
@@ -40,29 +52,38 @@ public class AnimationRunner : MonoBehaviour {
 		case AnimationType.Scale:
 			break;
 		case AnimationType.Display:
+			this.vectors = new vector_primitives(parent);
 			break;
 		default:
 			throw new Exception("Unsupported animation type");
-		}
+		}*/
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		switch (this.animType)
-		{
-		case AnimationType.Dot:
-			//animation instantiate  
-			// multiply_vectors(
-			break;	
-		case AnimationType.Add:
-			this.vectors.add_vectors(this.inputs[0], this.inputs[1], numFrames);
-			break;
-		case AnimationType.Scale:
-			break;
-		case AnimationType.Display:
-			break;
-		default:
-			throw new Exception("Unsupported animation type");
+		if (hasBeenSet){
+			if (this.runningAnimation){
+				switch (this.animType)
+				{
+				case AnimationType.Dot:
+					this.runningAnimation = this.vectors.multiply_vectors(this.inputs[0], this.inputs[1], numFrames);
+					break;	
+				case AnimationType.Add:
+					this.runningAnimation = this.vectors.add_vectors(this.inputs, numFrames);
+					break;
+				case AnimationType.Scale:
+					this.runningAnimation = this.vectors.scale_vector(this.inputs[0][0], this.inputs[1], numFrames);
+					break;
+				case AnimationType.Display:
+					this.runningAnimation = this.vectors.displayVector(this.inputs[0], numFrames);
+					break;
+				default:
+					throw new Exception("Unsupported animation type");
+				}
+			}
 		}
+		//if(this.startTime >  numFrames / 75.0f){
+			//this.vectors.
+		//}
 	}
 }

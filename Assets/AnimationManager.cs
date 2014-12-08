@@ -29,20 +29,30 @@ public class AnimationManager : MonoBehaviour {
 	void Update () {
 		if (animationUpdate){
 			Matrix inputVectorTest = new Matrix(new double[][]{new double[] {1.0}, new double[] {0.5}});
+			Matrix inputMatrixTest = new Matrix(new double[][]{new double[] {3.0, 0.5}, new double[] {0.5, 2.0}});
+			Matrix inputRowVectorTest = new Matrix(new double[][]{new double[] {1.0, 0.5, -1}});
+			Matrix inputColVectorTest = new Matrix(new double[][]{new double[] {-1.0}, new double[] {-1.5}, new double[]{0.5}});
+
 			Matrix inputMatrixTestA = new Matrix(new double[][]{new double[] {3.0, 0.5}, new double[] {0.5, 2.0}});
-			Matrix inputMatrixTestB = new Matrix(new double[][]{new double[] {5.0, 1.0}, new double[] {1.0, 3.0}});
+			Matrix inputMatrixTestB = new Matrix(new double[][]{new double[] {-5.0, 1.0}, new double[] {1.0, -3.0}});
 
 			SymbolicMatrixExpr inputSymbVector = SymbolicMatrixExpr.constantMatrix(inputVectorTest, "v");
+			SymbolicMatrixExpr inputSymbMatrix = SymbolicMatrixExpr.constantMatrix(inputMatrixTestA, "M");
 			SymbolicMatrixExpr inputSymbMatrixA = SymbolicMatrixExpr.constantMatrix(inputMatrixTestA, "A");
 			SymbolicMatrixExpr inputSymbMatrixB = SymbolicMatrixExpr.constantMatrix(inputMatrixTestB, "B");
+
+			SymbolicMatrixExpr inputSymbRowVector = SymbolicMatrixExpr.constantMatrix(inputRowVectorTest, "w");
+			SymbolicMatrixExpr inputSymbColVector = SymbolicMatrixExpr.constantMatrix(inputColVectorTest, "u");
 			
 			SymbolicMatrixExpr param1SymbVector = SymbolicMatrixExpr.parametricMatrix(new int[] {2, 1}, "v1p");
 			SymbolicMatrixExpr param2SymbVector = SymbolicMatrixExpr.parametricMatrix(new int[] {2, 1}, "v2p");
 			SymbolicMatrixExpr paramSymbMatrix  = SymbolicMatrixExpr.parametricMatrix(new int[] {2, 2}, "Ap");
 			
 			SymbolicMatrixExpr scalarHalf = SymbolicMatrixExpr.constantMatrix(new Matrix(new double[][] {new double[] {0.5}}), "0.5");
+
+			SymbolicMatrixExpr dotProd = SymbolicMatrixExpr.multiply(inputSymbRowVector, inputSymbColVector);
 			
-			SymbolicMatrixExpr matVecMultSymb = SymbolicMatrixExpr.multiply(inputSymbMatrixA, inputSymbVector);
+			SymbolicMatrixExpr matVecMultSymb = SymbolicMatrixExpr.multiply(inputSymbMatrix, inputSymbVector);
 			SymbolicMatrixExpr halfMatVecMultSymb = SymbolicMatrixExpr.scale(scalarHalf, matVecMultSymb);
 			SymbolicMatrixExpr quadFormSymb = SymbolicMatrixExpr.multiply(SymbolicMatrixExpr.transposeMatrix(inputSymbVector), matVecMultSymb);
 			SymbolicMatrixExpr halfQuadFormSymb = SymbolicMatrixExpr.multiply(SymbolicMatrixExpr.transposeMatrix(inputSymbVector), halfMatVecMultSymb);
@@ -62,8 +72,9 @@ public class AnimationManager : MonoBehaviour {
 			MatrixExprWithData[] halfQuadFormResultsWithInputAndType = halfQuadFormSymb.evaluateWithInputsAndType(emptyDict);
 
 
-
-			this.animations = new AnimationsTimeIndexed(matABAdd, gameObject);
+			//this.animations = new AnimationsTimeIndexed(dotProd, gameObject);
+			this.animations = new AnimationsTimeIndexed(halfMatVecMultSymb, gameObject);
+			//this.animations = new AnimationsTimeIndexed(matABAdd, gameObject);
 
 			this.animations.evaluateExpression(emptyDict);
 

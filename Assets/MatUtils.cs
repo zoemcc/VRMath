@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 
 
@@ -20,6 +21,20 @@ public class MatUtils {
 		Vector3 retVector = new Vector3();
 		for (int i = 0; i < data.Length && i < 3; i++){
 			retVector[i] = (float) data[i];
+		}
+		for (int i = data.Length; i < 3; i++){
+			retVector[i] = 0f;
+		}
+		return retVector;
+	}
+
+	public static Vector standardBasis(int i, int dim){
+		Vector retVector = Vector.Zeros(dim);
+		if (i >= dim){
+			throw new Exception("desired basis is larger than dimension");
+		}
+		else {
+			retVector[i] = 1.0;
 		}
 		return retVector;
 	}

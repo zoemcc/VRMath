@@ -32,7 +32,7 @@ public class Animation {
 	public GameObject animationObject;
 	public AnimationRunner animationRunner;
 
-	public Vector[] inputs;
+	public Vector3[] inputs;
 
 	public vector_primitives vectors;
 	
@@ -40,8 +40,6 @@ public class Animation {
 
 	public Animation(AnimationType inType, int inputNumber, GameObject parent, Vector3 translation, Vector3 scale){
 		this.type = inType;
-		this.inputs = new Vector[inputNumber];
-		this.inputNumber = inputNumber;
 
 		this.animationObject = new GameObject("Ani Type: " + inType.ToString());
 		this.animationObject.transform.parent = parent.transform;
@@ -52,31 +50,17 @@ public class Animation {
 		this.animationRunner = this.animationObject.AddComponent<AnimationRunner>();
 	}
 
+	public void setNumberOfInputs(int numInputs){
+		this.inputs = new Vector3[numInputs];
+		this.inputNumber = numInputs;
+	}
+
 	public void setInput(Vector input, int inputIndex){
-		this.inputs[inputIndex] = input.Clone();
+		this.inputs[inputIndex] = MatUtils.mathNetToUnityVec(input);
 	}
 
 	public void display(int numFrames){
-		switch (this.type)
-		{
-		case AnimationType.Dot:
-			//animation instantiate  
-			// multiply_vectors(
-			break;	
-		case AnimationType.Add:
-			Vector3[] inputs = new Vector3[] {MatUtils.mathNetToUnityVec(this.inputs[0]), 
-											  MatUtils.mathNetToUnityVec(this.inputs[1])};
-			animationRunner.initializeAnimation(this.type, inputs, this.animationObject, (float) numFrames);
-			//animationRunner.
-			//animationRunner
-			break;
-		case AnimationType.Scale:
-			break;
-		case AnimationType.Display:
-			break;
-		default:
-			throw new Exception("Unsupported animation type");
-		}
+		this.animationRunner.initializeAnimation(this.type, this.inputs, this.animationObject, (float) numFrames);
 	}
 }
 
@@ -142,6 +126,7 @@ public class AnimationArray2d {
 		for (int inputIndex = 0; inputIndex < numInputs; inputIndex++){
 			for (int i = 0; i < this.shape[0]; i++){
 				for (int j = 0; j < this.shape[1]; j++){
+					animations[i][j].setNumberOfInputs(numInputs);
 					animations[i][j].setInput(inputs[inputIndex][i][j], inputIndex);
 				}
 			}
@@ -156,42 +141,6 @@ public class AnimationArray2d {
 			}
 		}
 	}
-
-	//public static List<AnimationArray2d> decomposeIntoAnimationArrays(SymbolicMatrixExpr inputSymbExpr){
-	//	List<AnimationArray2d> returnAnimationList = new List<AnimationArray2d> ();
-
-		/*switch (inputSymbExpr.exprType){
-			//TODO: only evaluate unary or binary expressions currently, would like to extend to more general children structures
-		case MatrixExpressionType.Constant:
-			currentResult = (Matrix) ((ConstantExpression) currentExpr.dataExp).Value;
-			break;	
-		case MatrixExpressionType.Parameter:
-			currentResult = nameDict[((ParameterExpression) currentExpr.dataExp).Name];
-			break;	
-		case MatrixExpressionType.Transpose:
-			currentResult = Matrix.Transpose(currentChildren.First());
-			break;
-		case MatrixExpressionType.MatrixMultiply:
-			currentResult = (currentChildren.First() * currentChildren.Last());
-			break;	
-		case MatrixExpressionType.ScalarMultiply:
-			Matrix intermediate = currentChildren.Last().Clone();
-			intermediate.Multiply(((Matrix) currentChildren.First()).GetArray()[0][0]);
-			currentResult = intermediate;
-			break;
-		case MatrixExpressionType.Add:
-			currentResult = (currentChildren.First() + currentChildren.Last());
-			break;
-		case MatrixExpressionType.Subtract:
-			currentResult = (currentChildren.First() - currentChildren.Last());
-			break;
-		default:
-			currentResult = Matrix.Zeros(1);
-			break;
-		}*/
-	//	return returnAnimationList;
-	//}
-	
 
 }
 
@@ -342,7 +291,56 @@ public class AnimationArray2dMultipleOperations {
 
 		switch (this.animationsType){
 			case MultipleAnimationsTypes.ColColMatMul:
-				throw new Exception("Not implemented MatMul yet");
+				// dot with elementary basis
+				int[] rightShape = MatUtils.shape(expressionData.inputs[1]);
+				inputDataVectors = new Vector[2][][];
+				inputDataVectors[0] = new Vector[rightShape[0]][];
+				inputDataVectors[1] = new Vector[rightShape[0]][];
+				double[][] intermediateResultsDot = new double[rightShape[0]][];
+				for(int i = 0; i < rightShape[0]; i++){
+					inputDataVectors[0][i] = new Vector[rightShape[1]];
+					inputDataVectors[1][i] = new Vector[rightShape[1]];
+					intermediateResultsDot[i] = new double[rightShape[1]];
+					for (int j = 0; j < rightShape[1]; j++){
+						inputDataVectors[0][i][j] = expressionData.inputs[1].GetColumnVector(j);
+						inputDataVectors[1][i][j] = MatUtils.standardBasis(i, rightShape[0]);
+						intermediateResultsDot[i][j] = Vector.ScalarProduct(inputDataVectors[0][i][j], inputDataVectors[1][i][j]);
+					}
+				}
+
+				this.animationArrays[0].setData(inputDataVectors);
+
+				// scale the left columns
+				Vector[][][] inputDataVectorsScale = new Vector[2][][];
+				inputDataVectorsScale[0] = new Vector[rightShape[0]][];
+				inputDataVectorsScale[1] = new Vector[rightShape[0]][];
+				Vector[][] intermediateResultsScale = new Vector[rightShape[0]][];
+				
+				for(int i = 0; i < rightShape[0]; i++){
+					inputDataVectorsScale[0][i] = new Vector[rightShape[1]];
+					inputDataVectorsScale[1][i] = new Vector[rightShape[1]];
+					intermediateResultsScale[i] = new Vector[rightShape[1]];
+					for (int j = 0; j < rightShape[1]; j++){
+						inputDataVectorsScale[0][i][j] = new Vector(new double[] {intermediateResultsDot[i][j]});
+						inputDataVectorsScale[1][i][j] = expressionData.inputs[0].GetColumnVector(i);
+						intermediateResultsScale[i][j] = intermediateResultsDot[i][j] * inputDataVectorsScale[1][i][j];
+					}
+				}
+
+				this.animationArrays[1].setData(inputDataVectorsScale);
+
+				Vector[][][] inputDataVectorsAdd = new Vector[rightShape[0]][][];
+				for (int i = 0; i < rightShape[0]; i++){
+
+					inputDataVectorsAdd[i] = new Vector[1][];
+					inputDataVectorsAdd[i][0] = new Vector[rightShape[1]];
+					for (int j = 0; j < rightShape[1]; j++){
+						inputDataVectorsAdd[i][0][j] = intermediateResultsScale[i][j];
+					}
+				}
+
+				this.animationArrays[2].setData(inputDataVectorsAdd);
+		
 				break;
 			case MultipleAnimationsTypes.ColDisplay:
 				inputDataVectors = new Vector[1][][];
