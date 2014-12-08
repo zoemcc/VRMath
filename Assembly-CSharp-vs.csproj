@@ -48,6 +48,7 @@
   <ItemGroup>
      <Compile Include="Assets\AnimationArray2d.cs" />
      <Compile Include="Assets\AnimationManager.cs" />
+     <Compile Include="Assets\BarAnimation.cs" />
      <Compile Include="Assets\Button.cs" />
      <Compile Include="Assets\CameraPosScale.cs" />
      <Compile Include="Assets\Change.cs" />
@@ -148,6 +149,7 @@
      <Compile Include="Assets\SymbolicUnity.cs" />
      <Compile Include="Assets\TextManager.cs" />
      <Compile Include="Assets\TrackCameraLeft.cs" />
+     <Compile Include="Assets\VectorAnimation.cs" />
      <Compile Include="Assets\mathText2.cs" />
      <Compile Include="Assets\vector_primitives.cs" />
      <None Include="Assets\builtin_shaders-4.5.5\DefaultResourcesExtra\Mobile\Mobile-BumpSpec-1DirectionalLight.shader" />
