@@ -30,8 +30,12 @@ public class Animation {
 	public int inputNumber;
 
 	public GameObject animationObject;
+	public AnimationRunner animationRunner;
 
 	public Vector[] inputs;
+
+	public vector_primitives vectors;
+	
 
 
 	public Animation(AnimationType inType, int inputNumber, GameObject parent, Vector3 translation, Vector3 scale){
@@ -39,10 +43,13 @@ public class Animation {
 		this.inputs = new Vector[inputNumber];
 		this.inputNumber = inputNumber;
 
-		this.animationObject = new GameObject("Animation. Type: " + inType.ToString());
+		this.animationObject = new GameObject("Ani Type: " + inType.ToString());
 		this.animationObject.transform.parent = parent.transform;
 		this.animationObject.transform.localPosition = translation;
 		this.animationObject.transform.localScale = scale;
+
+		
+		this.animationRunner = this.animationObject.AddComponent<AnimationRunner>();
 	}
 
 	public void setInput(Vector input, int inputIndex){
@@ -50,13 +57,18 @@ public class Animation {
 	}
 
 	public void display(int numFrames){
-		switch (type)
+		switch (this.type)
 		{
 		case AnimationType.Dot:
 			//animation instantiate  
 			// multiply_vectors(
 			break;	
 		case AnimationType.Add:
+			Vector3[] inputs = new Vector3[] {MatUtils.mathNetToUnityVec(this.inputs[0]), 
+											  MatUtils.mathNetToUnityVec(this.inputs[1])};
+			animationRunner.initializeAnimation(this.type, inputs, this.animationObject, (float) numFrames);
+			//animationRunner.
+			//animationRunner
 			break;
 		case AnimationType.Scale:
 			break;
@@ -90,6 +102,7 @@ public class AnimationArray2d {
 		this.animationType = animationType;
 		this.animationArray2dObject = new GameObject("Animation array. Type: " + animationType.ToString() + " Shape: " + shape.ToArray());
 		this.animationArray2dObject.transform.parent = parent.transform;
+		this.animationArray2dObject.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
 
 		this.animations = new Animation[shape[0]][];
 		for (int i = 0; i < shape[0]; i++){
@@ -101,13 +114,25 @@ public class AnimationArray2d {
 	}
 
 	public static Vector3 translationOffset(int xj, int yi, int width, int height){
-		float xChange = (xj - width ) / (2.0f * width );
-		float yChange = (yi - height) / (2.0f * height);
+		float xChange;
+		float yChange;
+		if (width % 2 == 0){
+			xChange = 20.0f * (xj - ((width  - 1) / 2.0f) ) / width;
+		}
+		else {
+			xChange = 20.0f * (xj - ((width  - 1) / 2.0f) ) / width;
+		}
+		if (height % 2 == 0){
+			yChange = 20.0f * (yi - ((height - 1) / 2.0f) ) / height;
+		}
+		else {
+			yChange = 20.0f * (yi - ((height - 1) / 2.0f) ) / height;
+		}
 		return new Vector3(xChange, yChange, 0.0f);
 	}
 
 	public static Vector3 scaleOffset(int width, int height){
-		return new Vector3(1.0f / height, 1.0f / height);
+		return new Vector3(1.0f / width, 1.0f / height, 1.0f);
 	}
 
 	public void setData(Vector[][][] inputs){
@@ -268,11 +293,11 @@ public class AnimationArray2dMultipleOperations {
 				leftChild = inputSymbExpr.children[0];
 				rightChild = inputSymbExpr.children[1];
 				if (shapeType == MatrixShapeType.RowVector){
-					this.animationArrays = new AnimationArray2d[] {new AnimationArray2d(AnimationType.Scale, new int[] {1, 1}, parent)};
+					this.animationArrays = new AnimationArray2d[] {new AnimationArray2d(AnimationType.Add, new int[] {1, 1}, parent)};
 					this.animationsType = MultipleAnimationsTypes.RowAdd;
 				}
 				else { // default to column vectors 
-					this.animationArrays = new AnimationArray2d[] {new AnimationArray2d(AnimationType.Scale, new int[] {1, rightChild.shape[1]}, parent)};
+					this.animationArrays = new AnimationArray2d[] {new AnimationArray2d(AnimationType.Add, new int[] {1, rightChild.shape[1]}, parent)};
 					this.animationsType = MultipleAnimationsTypes.ColAdd;
 				}
 				
@@ -537,6 +562,15 @@ public class AnimationsTimeIndexed {
 	public AnimationArray2dMultipleOperations[] animations; // different length than expressions
 	public int[] timeOffsets;
 	public int totalAnimations;
+
+	public int lastAnimationStartTime = -1;
+
+	//public int currentAnimationsIndex = 0;
+
+	public int currentIndexWithinMultipleAnimations = 0;
+	public int currentMultipleAnimationsIndex = 0;
+
+	//public int lastAnimationIndex = -1;
 	//public int[] animationIndexToExpr;
 
 	private AnimationsTimeIndexed(){
@@ -567,6 +601,29 @@ public class AnimationsTimeIndexed {
 		MatrixExprWithData[] resultsArray = this.topLevelExpression.evaluateWithInputsAndType(nameDict);
 		for (int i = 0; i < resultsArray.Length; i++){
 			this.animations[i].setData(resultsArray[i]);
+		}
+
+	}
+
+	public void updateCurrentAnimation(float timeSinceStarting){
+		int floorTime = Mathf.FloorToInt(timeSinceStarting);
+
+		if (floorTime >= this.totalAnimations){ // reset
+			floorTime = floorTime % this.totalAnimations;
+			this.lastAnimationStartTime = -1;
+			this.currentMultipleAnimationsIndex = 0;
+			this.currentIndexWithinMultipleAnimations = 0;
+		}
+
+		if (floorTime > this.lastAnimationStartTime){ // need to display new animation
+			if(this.animations[this.currentMultipleAnimationsIndex].numOperations == this.currentIndexWithinMultipleAnimations){
+				this.currentMultipleAnimationsIndex++;
+				this.currentIndexWithinMultipleAnimations = 0;
+			}
+			this.animations[this.currentMultipleAnimationsIndex].display(this.currentIndexWithinMultipleAnimations, 1.0f);
+			this.currentIndexWithinMultipleAnimations++;
+			//this.animations[this.currentMultipleAnimationsIndex].display(floorTime - this.timeOffsets[this.currentAnimationsIndex], 1.0f);
+			this.lastAnimationStartTime = floorTime;
 		}
 
 	}
