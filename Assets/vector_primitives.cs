@@ -8,6 +8,7 @@ public class vector_primitives {
 	VectorAnimation arrow1;  
 	VectorAnimation arrow2; 
 	VectorAnimation ans_arrow; 
+	VectorAnimation[] arrows = new VectorAnimation[10]; 
 
 	BarAnimation bar; 
 
@@ -17,11 +18,17 @@ public class vector_primitives {
 
 	GameObject [] pinchSpheres; 
 
+
 	public vector_primitives(GameObject parent)
 	{
 		arrow1 = new VectorAnimation (parent, Color.magenta); 
 		arrow2 = new VectorAnimation (parent, Color.blue); 
 		ans_arrow = new VectorAnimation (parent, Color.green); 
+
+		for (int i=0; i<10; i++) {
+			arrows [i] = new VectorAnimation (parent, Color.cyan); 
+		}
+
 		bar = new BarAnimation (parent, Color.green); 
 		pinchSpheres = new GameObject[] {GameObject.CreatePrimitive(PrimitiveType.Sphere),
 			GameObject.CreatePrimitive(PrimitiveType.Sphere)};
@@ -34,6 +41,7 @@ public class vector_primitives {
 
 		Vector3 answer = vec * scale; 
 		arrow1.drawVector (vec); 
+
 		if (iterations < 1.0) {
 			ans_arrow.drawVector(iterations*answer); 
 			iterations += 1/num_frames; 
@@ -51,27 +59,40 @@ public class vector_primitives {
 		return not_done; 
 	}
 
-	public bool add_vectors(Vector3 vec1, Vector3 vec2,float num_frames){
+	public bool add_vectors(Vector3 [] vectors,float num_frames){
 		
 		not_done = true; 
-		
-
+		Vector3 sum = Vector3.zero; 
+		int Num_Vecs = vectors.Length; 
+		float phase_interval = num_frames / Num_Vecs; 
 		//Debug code
-		
-		if (iterations < 1.0) {
-			arrow2.drawVector(iterations*arrow1.getEndPoint(),iterations*arrow1.getEndPoint()+vec2); 
-			ans_arrow.drawVector(new Vector3(0.0f,0.0f,0.0f),arrow2.getEndPoint()); 
-			iterations += 1/num_frames; 
-		}
-		else{
-			iterations = 0.0f; 
-			not_done = false; 
+		iterations += 1.0f; 
+		for (int i=0; i<Num_Vecs-1; i++) {
+			if ( iterations >= i*phase_interval && iterations < (i+1)*phase_interval) {
+					for(int t=0;t<=i; t++){
+						sum = vectors[t]+sum; 
+						arrows[t].hideVector(); 
+					}
+					arrows[i].drawVector(sum); 
+					for(int t=i+1; t<Num_Vecs; t++){
+						arrows[t].drawVector(vectors[t]); 
+					}
+					float iter_small = (iterations-i*phase_interval)/phase_interval;
+					arrow2.drawVector (iter_small * arrows[i].getEndPoint(), iter_small * arrows[i].getEndPoint () + vectors[i+1]); 
+					ans_arrow.drawVector (new Vector3 (0.0f, 0.0f, 0.0f), arrow2.getEndPoint ()); 
+					
+			} else if(iterations > num_frames) {
+					iterations = 0.0f; 
+					not_done = false; 
+			}
 		}
 
 		if (!not_done) {
-			arrow1.hideVector();  
 			arrow2.hideVector(); 
 			ans_arrow.hideVector(); 
+			for(int i=0; i<Num_Vecs; i++){
+				arrows[i].hideVector(); 
+			}
 		}
 		return true; 
 		
