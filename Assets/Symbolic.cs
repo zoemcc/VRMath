@@ -30,6 +30,18 @@ public class Symbolic{
 		return Expression.Multiply(scalarConstantMatrix(0.5), quadFormExpr);
 	}
 
+	/*public static Expression extractScalar(Expression inputMatrixExpression){
+		MethodInfo getArray = typeof(Matrix).GetMethod("GetArray", new Type[] {typeof(double[][])});
+		Expression arrayExpression = Expression.Call(getArray, inputMatrixExpression);
+		System.Linq.Expressions.MethodCallExpression outputDoubleScalarExpression =
+			System.Linq.Expressions.Expression.ArrayIndex(
+				arrayExpression,
+				System.Linq.Expressions.Expression.Constant(0),
+				System.Linq.Expressions.Expression.Constant(0));
+
+		return outputDoubleScalarExpression;
+	}*/
+
 	//public static Expression[] walkExpressionTree(){
 	//	ElementInit expinit = Expression.ElementInit();
 	//}
