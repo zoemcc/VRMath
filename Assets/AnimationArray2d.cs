@@ -84,7 +84,7 @@ public class AnimationArray2d {
 	public AnimationArray2d(AnimationType animationType, int[] shape, GameObject parent){
 		this.shape = shape;
 		this.animationType = animationType;
-		this.animationArray2dObject = new GameObject("Animation array. Type: " + animationType.ToString() + " Shape: " + shape.ToArray());
+		this.animationArray2dObject = new GameObject("Ani. Type: " + animationType.ToString() + " sh: " + shape[0].ToString() + ", " + shape[1].ToString());
 		this.animationArray2dObject.transform.parent = parent.transform;
 		this.animationArray2dObject.transform.localPosition = new Vector3(0.0f, 0.0f, 0.0f);
 
@@ -135,7 +135,7 @@ public class AnimationArray2d {
 	}
 
 	public void display(float numSecs){
-		int numFrames = Mathf.CeilToInt(numSecs * 60f);
+		int numFrames = Mathf.CeilToInt(numSecs * 25f);
 		for (int i = 0; i < this.shape[0]; i++){
 			for (int j = 0; j < this.shape[1]; j++){
 				animations[i][j].display(numFrames);
@@ -571,6 +571,8 @@ public class AnimationsTimeIndexed {
 
 	public float timePerAnimation = 5.0f;
 
+	public int resetCount = 0;
+
 	//public int lastAnimationIndex = -1;
 	//public int[] animationIndexToExpr;
 
@@ -607,16 +609,17 @@ public class AnimationsTimeIndexed {
 	}
 
 	public void updateCurrentAnimation(float timeSinceStarting){
-		int floorTime = Mathf.FloorToInt(timeSinceStarting / timePerAnimation);
+		int floorNormalizedTime = Mathf.FloorToInt((timeSinceStarting / timePerAnimation) - this.resetCount * this.totalAnimations);
 
-		if (floorTime >= this.totalAnimations){ // reset
-			floorTime = floorTime % this.totalAnimations;
+		if (floorNormalizedTime >= this.totalAnimations){ // reset
+			floorNormalizedTime = floorNormalizedTime % this.totalAnimations;
 			this.lastAnimationStartTime = -1;
 			this.currentMultipleAnimationsIndex = 0;
 			this.currentIndexWithinMultipleAnimations = 0;
+			this.resetCount++;
 		}
 
-		if (floorTime > this.lastAnimationStartTime){ // need to display new animation
+		if (floorNormalizedTime > this.lastAnimationStartTime){ // need to display new animation
 			if(this.animations[this.currentMultipleAnimationsIndex].numOperations == this.currentIndexWithinMultipleAnimations){
 				this.currentMultipleAnimationsIndex++;
 				this.currentIndexWithinMultipleAnimations = 0;
@@ -624,7 +627,7 @@ public class AnimationsTimeIndexed {
 			this.animations[this.currentMultipleAnimationsIndex].display(this.currentIndexWithinMultipleAnimations, timePerAnimation);
 			this.currentIndexWithinMultipleAnimations++;
 			//this.animations[this.currentMultipleAnimationsIndex].display(floorTime - this.timeOffsets[this.currentAnimationsIndex], 1.0f);
-			this.lastAnimationStartTime = floorTime;
+			this.lastAnimationStartTime = floorNormalizedTime;
 		}
 
 	}
