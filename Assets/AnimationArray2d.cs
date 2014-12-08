@@ -107,7 +107,7 @@ public class AnimationArray2d {
 	}
 
 	public static Vector3 scaleOffset(int width, int height){
-		return Vector3(1.0f / height, 1.0f / height)
+		return new Vector3(1.0f / height, 1.0f / height);
 	}
 
 	public void setData(Vector[][][] inputs){
