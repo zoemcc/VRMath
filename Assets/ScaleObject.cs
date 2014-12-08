@@ -76,11 +76,11 @@ public class ScaleObject : MonoBehaviour {
 				bool pinch = true;  
 				Vector3[] poses = new Vector3[2];
 				bool[] pinches = new bool[2]; 
-				print (hands.Count);
+
 				int k = 0;
 				Quaternion rotation = new Quaternion();
 				Vector3 temp_pos = new Vector3();
-			
+							
 				foreach (HandModel hand in h.hand_physics_.Values){
 
 					GrabHand grab_hand;
