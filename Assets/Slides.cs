@@ -95,7 +95,8 @@ public class Slides : MonoBehaviour {
 		Vector3[] vecs = new Vector3[] {vec1,vec2,vec3,vec4}; 
 	    //vp = new vector_primitives (new GameObject ()); 
 		//vp.displayVector (vec4, 100.0f);
-		vp.add_vectors(vecs,1000.0f); 
+		//vp.add_vectors(vecs,1000.0f); 
+		//vp.multiply_vectors(vec1, vec2,1000.0f); 
 
 		if (loadedS1.isDone && loadedS2.isDone && loadedS3.isDone && loadedS4.isDone && not_set) {
 			

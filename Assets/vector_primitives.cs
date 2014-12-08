@@ -9,7 +9,7 @@ public class vector_primitives {
 	VectorAnimation arrow2; 
 	VectorAnimation ans_arrow; 
 	VectorAnimation[] arrows = new VectorAnimation[10]; 
-	GameObject debug_ball = GameObject.CreatePrimitive (PrimitiveType.Cube);
+//	GameObject debug_ball = GameObject.CreatePrimitive (PrimitiveType.Cube);
 	BarAnimation bar; 
 
 	public bool not_done = false; 
@@ -30,8 +30,8 @@ public class vector_primitives {
 		}
 
 		bar = new BarAnimation (parent, Color.green); 
-		pinchSpheres = new GameObject[] {GameObject.CreatePrimitive(PrimitiveType.Sphere),
-			GameObject.CreatePrimitive(PrimitiveType.Sphere)};
+		//pinchSpheres = new GameObject[] {GameObject.CreatePrimitive(PrimitiveType.Sphere),
+		//	GameObject.CreatePrimitive(PrimitiveType.Sphere)};
 	}
 	
 	
@@ -81,9 +81,7 @@ public class vector_primitives {
 					float iter_small = (iterations-i*phase_interval)/phase_interval;
 					arrow2.drawVector (iter_small * arrows[i].getEndPoint(), iter_small * arrows[i].getEndPoint () + vectors[i+1]); 
 					ans_arrow.drawVector (new Vector3 (0.0f, 0.0f, 0.0f), arrow2.getEndPoint ()); 
-					debug_ball.transform.localPosition = arrow2.getEndPoint(); 
-					debug_ball.transform.localScale =  new Vector3(5.0f,5.0f,5.0f); 
-					debug_ball.SetActive(true); 
+
 					
 			} else if(iterations > num_frames) {
 					iterations = 0.0f; 
@@ -150,9 +148,7 @@ public class vector_primitives {
 			iterations = 0.0f; 
 		}
 
-		debug_ball.transform.localPosition = arrow1.getEndPoint(); 
-		debug_ball.transform.localScale =  new Vector3(5.0f,5.0f,5.0f); 
-		debug_ball.SetActive(true); 
+ 
 
 		if (!not_done) {
 			arrow1.hideVector ();  

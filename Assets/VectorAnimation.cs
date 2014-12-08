@@ -22,6 +22,7 @@ namespace AssemblyCSharp
 		{
 			GameObject vector_p = GameObject.Instantiate( Resources.LoadAssetAtPath("Assets/Resources/Arrow18.prefab", typeof(GameObject))) as GameObject;
 			vector_p.transform.parent = parent.transform; 
+			vector_p.transform.localPosition = new Vector3(0f, 0f, 0f);
 
 			vector = vector_p.transform.GetChild (0).gameObject; 
 
@@ -37,7 +38,7 @@ namespace AssemblyCSharp
 
 			Vector3 orign = new Vector3 (-0.5f*vec.magnitude, 0.0f, 0.0f);
 			vector.transform.localRotation = rot; 
-			vector.transform.localScale = new Vector3 (vec.magnitude / (2 * scale_const), 1.0f, 1.0f); 
+			vector.transform.localScale = new Vector3 (vec.magnitude / (2 * scale_const), 0.1f, 0.1f); 
 			vector.transform.localPosition = rot*orign; 
 
 			vector.SetActive(true); 
@@ -55,7 +56,7 @@ namespace AssemblyCSharp
 			Vector3 orign = new Vector3 (-0.5f*dif.magnitude,0.0f, 0.0f);
 			
 			vector.transform.localRotation = rot;  
-			vector.transform.localScale = new Vector3 (dif.magnitude/(2*scale_const), 1.0f, 1.0f); 
+			vector.transform.localScale = new Vector3 (dif.magnitude/(2*scale_const), 0.1f, 0.1f); 
 			vector.transform.localPosition = rot*orign+start; 
 			mag = dif.magnitude; 
 			vector.SetActive(true); 

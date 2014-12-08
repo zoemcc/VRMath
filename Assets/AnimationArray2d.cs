@@ -123,10 +123,11 @@ public class AnimationArray2d {
 		int numInputs = inputs.Length;
 		this.inputsVectors = inputs;
 
-		for (int inputIndex = 0; inputIndex < numInputs; inputIndex++){
-			for (int i = 0; i < this.shape[0]; i++){
-				for (int j = 0; j < this.shape[1]; j++){
-					animations[i][j].setNumberOfInputs(numInputs);
+
+		for (int i = 0; i < this.shape[0]; i++){
+			for (int j = 0; j < this.shape[1]; j++){
+				animations[i][j].setNumberOfInputs(numInputs);
+				for (int inputIndex = 0; inputIndex < numInputs; inputIndex++){
 					animations[i][j].setInput(inputs[inputIndex][i][j], inputIndex);
 				}
 			}
@@ -134,7 +135,7 @@ public class AnimationArray2d {
 	}
 
 	public void display(float numSecs){
-		int numFrames = Mathf.CeilToInt(numSecs * 75f);
+		int numFrames = Mathf.CeilToInt(numSecs * 60f);
 		for (int i = 0; i < this.shape[0]; i++){
 			for (int j = 0; j < this.shape[1]; j++){
 				animations[i][j].display(numFrames);
@@ -568,6 +569,8 @@ public class AnimationsTimeIndexed {
 	public int currentIndexWithinMultipleAnimations = 0;
 	public int currentMultipleAnimationsIndex = 0;
 
+	public float timePerAnimation = 5.0f;
+
 	//public int lastAnimationIndex = -1;
 	//public int[] animationIndexToExpr;
 
@@ -604,7 +607,7 @@ public class AnimationsTimeIndexed {
 	}
 
 	public void updateCurrentAnimation(float timeSinceStarting){
-		int floorTime = Mathf.FloorToInt(timeSinceStarting);
+		int floorTime = Mathf.FloorToInt(timeSinceStarting / timePerAnimation);
 
 		if (floorTime >= this.totalAnimations){ // reset
 			floorTime = floorTime % this.totalAnimations;
@@ -618,7 +621,7 @@ public class AnimationsTimeIndexed {
 				this.currentMultipleAnimationsIndex++;
 				this.currentIndexWithinMultipleAnimations = 0;
 			}
-			this.animations[this.currentMultipleAnimationsIndex].display(this.currentIndexWithinMultipleAnimations, 1.0f);
+			this.animations[this.currentMultipleAnimationsIndex].display(this.currentIndexWithinMultipleAnimations, timePerAnimation);
 			this.currentIndexWithinMultipleAnimations++;
 			//this.animations[this.currentMultipleAnimationsIndex].display(floorTime - this.timeOffsets[this.currentAnimationsIndex], 1.0f);
 			this.lastAnimationStartTime = floorTime;
