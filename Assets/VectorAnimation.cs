@@ -82,7 +82,7 @@ namespace AssemblyCSharp
 			y_axis = Quaternion.Euler (new Vector3 (0.0f, 90.0f, 0.0f)) * vec; 
 			z_axis = Vector3.Cross (y_axis, vec); 
 
-			Quaternion rot = Quaternion.LookRotation(z_axis,y_axis);
+			Quaternion rot = Quaternion.LookRotation(vec)*Quaternion.Euler (new Vector3 (0.0f, 90.0f, 0.0f));
 
 			return rot; 
 		}

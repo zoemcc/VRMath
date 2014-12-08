@@ -88,13 +88,13 @@ public class Slides : MonoBehaviour {
 	void Update (){
 		//bool clicked = true;
 	
-		Vector3 vec1 = new Vector3(10.0f,10.0f,-10.0f); 
+		Vector3 vec1 = new Vector3(10.0f,10.0f,10.0f); 
 		Vector3 vec2 = new Vector3(-20.0f,-10.0f,-10.0f);
 		Vector3 vec3 = new Vector3 (-20.0f, 5.0f, -3.0f);
 		Vector3 vec4 = new Vector3 (-20.0f, -10.0f, -3.0f);
 		Vector3[] vecs = new Vector3[] {vec1,vec2,vec3,vec4}; 
 	    //vp = new vector_primitives (new GameObject ()); 
-		//vp.displayVector (vec4, 100.0f);
+		//vp.displayVector (vec1, 100.0f);
 		//vp.add_vectors(vecs,1000.0f); 
 		//vp.multiply_vectors(vec1, vec2,1000.0f); 
 

@@ -106,7 +106,7 @@ public class vector_primitives {
 		
 		Vector3 ans_vec = Vector3.Dot(vec2.normalized,vec1)*vec2.normalized; 
 		float mag = ans_vec.magnitude;
-		arrow1.drawVector(vec1.normalized); 
+		arrow1.drawVector(vec1); 
 		arrow2.drawVector(vec2); 
 		//ans_arrow.drawVector (ans_vec); 
 
@@ -118,7 +118,7 @@ public class vector_primitives {
 
 			ans_arrow.hideVector(); 
 			float iterations_t = (iterations-0.5f)/0.5f; 
-			bar.drawVector(iterations_t*ans_vec*vec2.magnitude); 
+			arrows[0].drawVector(iterations_t*ans_vec*vec2.magnitude); 
 			iterations += 1 /num_frames; 
 		}
 		else{
@@ -130,6 +130,7 @@ public class vector_primitives {
 			arrow1.hideVector();  
 			arrow2.hideVector(); 
 			ans_arrow.hideVector(); 
+			arrows[0].hideVector(); 
 			bar.hideBar(); 
 		}
 		return not_done; 
